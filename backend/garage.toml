@@ -6,7 +6,7 @@ replication_factor = 1
 
 rpc_bind_addr = "[::]:3901"
 rpc_public_addr = "127.0.0.1:3901"
-rpc_secret = "$(openssl rand -hex 32)"
+rpc_secret = "b156601a1e86c8bc7f88099ac0c2cb44012272933b295dd33d056850cd02e96e" #"$(openssl rand -hex 32)"
 
 [s3_api]
 s3_region = "garage"
@@ -23,5 +23,5 @@ api_bind_addr = "[::]:3904"
 
 [admin]
 api_bind_addr = "[::]:3903"
-admin_token = "$(openssl rand -base64 32)"
-metrics_token = "$(openssl rand -base64 32)"
+admin_token = "XA/v8fnJEP3GdSFryn5iUE16lODilxByfqKysVBe6Ew="   #"$(openssl rand -base64 32)"
+metrics_token = "q/w530ogdMbszmyx7my+Gv0eaN0+t12lV6nNE3DKS/8=" #"$(openssl rand -base64 32)"
