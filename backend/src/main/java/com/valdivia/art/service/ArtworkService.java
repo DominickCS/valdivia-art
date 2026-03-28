@@ -44,8 +44,12 @@ public class ArtworkService {
       artwork.setArtworkObjectKey(artworkObjectID);
       artwork.setPrice(request.price());
       artwork.setIsForSale(request.isForSale());
+      artwork.setIsActive(request.isActive());
+      artwork.setStripePriceID("TESTID");
+      artwork.setStripeProductID("TESTID");
       // artwork.setStripeProductID(stripeProductID); //TODO
       // artwork.setStripePriceID(stripePriceID); //TODO
+      artworkRepository.save(artwork);
 
       return ResponseEntity.ok("Your artwork has uploaded successfully!");
     } catch (Exception e) {

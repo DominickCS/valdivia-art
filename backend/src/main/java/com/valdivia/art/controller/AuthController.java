@@ -12,6 +12,7 @@ import com.valdivia.art.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -21,7 +22,7 @@ public class AuthController {
   private final UserService userService;
 
   @PostMapping("/register")
-  public ResponseEntity<AuthResponse> register(@RequestBody AuthRequest request) {
+  public ResponseEntity<AuthResponse> register(@RequestBody @Valid AuthRequest request) {
     return userService.registerUser(request);
   }
 

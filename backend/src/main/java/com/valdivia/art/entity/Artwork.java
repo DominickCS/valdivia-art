@@ -38,6 +38,9 @@ public class Artwork {
   private Boolean isForSale;
 
   @Column(nullable = false)
+  private Boolean isActive;
+
+  @Column(nullable = false)
   private String stripeProductID;
 
   @Column(nullable = false)
