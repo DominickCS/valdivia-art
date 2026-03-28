@@ -7,7 +7,7 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
-import ArtworkUploadPage from './pages/ArtworkUploadPage'
+import CreatorDashboardPage from './pages/CreatorDashboardPage'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -19,7 +19,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/admin" element={
             <ProtectedRoute requiredRole="ROLE_ADMIN">
-              <ArtworkUploadPage />
+              <CreatorDashboardPage />
             </ProtectedRoute>
           } />
         </Routes>

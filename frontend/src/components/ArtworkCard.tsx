@@ -1,5 +1,5 @@
 import "../index.css"
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext.js';
 
 export default function ArtworkCard({ artwork }) {
   const { user } = useAuth();
@@ -32,7 +32,7 @@ export default function ArtworkCard({ artwork }) {
     artwork.isActive ? (
       <div className="flex flex-col mx-auto px-8 items-center my-16">
         <img
-          className="shadow-artwork shadow-black/50 hover:scale-105 duration-300"
+          className="shadow-artwork shadow-black/50 hover:scale-95 duration-1000"
           src={artwork.artworkImageUrl}
           height={600}
           width={600}

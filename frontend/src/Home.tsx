@@ -21,7 +21,7 @@ export default function Home() {
     fetchAllArtwork()
   }, []);
 
-  if (allArtwork) {
+  if (allArtwork.length > 0) {
     return (
       <>
         <NavigationBar />
@@ -35,9 +35,12 @@ export default function Home() {
   }
   else {
     return (
-      <div className="min-h-screen content-center text-center">
-        <p>LOADING...</p>
-      </div>
+      <>
+        <NavigationBar />
+        <div className="min-h-screen content-center text-center">
+          <h1 className="font-extrabold text-3xl">No art is for sale currently.</h1>
+        </div>
+      </>
     )
   }
 }
