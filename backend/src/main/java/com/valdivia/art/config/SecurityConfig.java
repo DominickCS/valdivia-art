@@ -50,7 +50,9 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable())
         .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
-            .anyRequest().permitAll())
+            .requestMatchers("/api/auth/**").permitAll()
+            .requestMatchers("/api/artwork/admin/**").hasRole("ADMIN")
+            .anyRequest().authenticated())
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
   }
