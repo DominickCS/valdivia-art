@@ -1,10 +1,10 @@
 package com.valdivia.art.entity;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+
+import com.valdivia.art.entity.enums.UserRoles;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,34 +18,27 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "artwork")
-public class Artwork {
+@NoArgsConstructor
+@Table(name = "users")
+public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-
-  private String artworkObjectKey;
+  private long id;
 
   @Column(nullable = false)
-  private String title;
+  private String fullName;
 
   @Column(nullable = false)
-  private BigDecimal price;
+  private String email;
 
   @Column(nullable = false)
-  private Boolean isForSale;
+  private String password;
 
-  @Column(nullable = false)
-  private String stripeProductID;
+  private UserRoles userRole = UserRoles.CUSTOMER;
 
-  @Column(nullable = false)
-  private String stripePriceID;
+  private Boolean emailVerified = false;
 
   @CreationTimestamp
-  private LocalDateTime createdAt;
-
-  @UpdateTimestamp
-  private LocalDateTime updatedAt;
+  private LocalDateTime creationDate;
 }
