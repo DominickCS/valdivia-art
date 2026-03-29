@@ -31,6 +31,7 @@ garage:
   secret-key: ${GARAGE_SECRET_KEY}
   region: ${GARAGE_REGION}
   bucket: ${GARAGE_BUCKET}
+  public-url: ${GARAGE_PUBLIC_URL}
 admin:
   email: ${ADMIN_EMAIL}
   password: ${ADMIN_PASSWORD}

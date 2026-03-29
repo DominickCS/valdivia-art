@@ -28,6 +28,8 @@ public class Artwork {
 
   private String artworkObjectKey;
 
+  private String imageURL;
+
   @Column(nullable = false)
   private String title;
 

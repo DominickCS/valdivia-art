@@ -14,8 +14,8 @@ api_bind_addr = "[::]:3900"
 root_domain = ".s3.garage.localhost"
 
 [s3_web]
-bind_addr = "[::]:3902"
-root_domain = ".web.garage.localhost"
+bind_addr = "0.0.0.0:3902"
+root_domain = "valdivia.co"
 index = "index.html"
 
 [k2v_api]

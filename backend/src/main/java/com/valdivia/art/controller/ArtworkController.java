@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,13 +27,6 @@ public class ArtworkController {
   public ResponseEntity<String> uploadBeat(@RequestParam MultipartFile artworkImage,
       @RequestPart ArtworkUploadRequest request) {
     return artworkService.uploadArtwork(artworkImage, request);
-  }
-
-  @GetMapping("/image/{key}")
-  public ResponseEntity<String> getBeat(@PathVariable(name = "key") String key) {
-    String response = artworkService.generatePresignedURL(key);
-
-    return ResponseEntity.ok().body(response);
   }
 
   @GetMapping()

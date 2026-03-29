@@ -14,8 +14,12 @@ docker exec -it valdivia-art-garage-1 /garage key create valdivia-art-key
 
 # Allow access to artwork bucket via provisioned access key -> Make sure to copy the access key into .env vars
 docker exec -it valdivia-art-garage-1 /garage bucket allow \             
+  --public-website \
   --read \
   --write \
   --owner \
   artwork \         
   --key valdivia-art-key
+
+# Allow public read URL
+docker exec -it valdivia-art-garage-1 /garage bucket website --allow artwork
