@@ -1,7 +1,10 @@
 package com.valdivia.art.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +28,9 @@ public class UserService {
   private final AuthenticationManager authenticationManager;
   private final JwtService jwtService;
 
+  @Autowired
+  private JavaMailSender mailSender;
+
   public ResponseEntity<AuthResponse> registerUser(AuthRequest request) {
     boolean userExists = userRepository.findByEmail(request.email()).isPresent();
 
@@ -37,6 +43,14 @@ public class UserService {
     user.setEmail(request.email());
     user.setPassword(passwordEncoder.encode(request.password()));
     userRepository.save(user);
+
+    SimpleMailMessage emailMessage = new SimpleMailMessage();
+    emailMessage.setFrom("mail@dominickcs.com"); // UPDATE THIS VAR IN PRODUCTION
+    emailMessage.setTo(request.email());
+    emailMessage.setSubject("WELCOME TO VALDIVIA.CO!");
+    emailMessage.setText("Thank you for signing up, " + request.fullName() + "!");
+    mailSender.send(emailMessage);
+
     return ResponseEntity.ok(new AuthResponse(null, "You have registered successfully! Redirecting you..."));
   }
 
