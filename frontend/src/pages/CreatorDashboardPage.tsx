@@ -1,4 +1,3 @@
-import NavigationBar from "../components/NavigationBar";
 import api from '../api/AxiosInstance';
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +6,13 @@ import { useEffect, useState } from "react";
 export default function CreatorDashboardPage() {
   const navigate = useNavigate();
   const [allArtwork, setAllArtwork] = useState([]);
+  const [activeArtwork, setActiveArtwork] = useState([]);
+
+  const fetchActiveArtwork = async () => {
+    const response = await api.get('/api/artwork/active')
+    setActiveArtwork(await response.data)
+  }
+
   const fetchAllArtwork = async () => {
     const response = await api.get('/api/artwork')
     setAllArtwork(await response.data)
@@ -14,6 +20,7 @@ export default function CreatorDashboardPage() {
 
   useEffect(() => {
     fetchAllArtwork()
+    fetchActiveArtwork()
   }, []);
 
   async function handleSubmit(e) {
@@ -36,7 +43,7 @@ export default function CreatorDashboardPage() {
         },
       });
 
-      toast.success(<p className="font-extrabold text-center text-lg">{response.data}</p>, {
+      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data}</p>, {
         position: "bottom-center",
         autoClose: 2000,
         hideProgressBar: false,
@@ -49,6 +56,7 @@ export default function CreatorDashboardPage() {
 
       form.reset();
       fetchAllArtwork()
+      fetchActiveArtwork()
 
     } catch (err) {
       console.log(err)
@@ -64,7 +72,7 @@ export default function CreatorDashboardPage() {
         }
       });
 
-      toast.success(<p className="font-extrabold text-center text-lg">{response.data}</p>, {
+      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data}</p>, {
         position: "bottom-center",
         autoClose: 2000,
         hideProgressBar: false,
@@ -76,23 +84,56 @@ export default function CreatorDashboardPage() {
       });
 
       fetchAllArtwork()
+      fetchActiveArtwork()
 
     } catch (err) {
       console.log(err)
     }
   }
 
+  async function unarchiveArtwork(id) {
+    try {
+      console.log(id)
+      const response = await api.delete(`/api/artwork/admin/unarchive/${id}`, parseInt(id), {
+        headers: {
+          'Content-Type': `application/json`,
+        }
+      });
+
+      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data}</p>, {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Bounce,
+      });
+
+      fetchAllArtwork()
+      fetchActiveArtwork()
+
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   return (
     <>
       <ToastContainer />
-      <NavigationBar />
       <div className="flex justify-evenly my-8 px-16 [&>div]:px-8">
         <div className="flex-4">
           {allArtwork.map((artwork) => (
             <div key={artwork.id} className="flex justify-between items-center">
               <p>{artwork.title} - ID: {artwork.id}</p>
               <button onClick={() => archiveArtwork(Number(artwork.id))}>Archive</button>
+            </div>
+          ))}
+          {activeArtwork.map((active) => (
+            <div key={active.id} className="flex justify-between items-center">
+              <p>{active.title} - ID: {active.id}</p>
+              <button onClick={() => archiveArtwork(Number(active.id))}>Unarchive</button>
             </div>
           ))}
         </div>

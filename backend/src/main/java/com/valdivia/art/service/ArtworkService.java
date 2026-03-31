@@ -89,14 +89,36 @@ public class ArtworkService {
       stripeClient.products().update(artwork.getStripeProductID(),
           ProductUpdateParams.builder().setActive(false).build());
 
-      s3Client.deleteObject(DeleteObjectRequest.builder().bucket(bucket).key(artwork.getArtworkObjectKey()).build());
-
       artwork.setIsActive(false);
       artwork.setIsForSale(false);
 
       artworkRepository.save(artwork);
 
       return ResponseEntity.ok("Artwork was archived successfully!");
+
+    } catch (NoSuchElementException e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("Artwork with the specified ID doesn't exist.");
+    } catch (StripeException e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("The Stripe API has ran into an error. Contact your administrator. " +
+              e.getMessage());
+    }
+  }
+
+  public ResponseEntity<String> unarchiveArtwork(Long artworkID) throws StripeException {
+    try {
+      Artwork artwork = artworkRepository.findById(artworkID).orElseThrow(NoSuchElementException::new);
+
+      stripeClient.products().update(artwork.getStripeProductID(),
+          ProductUpdateParams.builder().setActive(true).build());
+
+      artwork.setIsActive(true);
+      artwork.setIsForSale(true);
+
+      artworkRepository.save(artwork);
+
+      return ResponseEntity.ok("Artwork was unarchived successfully!");
 
     } catch (NoSuchElementException e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

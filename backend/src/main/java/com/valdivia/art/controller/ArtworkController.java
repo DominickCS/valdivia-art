@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,9 +33,14 @@ public class ArtworkController {
     return artworkService.uploadArtwork(artworkImage, request);
   }
 
-  @DeleteMapping("/admin/archive/{id}")
+  @PatchMapping("/admin/archive/{id}")
   public ResponseEntity<String> archiveArtwork(@PathVariable(name = "id") Long artworkID) throws StripeException {
     return artworkService.archiveArtwork(artworkID);
+  }
+
+  @PatchMapping("/admin/unarchive/{id}")
+  public ResponseEntity<String> unarchiveArtwork(@PathVariable(name = "id") Long artworkID) throws StripeException {
+    return artworkService.unarchiveArtwork(artworkID);
   }
 
   @GetMapping()
