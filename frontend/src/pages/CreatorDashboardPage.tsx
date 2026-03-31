@@ -122,29 +122,23 @@ export default function CreatorDashboardPage() {
   return (
     <>
       <ToastContainer />
-      <div className="flex justify-evenly my-8 px-16 [&>div]:px-8">
+      <div className="flex justify-evenly my-8 px-16 [&>div]:p-8">
         <div className="flex-4">
-          <h1>Active Listings</h1>
+          <h1 className='font-extrabold text-2xl'>Active Listings</h1>
           {activeArtwork.map((active) => (
             <div key={active.id} className="flex justify-between items-center">
               <p>{active.title} - ID: {active.id}</p>
-              <button onClick={() => unarchiveArtwork(Number(active.id))}>Unarchive</button>
+              <button onClick={() => unarchiveArtwork(Number(active.id))}>Archive</button>
             </div>
           ))}
-          <h1>Inactive listings</h1>
+          <h1 className='font-extrabold text-2xl'>Inactive listings</h1>
           {allArtwork.map((artwork) => (
             !artwork.isActive ?
               <div key={artwork.id} className="flex justify-between items-center">
                 <p>{artwork.title} - ID: {artwork.id}</p>
-                <button onClick={() => archiveArtwork(Number(artwork.id))}>Archive</button>
+                <button onClick={() => archiveArtwork(Number(artwork.id))}>Unarchive</button>
               </div> :
               null
-          ))}
-          {activeArtwork.map((active) => (
-            <div key={active.id} className="flex justify-between items-center">
-              <p>{active.title} - ID: {active.id}</p>
-              <button onClick={() => unarchiveArtwork(Number(active.id))}>Unarchive</button>
-            </div>
           ))}
         </div>
         <div className="flex-1/12">
