@@ -28,12 +28,13 @@ export default function ArtworkCard({ artwork }) {
   //   }
   // };
 
+  console.log(artwork)
   return (
     artwork.isActive ? (
       <div className="flex flex-col mx-auto px-8 items-center my-16">
         <img
           className="shadow-artwork shadow-black/50 hover:scale-95 duration-1000"
-          src={artwork.artworkImageUrl}
+          src={artwork.imageURL}
           height={420}
           width={420}
           alt={artwork.title + " by Daniel Valdivia"}

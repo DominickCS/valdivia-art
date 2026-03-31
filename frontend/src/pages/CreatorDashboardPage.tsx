@@ -2,9 +2,19 @@ import NavigationBar from "../components/NavigationBar";
 import api from '../api/AxiosInstance';
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function CreatorDashboardPage() {
   const navigate = useNavigate();
+  const [allArtwork, setAllArtwork] = useState([]);
+  const fetchAllArtwork = async () => {
+    const response = await api.get('/api/artwork')
+    setAllArtwork(await response.data)
+  }
+
+  useEffect(() => {
+    fetchAllArtwork()
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -33,11 +43,38 @@ export default function CreatorDashboardPage() {
         closeOnClick: false,
         pauseOnHover: true,
         draggable: true,
-        theme: "dark",
+        theme: "light",
         transition: Bounce,
       });
 
       setTimeout(() => navigate("/"), 3000);
+
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  async function archiveArtwork(id) {
+    try {
+      console.log(id)
+      const response = await api.delete(`/api/artwork/admin/archive/${id}`, parseInt(id), {
+        headers: {
+          'Content-Type': `application/json`,
+        }
+      });
+
+      toast.success(<p className="font-extrabold text-center text-lg">{response.data}</p>, {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Bounce,
+      });
+
+      fetchAllArtwork()
 
     } catch (err) {
       console.log(err)
@@ -49,9 +86,14 @@ export default function CreatorDashboardPage() {
     <>
       <ToastContainer />
       <NavigationBar />
-      <div className="flex justify-evenly px-16 [&>div]:px-8">
-        <div className="flex-4 border-2">
-          CONTROLS
+      <div className="flex justify-evenly my-8 px-16 [&>div]:px-8">
+        <div className="flex-4">
+          {allArtwork.map((artwork) => (
+            <div key={artwork.id} className="flex justify-between items-center">
+              <p>{artwork.title} - ID: {artwork.id}</p>
+              <button onClick={() => archiveArtwork(Number(artwork.id))}>Archive</button>
+            </div>
+          ))}
         </div>
         <div className="flex-1/12">
           <form className='flex flex-col *:py-3 [&>input]:border [&>input]:text-center [&>input]:px-4 [&>label]:text-center' onSubmit={handleSubmit}>

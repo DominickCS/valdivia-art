@@ -9,17 +9,12 @@ export default function Home() {
   useEffect(() => {
     const fetchAllArtwork = async () => {
       const response = await api.get('/api/artwork')
-      const modifiedResponse = await Promise.all(response.data.map(async (artwork) => {
-        const response = await api.get(`/api/artwork/image/${artwork.artworkObjectKey}`);
-        return {
-          ...artwork,
-          artworkImageUrl: await response.data
-        }
-      }))
-      setAllArtwork(await modifiedResponse)
+      console.log(response.data)
+      setAllArtwork(await response.data)
     }
     fetchAllArtwork()
   }, []);
+
 
   if (allArtwork.length > 0) {
     return (
