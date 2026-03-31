@@ -51,10 +51,12 @@ export default function ArtworkCard({ artwork }) {
               className="mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
               {user ? "BUY NOW" : "LOGIN TO BUY"}
             </button>
-            <button
-              className="mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
-              {user ? "ADD TO CART" : null}
-            </button>
+            {user ?
+              <button
+                className="mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
+                ADD TO CART
+              </button>
+              : null}
           </div> :
           null
         }
