@@ -13,9 +13,15 @@ s3_region = "garage"
 api_bind_addr = "[::]:3900"
 root_domain = ".s3.garage.localhost"
 
+# PRODUCTION
+# [s3_web]
+# bind_addr = "0.0.0.0:3902"
+# root_domain = "valdivia.co"
+# index = "index.html"
+
 [s3_web]
 bind_addr = "0.0.0.0:3902"
-root_domain = "valdivia.co"
+root_domain = "dominickcs.com"
 index = "index.html"
 
 [k2v_api]
