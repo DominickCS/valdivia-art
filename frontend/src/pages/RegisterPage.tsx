@@ -69,7 +69,7 @@ export default function RegisterPage() {
           <input type='email' value={formData.email} onChange={handleChange} name='email' />
           <label htmlFor="password">Password</label>
           <input type='password' value={formData.password} onChange={handleChange} name='password' />
-          <button type="submit" className="bn54 mx-auto">REGISTER</button>
+          <button type="submit" className="button-spcl mx-auto">REGISTER</button>
         </form>
       </div>
     </>

@@ -48,12 +48,12 @@ export default function ArtworkCard({ artwork }) {
         {artwork.isForSale ?
           <div className="flex justify-between mt-4">
             <button
-              className="mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
+              className="button-spcl mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
               {user ? "BUY NOW" : "LOGIN TO BUY"}
             </button>
             {user ?
               <button
-                className="mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
+                className="button-spcl mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
                 ADD TO CART
               </button>
               : null}

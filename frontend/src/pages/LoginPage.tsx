@@ -72,7 +72,7 @@ export default function LoginPage() {
           <input type='email' value={formData.email} onChange={handleChange} name='email' />
           <label htmlFor='password'>Password</label>
           <input type='password' value={formData.password} onChange={handleChange} name='password' />
-          <button type='submit' className='bn54 mx-auto'>LOGIN</button>
+          <button type='submit' className='button-spcl mx-auto'>LOGIN</button>
         </form>
       </div>
     </>

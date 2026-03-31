@@ -122,24 +122,28 @@ export default function CreatorDashboardPage() {
   return (
     <>
       <ToastContainer />
-      <div className="flex justify-evenly my-8 px-16 [&>div]:p-8">
-        <div className="flex-4">
-          <h1 className='font-extrabold text-2xl'>Active Listings</h1>
-          {activeArtwork.map((active) => (
-            <div key={active.id} className="flex justify-between items-center">
-              <p>{active.title} - ID: {active.id}</p>
-              <button onClick={() => unarchiveArtwork(Number(active.id))}>Archive</button>
-            </div>
-          ))}
-          <h1 className='font-extrabold text-2xl'>Inactive listings</h1>
-          {allArtwork.map((artwork) => (
-            !artwork.isActive ?
-              <div key={artwork.id} className="flex justify-between items-center">
-                <p>{artwork.title} - ID: {artwork.id}</p>
-                <button onClick={() => archiveArtwork(Number(artwork.id))}>Unarchive</button>
-              </div> :
-              null
-          ))}
+      <div className="flex justify-evenly my-8 px-16">
+        <div className="flex-4 flex justify-around">
+          <div className='flex-1/2 mx-4'>
+            <h1 className='font-extrabold text-2xl underline'>Active Listings</h1>
+            {activeArtwork.map((active) => (
+              <div key={active.id} className="flex justify-between items-center my-2">
+                <p>ID: {active.id} - {active.title} | ${active.price}</p>
+                <button className='button-spcl' onClick={() => unarchiveArtwork(Number(active.id))}>Archive</button>
+              </div>
+            ))}
+          </div>
+          <div className='flex-1/2 mx-4'>
+            <h1 className='font-extrabold text-2xl'>Inactive listings</h1>
+            {allArtwork.map((artwork) => (
+              !artwork.isActive ?
+                <div key={artwork.id} className="flex justify-between items-center my-2">
+                  <p>ID: {artwork.id} - {artwork.title} | ${artwork.price}</p>
+                  <button className='button-spcl' onClick={() => archiveArtwork(Number(artwork.id))}>Unarchive</button>
+                </div> :
+                null
+            ))}
+          </div>
         </div>
         <div className="flex-1/12">
           <form className='flex flex-col *:py-3 [&>input]:border [&>input]:text-center [&>input]:px-4 [&>label]:text-center' onSubmit={handleSubmit}>
@@ -164,7 +168,7 @@ export default function CreatorDashboardPage() {
               <label htmlFor="isActive">Current Work?</label>
               <input type="checkbox" name="isActive" />
             </div>
-            <input className='mt-8' type='submit' value={"ADD ARTWORK"} />
+            <button className='mt-8 button-spcl' type='submit'>ADD ARTWORK</button>
           </form>
         </div>
       </div>
