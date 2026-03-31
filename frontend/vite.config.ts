@@ -6,6 +6,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   server: {
     host: '0.0.0.0',
+    allowedHosts: ["art.dominickcs.com"],
     port: 5173,
   },
   plugins: [
