@@ -41,4 +41,10 @@ public class ArtworkController {
   public List<Artwork> getAllArtwork() {
     return artworkService.getAllArtwork();
   }
+
+  @GetMapping("/active")
+  public List<Artwork> getActiveArtwork() {
+    return artworkService.getActiveArtwork();
+  }
+
 }

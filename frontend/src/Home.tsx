@@ -8,7 +8,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchAllArtwork = async () => {
-      const response = await api.get('/api/artwork')
+      const response = await api.get('/api/artwork/active')
       console.log(response.data)
       setAllArtwork(await response.data)
     }

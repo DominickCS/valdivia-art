@@ -111,4 +111,8 @@ public class ArtworkService {
   public List<Artwork> getAllArtwork() {
     return artworkRepository.findAll();
   }
+
+  public List<Artwork> getActiveArtwork() {
+    return artworkRepository.findAllByIsActive(true);
+  }
 }
