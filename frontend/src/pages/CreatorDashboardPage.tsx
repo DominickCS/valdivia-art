@@ -129,7 +129,7 @@ export default function CreatorDashboardPage() {
             {activeArtwork.map((active) => (
               <div key={active.id} className="flex justify-between items-center my-2">
                 <p>ID: {active.id} - {active.title} | ${active.price}</p>
-                <button className='button-spcl' onClick={() => unarchiveArtwork(Number(active.id))}>Archive</button>
+                <button className='button-spcl' onClick={() => archiveArtwork(Number(active.id))}>Archive</button>
               </div>
             ))}
           </div>
@@ -139,7 +139,7 @@ export default function CreatorDashboardPage() {
               !artwork.isActive ?
                 <div key={artwork.id} className="flex justify-between items-center my-2">
                   <p>ID: {artwork.id} - {artwork.title} | ${artwork.price}</p>
-                  <button className='button-spcl' onClick={() => archiveArtwork(Number(artwork.id))}>Unarchive</button>
+                  <button className='button-spcl' onClick={() => unarchiveArtwork(Number(artwork.id))}>Unarchive</button>
                 </div> :
                 null
             ))}
