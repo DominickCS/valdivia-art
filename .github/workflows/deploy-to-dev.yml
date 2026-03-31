@@ -1,3 +1,4 @@
+# .github/workflows/deploy.yml
 name: Deploy
 
 on:
@@ -35,6 +36,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Tear down existing stack and volumes
+        run: docker compose -f compose.yml down -v --remove-orphans
+
       - name: Start stack and configure Garage
         run: bash backend/initGarageCICD.sh
 
@@ -43,21 +47,6 @@ jobs:
           echo "GARAGE_ACCESS_KEY is set: ${{ env.GARAGE_ACCESS_KEY != '' }}"
           echo "GARAGE_SECRET_KEY is set: ${{ env.GARAGE_SECRET_KEY != '' }}"
 
-      # --- Frontend ---
-      - name: Install frontend dependencies
-        working-directory: ./frontend
-        run: npm ci
-
-      - name: Build frontend
-        working-directory: ./frontend
-        run: npm run build
-
-      - name: Deploy frontend static files
-        run: |
-          rm -rf /var/www/valdivia-art/*
-          cp -r frontend/dist/* /var/www/valdivia-art/
-
-      # --- Backend ---
       - name: Pull latest images
         run: docker compose -f compose.yml pull
 
