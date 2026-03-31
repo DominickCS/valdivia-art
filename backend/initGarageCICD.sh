@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 
+# Start the full stack
+docker compose -f compose.yml up -d
+
+# Wait for Garage to be ready
+echo "Waiting for Garage to be ready..."
+sleep 5
+
 NODE_ID=$(docker exec valdivia-art-garage-1 /garage status | awk '/HEALTHY/ {getline; getline; print $1}')
 [[ -z "$NODE_ID" ]] && {
   echo "ERROR: Could not parse NODE_ID" >&2
