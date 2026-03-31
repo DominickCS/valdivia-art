@@ -36,6 +36,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Write .env file
+        run: |
+          cat > .env <<EOF
+          VITE_API_URL=http://art.dominickcs.com:8081
+          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          GARAGE_ENDPOINT=${{ secrets.GARAGE_ENDPOINT }}
+          GARAGE_BUCKET=${{ secrets.GARAGE_BUCKET }}
+          GARAGE_REGION=${{ secrets.GARAGE_REGION }}
+          GARAGE_PUBLIC_URL=${{ secrets.GARAGE_PUBLIC_URL }}
+          GARAGE_ACCESS_KEY=${{ secrets.GARAGE_ACCESS_KEY }}
+          GARAGE_SECRET_KEY=${{ secrets.GARAGE_SECRET_KEY }}
+          STRIPE_API_KEY=${{ secrets.STRIPE_API_KEY }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          EXPIRATION_MS=${{ secrets.EXPIRATION_MS }}
+          ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}
+          ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+          EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}
+          EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}
+          EOF
+
       - name: Tear down existing stack and volumes
         run: docker compose -f compose.yml down -v --remove-orphans
 
