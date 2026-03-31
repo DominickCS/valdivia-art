@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import NavigationBar from '../components/NavigationBar'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import api from '../api/AxiosInstance';
@@ -27,14 +26,14 @@ export default function LoginPage() {
       const token = response.data.token;
       login(token)
 
-      toast.success(<p className="font-extrabold text-center text-lg">{response.data.message}</p>, {
+      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data.message}</p>, {
         position: "bottom-center",
         autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: false,
         pauseOnHover: true,
         draggable: true,
-        theme: "dark",
+        theme: "light",
         transition: Bounce,
       });
 
@@ -42,14 +41,14 @@ export default function LoginPage() {
 
     } catch (err) {
 
-      toast.error(<p className="font-extrabold text-center text-lg">{err.response.data.message}</p>, {
+      toast.error(<p className="font-extrabold text-center text-lg px-4">{err.response.data.message}</p>, {
         position: "bottom-center",
         autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: false,
         pauseOnHover: true,
         draggable: true,
-        theme: "dark",
+        theme: "light",
         transition: Bounce,
       });
     }
@@ -67,7 +66,6 @@ export default function LoginPage() {
   return (
     <>
       <ToastContainer />
-      <NavigationBar />
       <div className='mx-auto max-w-sm h-200 content-center px-4'>
         <form onSubmit={handleSubmit} className='[&>input]:bg-white [&>input]:text-black [&>input]:px-2 font-semibold *:my-4 flex flex-col'>
           <label htmlFor='email'>Email Address</label>

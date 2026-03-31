@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import NavigationBar from "./components/NavigationBar"
 import api from './api/AxiosInstance';
 import ArtworkCard from './components/ArtworkCard'
 
@@ -31,7 +30,6 @@ export default function Home() {
   else {
     return (
       <>
-        <NavigationBar />
         <div className="min-h-screen px-4 content-center text-center">
           <h1 className="font-extrabold text-3xl">No art is for sale currently.</h1>
         </div>
