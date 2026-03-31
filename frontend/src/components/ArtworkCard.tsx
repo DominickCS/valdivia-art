@@ -31,20 +31,33 @@ export default function ArtworkCard({ artwork }) {
   console.log(artwork)
   return (
     artwork.isActive ? (
-      <div className="flex flex-col mx-auto px-8 items-center my-16">
+      <div className="flex flex-col mx-auto px-8 items-center my-32">
         <img
-          className="shadow-artwork shadow-black/50 hover:scale-95 duration-1000"
+          className="shadow-artwork shadow-black/45 hover:scale-105 duration-1000"
           src={artwork.imageURL}
-          height={420}
-          width={420}
+          height={460}
+          width={460}
           alt={artwork.title + " by Daniel Valdivia"}
         />
-        <p className="text-3xl mt-12 font-semibold">{artwork.title}</p>
-        <p className="mt-2 font-extralight text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>
-        <button
-          className="m-4 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
-          {user ? "BUY NOW" : "LOGIN TO BUY"}
-        </button>
+        <p className="text-3xl mt-8 font-extrabold tracking-wide">{artwork.title}</p>
+        {artwork.isForSale ?
+          <p className="mt-2 font-light text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>
+          :
+          <p className="mt-2 font-light text-lg tracking-widest italic">Not for sale</p>
+        }
+        {artwork.isForSale ?
+          <div className="flex justify-evenly mt-4">
+            <button
+              className="mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
+              {user ? "BUY NOW" : "LOGIN TO BUY"}
+            </button>
+            <button
+              className="mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
+              {user ? "ADD TO CART" : null}
+            </button>
+          </div> :
+          null
+        }
       </div>
     ) : null
   );

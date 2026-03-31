@@ -25,8 +25,8 @@ export default function CreatorDashboardPage() {
     formData.append('request', new Blob([JSON.stringify({
       title: form.title.value,
       price: form.price.value,
-      isForSale: form.isForSale.value == "on" ? true : false,
-      isActive: form.isActive.value == "on" ? true : false
+      isForSale: form.isForSale.checked,
+      isActive: form.isActive.checked
     })], { type: 'application/json' }));
 
     try {
@@ -47,7 +47,8 @@ export default function CreatorDashboardPage() {
         transition: Bounce,
       });
 
-      setTimeout(() => navigate("/"), 3000);
+      form.reset();
+      fetchAllArtwork()
 
     } catch (err) {
       console.log(err)
