@@ -18,7 +18,6 @@ export default function Home() {
   if (allArtwork.length > 0) {
     return (
       <>
-        <NavigationBar />
         <div>
           {allArtwork.map((artwork) => (
             <ArtworkCard key={artwork.id} artwork={artwork} />
