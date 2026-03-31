@@ -1,0 +1,65 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  # Admin
+  ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+  ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+  # Email
+  EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+  EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+  # JWT
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  EXPIRATION_MS: ${{ secrets.EXPIRATION_MS }}
+  # Garage / S3
+  GARAGE_BUCKET: ${{ secrets.GARAGE_BUCKET }}
+  GARAGE_ENDPOINT: ${{ secrets.GARAGE_ENDPOINT }}
+  GARAGE_PUBLIC_URL: ${{ secrets.GARAGE_PUBLIC_URL }}
+  GARAGE_REGION: ${{ secrets.GARAGE_REGION }}
+  # Postgres
+  POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+  POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  # Stripe
+  STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Start stack and configure Garage
+        run: bash backend/initGarageCICD.sh
+
+      - name: Verify Garage env vars
+        run: |
+          echo "GARAGE_ACCESS_KEY is set: ${{ env.GARAGE_ACCESS_KEY != '' }}"
+          echo "GARAGE_SECRET_KEY is set: ${{ env.GARAGE_SECRET_KEY != '' }}"
+
+      # --- Frontend ---
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: Deploy frontend static files
+        run: |
+          rm -rf /var/www/valdivia-art/*
+          cp -r frontend/dist/* /var/www/valdivia-art/
+
+      # --- Backend ---
+      - name: Pull latest images
+        run: docker compose -f compose.yml pull
+
+      - name: Rebuild and restart stack
+        run: docker compose -f compose.yml up -d --build

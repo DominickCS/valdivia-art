@@ -9,6 +9,11 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   garage:
     image: "dxflrs/garage:v2.2.0"
@@ -21,6 +26,41 @@ services:
       - "3900:3900"
       - "3902:3902"
       - "3903:3903"
+    healthcheck:
+      test: ["CMD", "/garage", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      - "POSTGRES_USER=${POSTGRES_USER}"
+      - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
+      - "POSTGRES_DB=${POSTGRES_DB}"
+      - "GARAGE_ENDPOINT=${GARAGE_ENDPOINT}"
+      - "GARAGE_BUCKET=${GARAGE_BUCKET}"
+      - "GARAGE_REGION=${GARAGE_REGION}"
+      - "GARAGE_PUBLIC_URL=${GARAGE_PUBLIC_URL}"
+      - "GARAGE_ACCESS_KEY=${GARAGE_ACCESS_KEY}"
+      - "GARAGE_SECRET_KEY=${GARAGE_SECRET_KEY}"
+      - "STRIPE_API_KEY=${STRIPE_API_KEY}"
+      - "JWT_SECRET=${JWT_SECRET}"
+      - "EXPIRATION_MS=${EXPIRATION_MS}"
+      - "ADMIN_EMAIL=${ADMIN_EMAIL}"
+      - "ADMIN_PASSWORD=${ADMIN_PASSWORD}"
+      - "EMAIL_USERNAME=${EMAIL_USERNAME}"
+      - "EMAIL_PASSWORD=${EMAIL_PASSWORD}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      garage:
+        condition: service_healthy
+
 volumes:
   pgdata:
   garage_meta:
