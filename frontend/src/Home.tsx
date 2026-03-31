@@ -32,7 +32,7 @@ export default function Home() {
     return (
       <>
         <NavigationBar />
-        <div className="min-h-screen content-center text-center">
+        <div className="min-h-screen px-4 content-center text-center">
           <h1 className="font-extrabold text-3xl">No art is for sale currently.</h1>
         </div>
       </>
