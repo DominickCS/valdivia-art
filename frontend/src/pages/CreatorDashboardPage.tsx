@@ -66,7 +66,7 @@ export default function CreatorDashboardPage() {
   async function archiveArtwork(id) {
     try {
       console.log(id)
-      const response = await api.delete(`/api/artwork/admin/archive/${id}`, parseInt(id), {
+      const response = await api.patch(`/api/artwork/admin/archive/${id}`, parseInt(id), {
         headers: {
           'Content-Type': `application/json`,
         }
@@ -94,7 +94,7 @@ export default function CreatorDashboardPage() {
   async function unarchiveArtwork(id) {
     try {
       console.log(id)
-      const response = await api.delete(`/api/artwork/admin/unarchive/${id}`, parseInt(id), {
+      const response = await api.patch(`/api/artwork/admin/unarchive/${id}`, parseInt(id), {
         headers: {
           'Content-Type': `application/json`,
         }
@@ -124,12 +124,14 @@ export default function CreatorDashboardPage() {
       <ToastContainer />
       <div className="flex justify-evenly my-8 px-16 [&>div]:px-8">
         <div className="flex-4">
+          <h1>Active Listings</h1>
           {allArtwork.map((artwork) => (
             <div key={artwork.id} className="flex justify-between items-center">
               <p>{artwork.title} - ID: {artwork.id}</p>
               <button onClick={() => archiveArtwork(Number(artwork.id))}>Archive</button>
             </div>
           ))}
+          <h1>Inactive listings</h1>
           {activeArtwork.map((active) => (
             <div key={active.id} className="flex justify-between items-center">
               <p>{active.title} - ID: {active.id}</p>
