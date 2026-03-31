@@ -46,7 +46,7 @@ export default function ArtworkCard({ artwork }) {
           <p className="mt-2 font-light text-lg tracking-widest italic">Not for sale</p>
         }
         {artwork.isForSale ?
-          <div className="flex justify-evenly mt-4">
+          <div className="flex justify-between mt-4">
             <button
               className="mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
               {user ? "BUY NOW" : "LOGIN TO BUY"}
