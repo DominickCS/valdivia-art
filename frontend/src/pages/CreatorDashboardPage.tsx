@@ -100,7 +100,7 @@ export default function CreatorDashboardPage() {
         }
       });
 
-      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data}</p>, {
+      toast.success(<p className="font-extrabold text-center text-lg mx-4">{response.data}</p>, {
         position: "bottom-center",
         autoClose: 2000,
         hideProgressBar: false,
@@ -123,29 +123,30 @@ export default function CreatorDashboardPage() {
     <>
       <ToastContainer />
       <div className="flex justify-evenly my-8 px-16">
-        <div className="flex-4 flex justify-around">
+        <div className="flex-4 flex justify-around border-r-4 border-black/10 mx-4">
           <div className='flex-1/2 mx-4'>
-            <h1 className='font-extrabold text-2xl underline'>Active Listings</h1>
+            <h1 className='font-extrabold text-2xl underline text-center'>ACTIVE LISTINGS</h1>
             {activeArtwork.map((active) => (
               <div key={active.id} className="flex justify-between items-center my-2">
-                <p>ID: {active.id} - {active.title} | ${active.price}</p>
+                <p>ID: {active.id} - {active.title} - ${active.price}</p>
                 <button className='button-spcl' onClick={() => archiveArtwork(Number(active.id))}>Archive</button>
               </div>
             ))}
           </div>
           <div className='flex-1/2 mx-4'>
-            <h1 className='font-extrabold text-2xl'>Inactive listings</h1>
+            <h1 className='font-extrabold text-2xl underline text-center'>INACTIVE LISTINGS</h1>
             {allArtwork.map((artwork) => (
               !artwork.isActive ?
                 <div key={artwork.id} className="flex justify-between items-center my-2">
-                  <p>ID: {artwork.id} - {artwork.title} | ${artwork.price}</p>
+                  <p>ID: {artwork.id} - {artwork.title} - ${artwork.price}</p>
                   <button className='button-spcl' onClick={() => unarchiveArtwork(Number(artwork.id))}>Unarchive</button>
                 </div> :
                 null
             ))}
           </div>
         </div>
-        <div className="flex-1/12">
+        <div className="flex-1/12 mx-4">
+          <h1 className='text-center font-extrabold text-2xl underline'>NEW LISTING</h1>
           <form className='flex flex-col *:py-3 [&>input]:border [&>input]:text-center [&>input]:px-4 [&>label]:text-center' onSubmit={handleSubmit}>
             <label htmlFor='artworkImageField'>Artwork Image</label>
             <input type='file' name='artworkImageField' />
