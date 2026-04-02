@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class WebhookController {
   private final ArtworkRepository artworkRepository;
 
-  @Value("{stripe.webhook.secret}")
+  @Value("${stripe.webhook.secret}")
   private String webhookSecret;
 
   @PostMapping
