@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.stripe.exception.EventDataObjectDeserializationException;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
+import com.stripe.model.StripeObject;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
 import com.valdivia.art.entity.Artwork;
@@ -28,20 +30,21 @@ public class WebhookController {
 
   @PostMapping
   public ResponseEntity<String> handleWebhook(@RequestBody String payload,
-      @RequestHeader("Stripe-Signature") String sigHeader) throws SignatureVerificationException {
+      @RequestHeader("Stripe-Signature") String sigHeader)
+      throws SignatureVerificationException, EventDataObjectDeserializationException {
 
     Event event = Webhook.constructEvent(payload, sigHeader, webhookSecret);
 
     if ("checkout.session.completed".equals(event.getType())) {
-      Session session = (Session) event.getDataObjectDeserializer()
-          .getObject().orElseThrow();
+      StripeObject stripeObject = event.getDataObjectDeserializer()
+          .deserializeUnsafe(); // <-- instead of getObject().orElseThrow()
 
+      Session session = (Session) stripeObject;
       Long artworkId = Long.parseLong(session.getMetadata().get("artworkID"));
       Artwork artwork = artworkRepository.findById(artworkId).orElseThrow();
       artwork.setAvailableQuantity(artwork.getAvailableQuantity() - 1);
       artworkRepository.save(artwork);
     }
-
     return ResponseEntity.ok("");
   }
 }
