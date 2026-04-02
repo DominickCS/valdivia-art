@@ -36,7 +36,8 @@ export default function RegisterPage() {
       setTimeout(() => navigate("/"), 3000);
 
     } catch (err) {
-      toast.error(<p className="font-extrabold text-center text-lg px-4">{err.response.data.message}</p>, {
+      console.log(err)
+      toast.error(<p className="font-extrabold text-center text-lg px-4">{"An error has occurred during registration"}</p>, {
         position: "bottom-center",
         autoClose: 2000,
         hideProgressBar: false,
@@ -60,8 +61,8 @@ export default function RegisterPage() {
 
   return (
     <>
-      <ToastContainer />
-      <div className='mx-auto max-w-sm h-200 content-center px-4'>
+      <ToastContainer className="px-8 py-4" />
+      <div className='mx-auto max-w-sm h-200 content-center px-8'>
         <form onSubmit={handleSubmit} className='[&>input]:bg-white [&>input]:text-black [&>input]:px-2 font-semibold *:my-4 flex flex-col'>
           <label htmlFor="fullName">Full Name</label>
           <input type="text" value={formData.fullName} onChange={handleChange} name="fullName" />

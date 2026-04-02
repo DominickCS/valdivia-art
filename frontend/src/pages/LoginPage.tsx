@@ -65,16 +65,16 @@ export default function LoginPage() {
 
   return (
     <>
-      <ToastContainer />
-      <div className='mx-auto max-w-sm h-200 content-center px-4'>
+      <ToastContainer className="px-8 py-4" />
+      <div className='mx-auto max-w-sm h-200 content-center px-8'>
         <form onSubmit={handleSubmit} className='[&>input]:bg-white [&>input]:text-black [&>input]:px-2 font-semibold *:my-4 flex flex-col'>
           <label htmlFor='email'>Email Address</label>
           <input type='email' value={formData.email} onChange={handleChange} name='email' />
           <label htmlFor='password'>Password</label>
           <input type='password' value={formData.password} onChange={handleChange} name='password' />
-          <button type='submit' className='button-spcl mx-auto'>LOGIN</button>
-        </form>
-      </div>
+          <button type='submit' className='button-spcl mx-auto w-full'>LOGIN</button>
+        </form >
+      </div >
     </>
   )
 }
