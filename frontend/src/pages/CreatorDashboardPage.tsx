@@ -32,8 +32,10 @@ export default function CreatorDashboardPage() {
     formData.append('request', new Blob([JSON.stringify({
       title: form.title.value,
       price: form.price.value,
+      yearCompleted: form.yearCompleted.value,
       isForSale: form.isForSale.checked,
-      isActive: form.isActive.checked
+      isActive: form.isActive.checked,
+      availableQuantity: form.availableQuantity.value
     })], { type: 'application/json' }));
 
     try {
@@ -152,22 +154,28 @@ export default function CreatorDashboardPage() {
             <input type='file' name='artworkImageField' />
             <label htmlFor='title'>Title</label>
             <input type='text' name='title' />
-            <label htmlFor='price'>Price</label>
-            <input
-              type='text'
-              name='price'
-              onKeyDown={e => {
-                const allowed = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab']
-                if (allowed.includes(e.key)) return
-                if (!/[\d.]/.test(e.key)) { e.preventDefault(); return }
-                if (e.key === '.' && e.target.value.includes('.')) e.preventDefault()
-              }}
-            />
+            <div className='flex justify-evenly mt-4 [&>input]:text-center'>
+              <label htmlFor='price'>Price</label>
+              <input
+                type='text'
+                name='price'
+                onKeyDown={e => {
+                  const allowed = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab']
+                  if (allowed.includes(e.key)) return
+                  if (!/[\d.]/.test(e.key)) { e.preventDefault(); return }
+                  if (e.key === '.' && e.target.value.includes('.')) e.preventDefault()
+                }}
+              />
+              <label htmlFor='yearCompleted'>Year Completed</label>
+              <input type='text' name='yearCompleted' />
+            </div>
             <div className="flex justify-evenly mt-4">
               <label htmlFor="isForSale">For Sale?</label>
               <input type="checkbox" name="isForSale" />
               <label htmlFor="isActive">Current Work?</label>
               <input type="checkbox" name="isActive" />
+              <label htmlFor='availableQuantity'>Available Quantity</label>
+              <input type='number' name='availableQuantity' className='text-center' />
             </div>
             <button className='mt-8 button-spcl' type='submit'>ADD ARTWORK</button>
           </form>

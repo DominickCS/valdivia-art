@@ -54,6 +54,11 @@ public class ArtworkController {
     return artworkService.getActiveArtwork();
   }
 
+  @GetMapping("/sellable")
+  public List<Artwork> getSellableArtwork() {
+    return artworkService.getSellableArtwork();
+  }
+
   @PostMapping("/purchase/{id}")
   public ResponseEntity<String> purchaseArtwork(@PathVariable(name = "id") Long artworkID,
       @Valid @RequestBody PurchaseRequest request)

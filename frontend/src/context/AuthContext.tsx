@@ -9,7 +9,6 @@ export function AuthProvider({ children }) {
     if (!token) return null;
     try {
       const payload = parseJwt(token);
-      console.log(payload)
       if (payload.exp * 1000 > Date.now()) {
         return { username: payload.sub, roles: payload.roles ?? [], id: payload.userID };
       }

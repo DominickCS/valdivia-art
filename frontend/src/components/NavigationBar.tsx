@@ -14,10 +14,10 @@ export default function NavigationBar() {
 
         {/* Desktop nav links — absolute left */}
         <div className="hidden lg:flex items-center gap-8 absolute left-8">
-          <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/about">About</Link>
-          <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/archive">Archive</Link>
-          <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/current-art">Current Art</Link>
-          <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/contact">Contact</Link>
+          <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/about">ABOUT ME</Link>
+          <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/for-sale">FOR SALE</Link>
+          <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/archive">ART ARCHIVE</Link>
+          <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/contact">CONTACT ME</Link>
         </div>
 
         {/* Logo — always centered */}
@@ -33,15 +33,15 @@ export default function NavigationBar() {
           {user ? (
             <>
               {user.roles?.includes('ROLE_ADMIN') && (
-                <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/admin">Creator Dashboard</Link>
+                <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/admin">DASHBOARD</Link>
               )}
-              <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/profile">Profile</Link>
-              <button className="transition-all hover:scale-110 hover:tracking-widest duration-300" onClick={logout}>Logout</button>
+              <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/profile">PROFILE</Link>
+              <button className="hover:cursor-pointer transition-all hover:scale-110 hover:tracking-widest duration-300" onClick={logout}>LOGOUT</button>
             </>
           ) : (
             <>
-              <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/login">Login</Link>
-              <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/register">Register</Link>
+              <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/login">LOGIN</Link>
+              <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/register">REGISTER</Link>
             </>
           )}
         </div>
@@ -61,22 +61,22 @@ export default function NavigationBar() {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="lg:hidden flex flex-col items-center gap-4 py-6 border-b-2 border-black/10 shadow-md">
-          <Link className="transition-all hover:tracking-widest duration-300" to="/about" onClick={close}>About</Link>
-          <Link className="transition-all hover:tracking-widest duration-300" to="/archive" onClick={close}>Archive</Link>
-          <Link className="transition-all hover:tracking-widest duration-300" to="/current-art" onClick={close}>Current Art</Link>
-          <Link className="transition-all hover:tracking-widest duration-300" to="/contact" onClick={close}>Contact</Link>
+          <Link className="transition-all hover:tracking-widest duration-300" to="/about" onClick={close}>ABOUT ME</Link>
+          <Link className="transition-all hover:tracking-widest duration-300" to="/for-sale" onClick={close}>FOR SALE</Link>
+          <Link className="transition-all hover:tracking-widest duration-300" to="/archive" onClick={close}>ART ARCHIVE</Link>
+          <Link className="transition-all hover:tracking-widest duration-300" to="/contact" onClick={close}>CONTACT ME</Link>
           {user ? (
             <>
               {user.roles?.includes('ROLE_ADMIN') && (
-                <Link className="transition-all hover:tracking-widest duration-300" to="/admin" onClick={close}>Creator Dashboard</Link>
+                <Link className="transition-all hover:tracking-widest duration-300" to="/admin" onClick={close}>DASHBOARD</Link>
               )}
-              <Link className="transition-all hover:tracking-widest duration-300" to="/profile" onClick={close}>Profile</Link>
-              <button className="transition-all hover:tracking-widest duration-300" onClick={() => { logout(); close(); }}>Logout</button>
+              <Link className="transition-all hover:tracking-widest duration-300" to="/profile" onClick={close}>PROFILE</Link>
+              <button className="hover:cursor-pointer transition-all hover:tracking-widest duration-300" onClick={() => { logout(); close(); }}>LOGOUT</button>
             </>
           ) : (
             <>
-              <Link className="transition-all hover:tracking-widest duration-300" to="/login" onClick={close}>Login</Link>
-              <Link className="transition-all hover:tracking-widest duration-300" to="/register" onClick={close}>Register</Link>
+              <Link className="transition-all hover:tracking-widest duration-300" to="/login" onClick={close}>LOGIN</Link>
+              <Link className="transition-all hover:tracking-widest duration-300" to="/register" onClick={close}>REGISTER</Link>
             </>
           )}
         </div>

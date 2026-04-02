@@ -1,0 +1,22 @@
+import { useEffect } from "react"
+import Checkmark from "../assets/checkmark.png"
+import { useNavigate } from "react-router-dom"
+
+export default function SuccessPage() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    setTimeout(() => {
+      navigate("/")
+    }, 8000)
+  })
+  return (
+    <>
+      <div className="mt-24">
+        <img className="mx-auto" src={Checkmark} width={300} />
+        <h1 className="text-center font-extrabold text-4xl">PAYMENT SUCCESSFUL!</h1>
+        <p className="text-center font-extrabold text-xl">An invoice for your purchase will be sent to your email! <br />Please reach out to support if you have any issues.</p>
+        <p className="text-center font-bold text-md">Redirecting...</p>
+      </div>
+    </>
+  )
+}

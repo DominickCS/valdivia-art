@@ -9,8 +9,8 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
   datasource:
-    url: jdbc:postgresql://postgres:5432/${POSTGRES_DB} # PROD
-    # url: jdbc:postgresql://localhost:5432/${POSTGRES_DB} # LOCAL DEV
+    # url: jdbc:postgresql://postgres:5432/${POSTGRES_DB} # PROD
+    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB} # LOCAL DEV
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -33,6 +33,7 @@ garage:
   region: ${GARAGE_REGION}
   bucket: ${GARAGE_BUCKET}
   public-url: ${GARAGE_PUBLIC_URL}
+
 admin:
   email: ${ADMIN_EMAIL}
   password: ${ADMIN_PASSWORD}
@@ -40,3 +41,6 @@ admin:
 jwt:
   secret: ${JWT_SECRET}
   expiration-ms: ${EXPIRATION_MS}
+
+stripe:
+  webhook-secret: ${STRIPE_WEBHOOK_SECRET}

@@ -7,4 +7,8 @@ import java.util.List;
 
 public interface ArtworkRepository extends JpaRepository<Artwork, Long> {
   List<Artwork> findAllByIsActive(Boolean isActive);
+
+  List<Artwork> findAllByIsActiveTrueAndAvailableQuantityGreaterThan(Integer availableQuantity);
+
+  List<Artwork> findAllByOrderByYearCompletedDesc();
 }

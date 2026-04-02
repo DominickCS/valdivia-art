@@ -37,6 +37,9 @@ public class Artwork {
   private BigDecimal price;
 
   @Column(nullable = false)
+  private String yearCompleted;
+
+  @Column(nullable = false)
   private Boolean isForSale;
 
   @Column(nullable = false)
@@ -47,6 +50,9 @@ public class Artwork {
 
   @Column(nullable = false)
   private String stripePriceID;
+
+  @Column(nullable = false)
+  private Integer availableQuantity;
 
   @CreationTimestamp
   private LocalDateTime createdAt;

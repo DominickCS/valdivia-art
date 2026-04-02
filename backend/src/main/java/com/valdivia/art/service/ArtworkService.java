@@ -71,8 +71,10 @@ public class ArtworkService {
       artwork.setArtworkObjectKey(artworkObjectID);
       artwork.setImageURL(publicURLBase + artworkObjectID);
       artwork.setPrice(request.price());
+      artwork.setYearCompleted(request.yearCompleted());
       artwork.setIsForSale(request.isForSale());
       artwork.setIsActive(request.isActive());
+      artwork.setAvailableQuantity(request.availableQuantity());
       artwork.setStripeProductID(product.getId());
       artwork.setStripePriceID(price.getId());
 
@@ -142,6 +144,7 @@ public class ArtworkService {
       SessionCreateParams params = SessionCreateParams.builder().setSuccessUrl("http://localhost:5173/success")
           .addLineItem(
               SessionCreateParams.LineItem.builder().setPrice(artwork.getStripePriceID()).setQuantity(1L).build())
+          .putMetadata("artworkID", String.valueOf(artworkID))
           .setBillingAddressCollection(BillingAddressCollection.REQUIRED)
           .setShippingAddressCollection(
               SessionCreateParams.ShippingAddressCollection.builder()
@@ -165,10 +168,16 @@ public class ArtworkService {
   }
 
   public List<Artwork> getAllArtwork() {
-    return artworkRepository.findAll();
+    return artworkRepository.findAllByOrderByYearCompletedDesc();
   }
 
   public List<Artwork> getActiveArtwork() {
     return artworkRepository.findAllByIsActive(true);
   }
+
+  public List<Artwork> getSellableArtwork() {
+    return artworkRepository.findAllByIsActiveTrueAndAvailableQuantityGreaterThan(0);
+
+  }
+
 }

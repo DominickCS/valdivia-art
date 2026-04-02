@@ -2,5 +2,6 @@ package com.valdivia.art.dto.request;
 
 import java.math.BigDecimal;
 
-public record ArtworkUploadRequest(String title, BigDecimal price, Boolean isForSale, Boolean isActive) {
+public record ArtworkUploadRequest(String title, BigDecimal price, String yearCompleted, Boolean isForSale,
+    Boolean isActive, Integer availableQuantity) {
 };
