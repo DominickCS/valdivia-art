@@ -16,7 +16,7 @@ import com.valdivia.art.repository.ArtworkRepository;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
+@RestController("/api/webhook")
 @RequiredArgsConstructor
 public class WebhookController {
   private final ArtworkRepository artworkRepository;
@@ -24,7 +24,7 @@ public class WebhookController {
   @Value("{stripe.webhook.secret}")
   private String webhookSecret;
 
-  @PostMapping("/webhook")
+  @PostMapping
   public ResponseEntity<String> handleWebhook(@RequestBody String payload,
       @RequestHeader("Stripe-Signature") String sigHeader) throws SignatureVerificationException {
 

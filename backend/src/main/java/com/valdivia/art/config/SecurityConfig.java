@@ -53,7 +53,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers("/api/auth/**").permitAll()
-            .requestMatchers("/webhook/**").permitAll()
+            .requestMatchers("/api/webhook").permitAll()
             .requestMatchers("/api/artwork/admin/**").hasRole("ADMIN")
             .requestMatchers("/api/artwork/**").permitAll()
             .anyRequest().authenticated())
