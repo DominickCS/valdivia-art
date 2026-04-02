@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -14,9 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.stripe.exception.StripeException;
 import com.valdivia.art.dto.request.ArtworkUploadRequest;
+import com.valdivia.art.dto.request.PurchaseRequest;
 import com.valdivia.art.entity.Artwork;
 import com.valdivia.art.service.ArtworkService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -49,6 +52,13 @@ public class ArtworkController {
   @GetMapping("/active")
   public List<Artwork> getActiveArtwork() {
     return artworkService.getActiveArtwork();
+  }
+
+  @PostMapping("/purchase/{id}")
+  public ResponseEntity<String> purchaseArtwork(@PathVariable(name = "id") Long artworkID,
+      @Valid @RequestBody PurchaseRequest request)
+      throws StripeException {
+    return artworkService.createCheckoutSession(artworkID, request);
   }
 
 }

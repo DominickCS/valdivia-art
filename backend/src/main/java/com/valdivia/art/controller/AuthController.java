@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.stripe.exception.StripeException;
 import com.valdivia.art.dto.request.AuthRequest;
 import com.valdivia.art.dto.response.AuthResponse;
 import com.valdivia.art.service.UserService;
@@ -22,7 +23,7 @@ public class AuthController {
   private final UserService userService;
 
   @PostMapping("/register")
-  public ResponseEntity<AuthResponse> register(@RequestBody @Valid AuthRequest request) {
+  public ResponseEntity<AuthResponse> register(@RequestBody @Valid AuthRequest request) throws StripeException {
     return userService.registerUser(request);
   }
 

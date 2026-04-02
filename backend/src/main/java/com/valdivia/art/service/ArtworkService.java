@@ -15,27 +15,31 @@ import com.stripe.StripeClient;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Price;
 import com.stripe.model.Product;
+import com.stripe.model.checkout.Session;
 import com.stripe.param.PriceCreateParams;
 import com.stripe.param.ProductCreateParams;
 import com.stripe.param.ProductUpdateParams;
+import com.stripe.param.checkout.SessionCreateParams;
+import com.stripe.param.checkout.SessionCreateParams.BillingAddressCollection;
 import com.valdivia.art.dto.request.ArtworkUploadRequest;
+import com.valdivia.art.dto.request.PurchaseRequest;
 import com.valdivia.art.entity.Artwork;
+import com.valdivia.art.entity.User;
 import com.valdivia.art.repository.ArtworkRepository;
+import com.valdivia.art.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 @Service
 @RequiredArgsConstructor
 public class ArtworkService {
   private final S3Client s3Client;
-  private final S3Presigner s3Presigner;
   private final ArtworkRepository artworkRepository;
   private final StripeClient stripeClient;
+  private final UserRepository userRepository;
 
   @Value("${garage.bucket}")
   private String bucket;
@@ -128,6 +132,36 @@ public class ArtworkService {
           .body("The Stripe API has ran into an error. Contact your administrator. " +
               e.getMessage());
     }
+  }
+
+  public ResponseEntity<String> createCheckoutSession(Long artworkID, PurchaseRequest request) throws StripeException {
+    try {
+      User user = userRepository.findById(request.userID()).orElseThrow(NoSuchElementException::new);
+      Artwork artwork = artworkRepository.findById(artworkID).orElseThrow(NoSuchElementException::new);
+
+      SessionCreateParams params = SessionCreateParams.builder().setSuccessUrl("http://localhost:5173/success")
+          .addLineItem(
+              SessionCreateParams.LineItem.builder().setPrice(artwork.getStripePriceID()).setQuantity(1L).build())
+          .setBillingAddressCollection(BillingAddressCollection.REQUIRED)
+          .setShippingAddressCollection(
+              SessionCreateParams.ShippingAddressCollection.builder()
+                  .addAllowedCountry(SessionCreateParams.ShippingAddressCollection.AllowedCountry.US).build())
+          .setCustomer(user.getStripeCustomerID())
+          .setMode(SessionCreateParams.Mode.PAYMENT).build();
+
+      Session session = stripeClient.checkout().sessions().create(params);
+
+      return ResponseEntity.ok(session.toJson());
+
+    } catch (NoSuchElementException e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("Artwork with the specified ID doesn't exist.");
+    } catch (StripeException e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("The Stripe API has ran into an error. Contact your administrator. " +
+              e.getMessage());
+    }
+
   }
 
   public List<Artwork> getAllArtwork() {

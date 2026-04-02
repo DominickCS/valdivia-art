@@ -69,7 +69,6 @@ public class SecurityConfig {
         admin.setEmail(adminEmail);
         admin.setPassword(passwordEncoder.encode(adminPassword));
         admin.setUserRole(UserRoles.ADMIN);
-        admin.setEmailVerified(true);
         userRepository.save(admin);
       }
     };

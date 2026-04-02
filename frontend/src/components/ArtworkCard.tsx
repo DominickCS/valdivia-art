@@ -1,32 +1,33 @@
 import "../index.css"
 import { useAuth } from '../context/AuthContext.js';
+import api from '../api/AxiosInstance';
 
 export default function ArtworkCard({ artwork }) {
   const { user } = useAuth();
 
-  // const handlePurchase = async () => {
-  //   if (!artwork.stripePriceId) {
-  //     alert('This artwork is not yet available for purchase. Please contact support.');
-  //     return;
-  //   }
-  //   try {
-  //     const result = await createCheckoutSession(
-  //       artwork.stripePriceId,
-  //       artwork.title,
-  //       userEmail
-  //     );
-  //     if (result.url) {
-  //       window.location.href = result.url;
-  //     } else {
-  //       alert(result.error || 'Failed to create checkout session');
-  //       setLoading(false);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error creating checkout:', error);
-  //     alert('An error occurred. Please try again.');
-  //     setLoading(false);
-  //   }
-  // };
+  async function handlePurchase(id) {
+    console.log(user)
+    try {
+      const response = await api.post(
+        `/api/artwork/purchase/${id}`,
+        { userID: user.id },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      console.log(await response.data)
+
+      if (response.status == 200) {
+        setTimeout(() => { window.location.replace(response.data.url) }, 5000)
+      }
+
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   console.log(artwork)
   return (
@@ -48,7 +49,7 @@ export default function ArtworkCard({ artwork }) {
         {artwork.isForSale ?
           <div className="flex justify-between mt-4">
             <button
-              className="button-spcl mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
+              onClick={() => handlePurchase(artwork.id)} className="button-spcl mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
               {user ? "BUY NOW" : "LOGIN TO BUY"}
             </button>
             {user ?

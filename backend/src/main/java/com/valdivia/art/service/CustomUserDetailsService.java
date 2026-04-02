@@ -8,13 +8,12 @@ import org.springframework.stereotype.Service;
 import com.valdivia.art.entity.User;
 import com.valdivia.art.repository.UserRepository;
 
-@Service
-public class CustomUserDetailsService implements UserDetailsService {
-  private UserRepository userRepository;
+import lombok.RequiredArgsConstructor;
 
-  CustomUserDetailsService(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
+@Service
+@RequiredArgsConstructor
+public class CustomUserDetailsService implements UserDetailsService {
+  private final UserRepository userRepository;
 
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

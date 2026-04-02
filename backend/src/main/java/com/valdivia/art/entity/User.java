@@ -1,6 +1,7 @@
 package com.valdivia.art.entity;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -23,8 +24,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 public class User {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
   @Column(nullable = false)
   private String fullName;
@@ -37,7 +38,9 @@ public class User {
 
   private UserRoles userRole = UserRoles.CUSTOMER;
 
-  private Boolean emailVerified = false;
+  private String stripeCustomerID;
+
+  // TODO - ADD CART LIST TO USER ENTITY
 
   @CreationTimestamp
   private LocalDateTime creationDate;

@@ -9,8 +9,9 @@ export function AuthProvider({ children }) {
     if (!token) return null;
     try {
       const payload = parseJwt(token);
+      console.log(payload)
       if (payload.exp * 1000 > Date.now()) {
-        return { username: payload.sub, roles: payload.roles ?? [] };
+        return { username: payload.sub, roles: payload.roles ?? [], id: payload.userID };
       }
       localStorage.removeItem('token');
       return null;
@@ -22,7 +23,7 @@ export function AuthProvider({ children }) {
   const login = (token) => {
     localStorage.setItem('token', token);
     const payload = parseJwt(token);
-    setUser({ username: payload.sub, roles: payload.roles ?? [] });
+    setUser({ username: payload.sub, roles: payload.roles ?? [], id: payload.userID });
   };
 
   const logout = () => {

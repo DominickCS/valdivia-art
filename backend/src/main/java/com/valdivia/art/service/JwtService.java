@@ -2,6 +2,8 @@ package com.valdivia.art.service;
 
 import org.springframework.stereotype.Service;
 
+import com.valdivia.art.entity.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -10,6 +12,7 @@ import io.jsonwebtoken.security.Keys;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
@@ -29,17 +32,22 @@ public class JwtService {
     return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
   }
 
-  public String generateToken(Authentication authentication) {
+  public String generateToken(Authentication authentication, User user) {
 
     List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
     return Jwts.builder()
         .subject(authentication.getName())
         .claim("roles", roles)
+        .claim("userID", user.getId())
         .issuedAt(new Date())
         .expiration(new Date(System.currentTimeMillis() + expirationMs))
         .signWith(getSigningKey())
         .compact();
+  }
+
+  public UUID extractUserId(String token) {
+    return parseClaims(token).get("userId", UUID.class);
   }
 
   public String extractUsername(String token) {
