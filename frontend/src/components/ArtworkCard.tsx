@@ -37,7 +37,7 @@ export default function ArtworkCard({ artwork }) {
         alt={artwork.title + " by Daniel Valdivia"}
       />
       <p className="text-3xl mt-8 font-extrabold tracking-wide">{artwork.title}</p>
-      {artwork.isForSale && artwork.availableQuantity > 0 ?
+      {artwork.forSale && artwork.availableQuantity > 0 ?
         <p className="mt-2 font-light text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>
         :
         <p className="mt-2 font-light text-sm tracking-widest italic">Not for sale</p>
