@@ -58,6 +58,8 @@ services:
       - "ADMIN_PASSWORD=${ADMIN_PASSWORD}"
       - "EMAIL_USERNAME=${EMAIL_USERNAME}"
       - "EMAIL_PASSWORD=${EMAIL_PASSWORD}"
+      - "STRIPE_WEBHOOK_SECRET=${{ STRIPE_WEBHOOK_SECRET }}"
+      - "STRIPE_SUCCESS_URL=${{ STRIPE_SUCCESS_URL }}"
     depends_on:
       postgres:
         condition: service_healthy
