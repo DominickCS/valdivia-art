@@ -41,6 +41,9 @@ public class ArtworkService {
   private final StripeClient stripeClient;
   private final UserRepository userRepository;
 
+  @Value("${stripe.success-url}")
+  private String successURL;
+
   @Value("${garage.bucket}")
   private String bucket;
 
@@ -141,7 +144,7 @@ public class ArtworkService {
       User user = userRepository.findById(request.userID()).orElseThrow(NoSuchElementException::new);
       Artwork artwork = artworkRepository.findById(artworkID).orElseThrow(NoSuchElementException::new);
 
-      SessionCreateParams params = SessionCreateParams.builder().setSuccessUrl("http://localhost:5173/success")
+      SessionCreateParams params = SessionCreateParams.builder().setSuccessUrl(successURL)
           .addLineItem(
               SessionCreateParams.LineItem.builder().setPrice(artwork.getStripePriceID()).setQuantity(1L).build())
           .putMetadata("artworkID", String.valueOf(artworkID))

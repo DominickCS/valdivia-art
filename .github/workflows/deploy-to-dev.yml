@@ -28,6 +28,7 @@ env:
   # Stripe
   STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
   STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+  STRIPE_SUCCESS_URL: ${{ secrets.STRIPE_SUCCESS_URL }}
 
 jobs:
   deploy:
@@ -52,6 +53,7 @@ jobs:
           GARAGE_SECRET_KEY=${{ secrets.GARAGE_SECRET_KEY }}
           STRIPE_API_KEY=${{ secrets.STRIPE_API_KEY }}
           STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          STRIPE_SUCCESS_URL=${{ secrets.STRIPE_SUCCESS_URL }}
           JWT_SECRET=${{ secrets.JWT_SECRET }}
           EXPIRATION_MS=${{ secrets.EXPIRATION_MS }}
           ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}
