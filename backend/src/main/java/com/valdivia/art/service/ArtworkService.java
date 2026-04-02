@@ -60,7 +60,7 @@ public class ArtworkService {
       ProductCreateParams productParams = ProductCreateParams.builder()
           .addImage(publicURLBase + artworkObjectID)
           .setName(request.title())
-          .setActive(request.isActive())
+          .setActive(true)
           .build();
       Product product = stripeClient.products().create(productParams);
 
@@ -75,8 +75,8 @@ public class ArtworkService {
       artwork.setImageURL(publicURLBase + artworkObjectID);
       artwork.setPrice(request.price());
       artwork.setYearCompleted(request.yearCompleted());
-      artwork.setIsForSale(request.isForSale());
-      artwork.setIsActive(request.isActive());
+      artwork.setForSale(request.forSale());
+      artwork.setActive(true);
       artwork.setAvailableQuantity(request.availableQuantity());
       artwork.setStripeProductID(product.getId());
       artwork.setStripePriceID(price.getId());
@@ -98,8 +98,8 @@ public class ArtworkService {
       stripeClient.products().update(artwork.getStripeProductID(),
           ProductUpdateParams.builder().setActive(false).build());
 
-      artwork.setIsActive(false);
-      artwork.setIsForSale(false);
+      artwork.setActive(false);
+      artwork.setForSale(false);
 
       artworkRepository.save(artwork);
 
@@ -122,8 +122,8 @@ public class ArtworkService {
       stripeClient.products().update(artwork.getStripeProductID(),
           ProductUpdateParams.builder().setActive(true).build());
 
-      artwork.setIsActive(true);
-      artwork.setIsForSale(true);
+      artwork.setActive(true);
+      artwork.setForSale(true);
 
       artworkRepository.save(artwork);
 
@@ -175,11 +175,11 @@ public class ArtworkService {
   }
 
   public List<Artwork> getActiveArtwork() {
-    return artworkRepository.findAllByIsActive(true);
+    return artworkRepository.findAllByActive(true);
   }
 
   public List<Artwork> getSellableArtwork() {
-    return artworkRepository.findAllByIsActiveTrueAndAvailableQuantityGreaterThan(0);
+    return artworkRepository.findAllByActiveTrueAndAvailableQuantityGreaterThan(0);
 
   }
 

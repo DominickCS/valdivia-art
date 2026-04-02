@@ -44,7 +44,7 @@ public class ArtworkController {
     return artworkService.unarchiveArtwork(artworkID);
   }
 
-  @GetMapping()
+  @GetMapping
   public List<Artwork> getAllArtwork() {
     return artworkService.getAllArtwork();
   }

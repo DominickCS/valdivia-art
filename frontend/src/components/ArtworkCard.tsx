@@ -28,37 +28,35 @@ export default function ArtworkCard({ artwork }) {
   }
 
   return (
-    artwork.isActive ? (
-      <div className="flex flex-col mx-auto px-8 items-center my-32">
-        <img
-          className="shadow-artwork shadow-black/45 hover:scale-105 duration-1000"
-          src={artwork.imageURL}
-          height={460}
-          width={460}
-          alt={artwork.title + " by Daniel Valdivia"}
-        />
-        <p className="text-3xl mt-8 font-extrabold tracking-wide">{artwork.title}</p>
-        {artwork.isForSale && artwork.availableQuantity > 0 ?
-          <p className="mt-2 font-light text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>
-          :
-          <p className="mt-2 font-light text-sm tracking-widest italic">Not for sale</p>
-        }
-        {artwork.availableQuantity > 0 ?
-          <div className="flex justify-between mt-4">
+    <div className="flex flex-col mx-auto px-8 items-center my-32">
+      <img
+        className="shadow-artwork shadow-black/45 hover:scale-105 duration-1000"
+        src={artwork.imageURL}
+        height={460}
+        width={460}
+        alt={artwork.title + " by Daniel Valdivia"}
+      />
+      <p className="text-3xl mt-8 font-extrabold tracking-wide">{artwork.title}</p>
+      {artwork.isForSale && artwork.availableQuantity > 0 ?
+        <p className="mt-2 font-light text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>
+        :
+        <p className="mt-2 font-light text-sm tracking-widest italic">Not for sale</p>
+      }
+      {artwork.availableQuantity > 0 ?
+        <div className="flex justify-between mt-4">
+          <button
+            onClick={() => handlePurchase(artwork.id)} className="button-spcl mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
+            {user ? "BUY NOW" : "LOGIN TO BUY"}
+          </button>
+          {user ?
             <button
-              onClick={() => handlePurchase(artwork.id)} className="button-spcl mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
-              {user ? "BUY NOW" : "LOGIN TO BUY"}
+              className="button-spcl mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
+              ADD TO CART
             </button>
-            {user ?
-              <button
-                className="button-spcl mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
-                ADD TO CART
-              </button>
-              : null}
-          </div> :
-          null
-        }
-      </div>
-    ) : null
+            : null}
+        </div> :
+        null
+      }
+    </div>
   );
 }

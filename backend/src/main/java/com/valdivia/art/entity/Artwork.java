@@ -40,10 +40,10 @@ public class Artwork {
   private String yearCompleted;
 
   @Column(nullable = false)
-  private Boolean isForSale;
+  private Boolean forSale;
 
   @Column(nullable = false)
-  private Boolean isActive;
+  private Boolean active;
 
   @Column(nullable = false)
   private String stripeProductID;

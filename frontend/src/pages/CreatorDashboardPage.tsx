@@ -33,8 +33,7 @@ export default function CreatorDashboardPage() {
       title: form.title.value,
       price: form.price.value,
       yearCompleted: form.yearCompleted.value,
-      isForSale: form.isForSale.checked,
-      isActive: form.isActive.checked,
+      forSale: form.forSale.checked,
       availableQuantity: form.availableQuantity.value
     })], { type: 'application/json' }));
 
@@ -138,7 +137,7 @@ export default function CreatorDashboardPage() {
           <div className='flex-1/2 mx-4'>
             <h1 className='font-extrabold text-2xl underline text-center'>INACTIVE LISTINGS</h1>
             {allArtwork.map((artwork) => (
-              !artwork.isActive ?
+              !artwork.active ?
                 <div key={artwork.id} className="flex justify-between items-center my-2">
                   <p>ID: {artwork.id} - {artwork.title} - ${artwork.price}</p>
                   <button className='button-spcl' onClick={() => unarchiveArtwork(Number(artwork.id))}>Unarchive</button>
@@ -170,10 +169,8 @@ export default function CreatorDashboardPage() {
               <input type='text' name='yearCompleted' />
             </div>
             <div className="flex justify-evenly mt-4">
-              <label htmlFor="isForSale">For Sale?</label>
-              <input type="checkbox" name="isForSale" />
-              <label htmlFor="isActive">Current Work?</label>
-              <input type="checkbox" name="isActive" />
+              <label htmlFor="forSale">For Sale?</label>
+              <input type="checkbox" name="forSale" />
               <label htmlFor='availableQuantity'>Available Quantity</label>
               <input type='number' name='availableQuantity' className='text-center' />
             </div>

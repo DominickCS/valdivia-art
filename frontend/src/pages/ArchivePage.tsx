@@ -8,6 +8,7 @@ export default function ArchivePage() {
   useEffect(() => {
     const fetchAllArtwork = async () => {
       const response = await api.get('/api/artwork')
+      console.log(await response)
       setAllArtwork(await response.data)
     }
     fetchAllArtwork()

@@ -6,9 +6,9 @@ import com.valdivia.art.entity.Artwork;
 import java.util.List;
 
 public interface ArtworkRepository extends JpaRepository<Artwork, Long> {
-  List<Artwork> findAllByIsActive(Boolean isActive);
+  List<Artwork> findAllByActive(Boolean active);
 
-  List<Artwork> findAllByIsActiveTrueAndAvailableQuantityGreaterThan(Integer availableQuantity);
+  List<Artwork> findAllByActiveTrueAndAvailableQuantityGreaterThan(Integer availableQuantity);
 
   List<Artwork> findAllByOrderByYearCompletedDesc();
 }
