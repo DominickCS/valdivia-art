@@ -27,6 +27,7 @@ env:
   POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
   # Stripe
   STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
+  STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
 
 jobs:
   deploy:
@@ -50,6 +51,7 @@ jobs:
           GARAGE_ACCESS_KEY=${{ secrets.GARAGE_ACCESS_KEY }}
           GARAGE_SECRET_KEY=${{ secrets.GARAGE_SECRET_KEY }}
           STRIPE_API_KEY=${{ secrets.STRIPE_API_KEY }}
+          STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }}
           JWT_SECRET=${{ secrets.JWT_SECRET }}
           EXPIRATION_MS=${{ secrets.EXPIRATION_MS }}
           ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}
