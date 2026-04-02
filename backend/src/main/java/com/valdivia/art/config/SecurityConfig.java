@@ -55,6 +55,7 @@ public class SecurityConfig {
             .requestMatchers("/api/auth/**").permitAll()
             .requestMatchers("/api/webhook").permitAll()
             .requestMatchers("/api/artwork/admin/**").hasRole("ADMIN")
+            .requestMatchers("/api/artwork/orders").hasRole("CUSTOMER")
             .requestMatchers("/api/artwork/**").permitAll()
             .anyRequest().authenticated())
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

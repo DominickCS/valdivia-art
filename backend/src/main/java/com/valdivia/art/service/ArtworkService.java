@@ -20,6 +20,7 @@ import com.stripe.param.PriceCreateParams;
 import com.stripe.param.ProductCreateParams;
 import com.stripe.param.ProductUpdateParams;
 import com.stripe.param.checkout.SessionCreateParams;
+import com.stripe.param.checkout.SessionListParams;
 import com.stripe.param.checkout.SessionCreateParams.BillingAddressCollection;
 import com.valdivia.art.dto.request.ArtworkUploadRequest;
 import com.valdivia.art.dto.request.PurchaseRequest;
@@ -168,6 +169,15 @@ public class ArtworkService {
               e.getMessage());
     }
 
+  }
+
+  public List<Session> getCustomerOrders(String stripeCustomerID) throws StripeException {
+    SessionListParams params = SessionListParams.builder()
+        .setCustomer(stripeCustomerID)
+        .setStatus(SessionListParams.Status.COMPLETE)
+        .build();
+
+    return stripeClient.checkout().sessions().list(params).getData();
   }
 
   public List<Artwork> getAllArtwork() {
