@@ -1,6 +1,7 @@
 package com.valdivia.art.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -13,9 +14,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.stripe.StripeClient;
 import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
+import com.stripe.model.PaymentIntentAmountDetailsLineItem;
 import com.stripe.model.Price;
 import com.stripe.model.Product;
+import com.stripe.model.StripeCollection;
 import com.stripe.model.checkout.Session;
+import com.stripe.param.PaymentIntentAmountDetailsLineItemListParams;
+import com.stripe.param.PaymentIntentListParams;
 import com.stripe.param.PriceCreateParams;
 import com.stripe.param.ProductCreateParams;
 import com.stripe.param.ProductUpdateParams;
@@ -171,13 +177,28 @@ public class ArtworkService {
 
   }
 
-  public List<Session> getCustomerOrders(String stripeCustomerID) throws StripeException {
-    SessionListParams params = SessionListParams.builder()
+  public List<PaymentIntentAmountDetailsLineItem> getCustomerOrders(String stripeCustomerID) throws StripeException {
+    PaymentIntentListParams params = PaymentIntentListParams.builder()
         .setCustomer(stripeCustomerID)
-        .setStatus(SessionListParams.Status.COMPLETE)
         .build();
 
-    return stripeClient.checkout().sessions().list(params).getData();
+    List<PaymentIntent> paymentIntents = stripeClient.paymentIntents().list(params).getData();
+    List<PaymentIntentAmountDetailsLineItem> lineItems = new ArrayList<>();
+
+    for (PaymentIntent paymentIntent : paymentIntents) {
+      lineItems.addAll(getOrderLineItems(paymentIntent));
+    }
+
+    return lineItems;
+  }
+
+  private List<PaymentIntentAmountDetailsLineItem> getOrderLineItems(PaymentIntent paymentIntent)
+      throws StripeException {
+    PaymentIntentAmountDetailsLineItemListParams params = PaymentIntentAmountDetailsLineItemListParams.builder()
+        .build();
+    return stripeClient.paymentIntents().amountDetailsLineItems()
+        .list(paymentIntent.getId(), params)
+        .getData();
   }
 
   public List<Artwork> getAllArtwork() {

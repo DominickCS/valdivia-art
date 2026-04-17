@@ -60,7 +60,7 @@ export default function NavigationBar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="lg:hidden flex flex-col items-center gap-4 py-6 border-b-2 border-black/10 shadow-md">
+        <div className="lg:hidden flex flex-col items-center gap-4 py-6 border-b-2 border-black/10 shadow-md mb-4">
           <Link className="transition-all hover:tracking-widest duration-300" to="/about" onClick={close}>ABOUT ME</Link>
           <Link className="transition-all hover:tracking-widest duration-300" to="/for-sale" onClick={close}>FOR SALE</Link>
           <Link className="transition-all hover:tracking-widest duration-300" to="/archive" onClick={close}>ART ARCHIVE</Link>
