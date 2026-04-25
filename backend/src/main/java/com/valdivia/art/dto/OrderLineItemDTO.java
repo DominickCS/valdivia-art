@@ -1,10 +1,9 @@
 package com.valdivia.art.dto;
 
-import java.util.List;
-
 import com.stripe.model.PaymentIntentAmountDetailsLineItem;
+import com.valdivia.art.entity.Artwork;
 
 public record OrderLineItemDTO(
     PaymentIntentAmountDetailsLineItem lineItem,
-    List<String> productImages) {
+    Artwork artwork) {
 }

@@ -190,8 +190,9 @@ public class ArtworkService {
 
     for (PaymentIntent paymentIntent : paymentIntents) {
       for (PaymentIntentAmountDetailsLineItem lineItem : getOrderLineItems(paymentIntent)) {
-        List<String> productImages = getProductImages(lineItem.getProductCode()).getImages();
-        results.add(new OrderLineItemDTO(lineItem, productImages));
+        // Use your own DB instead of Stripe for product/image data
+        artworkRepository.findByStripePriceID(lineItem.getProductCode())
+            .ifPresent(artwork -> results.add(new OrderLineItemDTO(lineItem, artwork)));
       }
     }
 
@@ -205,12 +206,6 @@ public class ArtworkService {
     return stripeClient.paymentIntents().amountDetailsLineItems()
         .list(paymentIntent.getId(), params)
         .getData();
-  }
-
-  private Product getProductImages(String productID) throws StripeException {
-    ProductRetrieveParams params = ProductRetrieveParams.builder().build();
-
-    return stripeClient.products().retrieve(productID);
   }
 
   public List<Artwork> getAllArtwork() {
