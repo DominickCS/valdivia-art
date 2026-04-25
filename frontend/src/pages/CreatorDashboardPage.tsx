@@ -1,10 +1,11 @@
 import api from '../api/AxiosInstance';
 import { toast, ToastContainer, Bounce } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import type { Artwork } from '../types/definitions';
 
 export default function CreatorDashboardPage() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [allArtwork, setAllArtwork] = useState([]);
   const [activeArtwork, setActiveArtwork] = useState([]);
@@ -24,14 +25,14 @@ export default function CreatorDashboardPage() {
     fetchActiveArtwork()
   }, []);
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const form = e.target;
+    const form = e.target as HTMLFormElement;
 
     const formData = new FormData();
     formData.append('artworkImage', form.artworkImageField.files[0]);
     formData.append('request', new Blob([JSON.stringify({
-      title: form.title.value,
+      title: form.title.valueOf(),
       price: form.price.value,
       yearCompleted: form.yearCompleted.value,
       forSale: form.forSale.checked,
@@ -64,24 +65,24 @@ export default function CreatorDashboardPage() {
       setIsLoading(false);
 
     } catch (err) {
-      setIsLoading(false);
-      console.log(err)
-      toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>, {
-        position: "bottom-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Bounce,
-      });
+      if (err instanceof Error) {
+        setIsLoading(false);
+        toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>, {
+          position: "bottom-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+          transition: Bounce,
+        });
+      }
     }
   }
 
-  async function archiveArtwork(id) {
+  async function archiveArtwork(id: string) {
     try {
-      console.log(id)
       const response = await api.post(`/api/artwork/admin/archive/${id}`, parseInt(id), {
         headers: {
           'Content-Type': `application/json`,
@@ -103,13 +104,24 @@ export default function CreatorDashboardPage() {
       fetchActiveArtwork()
 
     } catch (err) {
-      console.log(err)
+      if (err instanceof Error) {
+        setIsLoading(false);
+        toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>, {
+          position: "bottom-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+          transition: Bounce,
+        });
+      }
     }
   }
 
-  async function unarchiveArtwork(id) {
+  async function unarchiveArtwork(id: string) {
     try {
-      console.log(id)
       const response = await api.post(`/api/artwork/admin/unarchive/${id}`, parseInt(id), {
         headers: {
           'Content-Type': `application/json`,
@@ -131,7 +143,19 @@ export default function CreatorDashboardPage() {
       fetchActiveArtwork()
 
     } catch (err) {
-      console.log(err)
+      if (err instanceof Error) {
+        setIsLoading(false);
+        toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>, {
+          position: "bottom-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "light",
+          transition: Bounce,
+        });
+      }
     }
   }
 
@@ -142,20 +166,20 @@ export default function CreatorDashboardPage() {
         <div className="flex-4 flex justify-around border-r-4 border-black/10 mx-4">
           <div className='flex-1/2 mx-4'>
             <h1 className='font-extrabold text-2xl underline text-center'>ACTIVE LISTINGS</h1>
-            {activeArtwork.map((active) => (
+            {activeArtwork.map((active: Artwork) => (
               <div key={active.id} className="flex justify-between items-center my-2">
                 <p>ID: {active.id} - {active.title} - ${active.price}</p>
-                <button className='button-spcl' onClick={() => archiveArtwork(Number(active.id))}>Archive</button>
+                <button className='button-spcl' onClick={() => archiveArtwork(Number(active.id).toString())}>Archive</button>
               </div>
             ))}
           </div>
           <div className='flex-1/2 mx-4'>
             <h1 className='font-extrabold text-2xl underline text-center'>INACTIVE LISTINGS</h1>
-            {allArtwork.map((artwork) => (
+            {allArtwork.map((artwork: Artwork) => (
               !artwork.active ?
                 <div key={artwork.id} className="flex justify-between items-center my-2">
                   <p>ID: {artwork.id} - {artwork.title} - ${artwork.price}</p>
-                  <button className='button-spcl' onClick={() => unarchiveArtwork(Number(artwork.id))}>Unarchive</button>
+                  <button className='button-spcl' onClick={() => unarchiveArtwork(Number(artwork.id).toString())}>Unarchive</button>
                 </div> :
                 null
             ))}
@@ -177,7 +201,7 @@ export default function CreatorDashboardPage() {
                   const allowed = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab']
                   if (allowed.includes(e.key)) return
                   if (!/[\d.]/.test(e.key)) { e.preventDefault(); return }
-                  if (e.key === '.' && e.target.value.includes('.')) e.preventDefault()
+                  if (e.key === '.' && (e.target as HTMLInputElement).value.includes('.')) e.preventDefault();
                 }}
               />
               <label htmlFor='yearCompleted'>Year Completed</label>

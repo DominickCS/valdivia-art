@@ -1,10 +1,17 @@
 import { createContext, useContext, useState } from 'react';
 import { parseJwt } from '../utils/Auth';
+import type { User } from '../types/definitions';
 
-const AuthContext = createContext(null);
+interface AuthContextType {
+  user: User | null;
+  login: (token: string) => void;
+  logout: () => void;
+}
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(() => {
     const token = localStorage.getItem('token');
     if (!token) return null;
     try {
@@ -19,7 +26,8 @@ export function AuthProvider({ children }) {
       return null;
     }
   });
-  const login = (token) => {
+
+  const login = (token: string) => {
     localStorage.setItem('token', token);
     const payload = parseJwt(token);
     setUser({ username: payload.sub, roles: payload.roles ?? [], id: payload.userID });
@@ -37,4 +45,8 @@ export function AuthProvider({ children }) {
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
+  return context;
+};

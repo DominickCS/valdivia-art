@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import api from '../api/AxiosInstance';
 import ArtworkCard from '../components/ArtworkCard'
+import type { Artwork } from "../types/definitions";
 
 export default function ArchivePage() {
   const [allArtwork, setAllArtwork] = useState([]);
@@ -8,7 +9,6 @@ export default function ArchivePage() {
   useEffect(() => {
     const fetchAllArtwork = async () => {
       const response = await api.get('/api/artwork')
-      console.log(await response)
       setAllArtwork(await response.data)
     }
     fetchAllArtwork()
@@ -19,7 +19,7 @@ export default function ArchivePage() {
     return (
       <>
         <div>
-          {allArtwork.map((artwork) => (
+          {allArtwork.map((artwork: Artwork) => (
             <ArtworkCard key={artwork.id} artwork={artwork} />
           ))}
         </div>

@@ -4,6 +4,7 @@ import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import api from '../api/AxiosInstance';
 import { useAuth } from '../context/AuthContext';
+import type { AxiosError } from 'axios';
 
 
 export default function LoginPage() {
@@ -15,7 +16,7 @@ export default function LoginPage() {
   })
   const navigate = useNavigate()
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     try {
@@ -45,7 +46,8 @@ export default function LoginPage() {
 
     } catch (err) {
       setIsLoading(false)
-      toast.error(<p className="font-extrabold text-center text-lg px-4">{err.response.data.message}</p>, {
+      const error = err as AxiosError<{ message: string }>;
+      toast.error(<p className="font-extrabold text-center text-lg px-4">{error.response?.data.message}</p>, {
         position: "bottom-center",
         autoClose: 2000,
         hideProgressBar: false,
@@ -58,7 +60,7 @@ export default function LoginPage() {
     }
   }
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
     const { name, value } = e.target
     setFormData(prev => ({

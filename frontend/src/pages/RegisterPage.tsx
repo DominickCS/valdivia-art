@@ -12,7 +12,7 @@ export default function RegisterPage() {
   })
   const navigate = useNavigate()
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     try {
@@ -53,7 +53,7 @@ export default function RegisterPage() {
     }
   }
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
     const { name, value } = e.target
     setFormData(prev => ({

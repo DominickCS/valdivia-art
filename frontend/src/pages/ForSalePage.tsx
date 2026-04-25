@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import api from '../api/AxiosInstance';
 import ArtworkCard from '../components/ArtworkCard'
+import type { Artwork } from "../types/definitions";
 
 export default function ForSalePage() {
   const [allArtwork, setAllArtwork] = useState([]);
@@ -18,7 +19,7 @@ export default function ForSalePage() {
     return (
       <>
         <div>
-          {allArtwork.map((artwork) => (
+          {allArtwork.map((artwork: Artwork) => (
             <ArtworkCard key={artwork.id} artwork={artwork} />
           ))}
         </div>

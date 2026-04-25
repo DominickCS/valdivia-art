@@ -1,15 +1,16 @@
 import "../index.css"
 import { useAuth } from '../context/AuthContext.js';
-import api from '../api/AxiosInstance';
+import api from '../api/AxiosInstance.js';
+import type { Artwork } from "../types/definitions.js";
 
-export default function ArtworkCard({ artwork }) {
+export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
   const { user } = useAuth();
 
-  async function handlePurchase(id) {
+  async function handlePurchase(id: number) {
     try {
       const response = await api.post(
         `/api/artwork/purchase/${id}`,
-        { userID: user.id },
+        { userID: user?.id },
         {
           headers: {
             'Content-Type': 'application/json',
