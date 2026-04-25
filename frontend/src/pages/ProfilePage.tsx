@@ -21,16 +21,29 @@ export default function ProfilePage() {
         <p className="text-center font-bold text-xl">hello {user?.username}</p>
       </div>
       <div className="pt-8">
-        <h1 className="text-center font-extrabold text-2xl">ORDERS</h1>
+        <h1 className="text-center font-extrabold text-4xl underline underline-offset-8">ORDERS</h1>
 
         {orders.map((order: Order) => (
-          <div key={order.artwork.id} className="flex flex-col max-w-md mx-auto py-8">
+          <div key={order.artwork.id} className="text-center flex flex-col max-w-lg mx-auto my-8">
             <img src={order.artwork.imageURL} height={50} />
-            <div className="flex [&>p]:px-8 content-center text-center justify-evenly py-4">
-              <p>Qty: {order.lineItem.quantity}</p>
-              <p>{order.lineItem.productName}</p>
-              <p>Price: ${(order.lineItem.unitCost / 100).toFixed(2)}</p>
-              <p>TRACKING NUMBER: </p>
+            <div className="my-2">
+              <h2 className="italic font-extrabold text-3xl underline underline-offset-4">{order.lineItem.productName}</h2>
+            </div>
+            <div className="flex [&>div]:mx-8 content-center text-center justify-evenly py-4">
+              <div>
+                <p className="font-extrabold">QTY</p>
+                <p className="font-thin italic">{order.lineItem.quantity}</p>
+              </div>
+              <div>
+                <p className="font-extrabold">AMOUNT PAID </p>
+                <p className="font-thin italic">${(order.lineItem.unitCost / 100).toFixed(2)}</p>
+              </div>
+            </div>
+            <div className="border-b-2 border-r-2 rounded-br-full border-black/30">
+              <h3 className="font-extrabold">TRACKING INFORMATION</h3>
+              <div className="my-2">
+                <p className="font-thin italic">TRACKING #</p>
+              </div>
             </div>
           </div>
         ))}

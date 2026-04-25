@@ -10,7 +10,7 @@ export default function NavigationBar() {
 
   return (
     <div className="w-full">
-      <nav className="relative flex items-center justify-center px-4 py-8">
+      <nav className="relative flex items-center justify-center px-4 pb-8 pt-4">
 
         {/* Desktop nav links — absolute left */}
         <div className="hidden xl:flex items-center gap-8 absolute left-8">
