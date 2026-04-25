@@ -190,8 +190,8 @@ public class ArtworkService {
 
     for (PaymentIntent paymentIntent : paymentIntents) {
       for (PaymentIntentAmountDetailsLineItem lineItem : getOrderLineItems(paymentIntent)) {
-        // Use your own DB instead of Stripe for product/image data
-        artworkRepository.findByStripePriceID(lineItem.getProductCode())
+        System.out.println(lineItem.getProductName());
+        artworkRepository.findByTitle(lineItem.getProductName())
             .ifPresent(artwork -> results.add(new OrderLineItemDTO(lineItem, artwork)));
       }
     }

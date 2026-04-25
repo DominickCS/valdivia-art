@@ -27,10 +27,14 @@ export default function ProfilePage() {
 
         {orders.map((order => {
           return (
-            <div className="flex max-w-md mx-auto justify-evenly px-8">
-              <p>{order.productName}</p>
-              <p>Qty: {order.quantity}</p>
-              <p>Price: ${(order.unitCost / 100).toFixed(2)}</p>
+            <div className="flex flex-col max-w-md mx-auto py-8">
+              <img src={order.artwork.imageURL} height={50} />
+              <div className="flex [&>p]:px-8 content-center text-center justify-evenly py-4">
+                <p>Qty: {order.lineItem.quantity}</p>
+                <p>{order.lineItem.productName}</p>
+                <p>Price: ${(order.lineItem.unitCost / 100).toFixed(2)}</p>
+                <p>TRACKING NUMBER: </p>
+              </div>
             </div>
           )
         }))}
