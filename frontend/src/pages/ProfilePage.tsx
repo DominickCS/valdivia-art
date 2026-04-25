@@ -23,30 +23,32 @@ export default function ProfilePage() {
       <div className="pt-8">
         <h1 className="text-center font-extrabold text-4xl underline underline-offset-8">ORDERS</h1>
 
-        {orders.map((order: Order) => (
-          <div key={order.artwork.id} className="text-center flex flex-col max-w-lg mx-auto my-8">
-            <img src={order.artwork.imageURL} height={50} />
-            <div className="my-2">
-              <h2 className="italic font-extrabold text-3xl underline underline-offset-4">{order.lineItem.productName}</h2>
-            </div>
-            <div className="flex [&>div]:mx-8 content-center text-center justify-evenly py-4">
-              <div>
-                <p className="font-extrabold">QTY</p>
-                <p className="font-thin italic">{order.lineItem.quantity}</p>
-              </div>
-              <div>
-                <p className="font-extrabold">AMOUNT PAID </p>
-                <p className="font-thin italic">${(order.lineItem.unitCost / 100).toFixed(2)}</p>
-              </div>
-            </div>
-            <div className="border-b-2 border-r-2 rounded-br-full border-black/30">
-              <h3 className="font-extrabold">TRACKING INFORMATION</h3>
+        <div className="grid grid-cols-3 gap-8">
+          {orders.map((order: Order) => (
+            <div key={order.artwork.id} className="text-center flex flex-col max-w-lg mx-auto my-8">
+              <img src={order.artwork.imageURL} height={200} width={200} className="mx-auto overflow-hidden" />
               <div className="my-2">
-                <p className="font-thin italic">TRACKING #</p>
+                <h2 className="italic font-extrabold text-3xl underline underline-offset-4">{order.lineItem.productName}</h2>
+              </div>
+              <div className="flex [&>div]:mx-8 content-center text-center justify-evenly py-4">
+                <div>
+                  <p className="font-extrabold">QTY</p>
+                  <p className="font-thin italic">{order.lineItem.quantity}</p>
+                </div>
+                <div>
+                  <p className="font-extrabold">AMOUNT PAID </p>
+                  <p className="font-thin italic">${(order.lineItem.unitCost / 100).toFixed(2)}</p>
+                </div>
+              </div>
+              <div className="border-b-2 border-r-2 rounded-br-full border-black/30">
+                <h3 className="font-extrabold">TRACKING INFORMATION</h3>
+                <div className="my-2">
+                  <p className="font-thin italic">TRACKING #</p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </>
   )
