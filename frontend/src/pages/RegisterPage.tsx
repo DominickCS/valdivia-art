@@ -4,6 +4,7 @@ import { toast, Bounce, ToastContainer } from "react-toastify";
 import api from '../api/AxiosInstance';
 
 export default function RegisterPage() {
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     "fullName": '',
     "email": '',
@@ -15,6 +16,7 @@ export default function RegisterPage() {
     e.preventDefault();
 
     try {
+      setIsLoading(true)
       const response = await api.post('/api/auth/register', {
         fullName: formData.fullName,
         email: formData.email,
@@ -33,10 +35,11 @@ export default function RegisterPage() {
         transition: Bounce,
       });
 
+      setIsLoading(false);
       setTimeout(() => navigate("/"), 3000);
 
     } catch (err) {
-      console.log(err)
+      setIsLoading(false);
       toast.error(<p className="font-extrabold text-center text-lg px-4">{"An error has occurred during registration"}</p>, {
         position: "bottom-center",
         autoClose: 2000,
@@ -70,7 +73,7 @@ export default function RegisterPage() {
           <input type='email' value={formData.email} onChange={handleChange} name='email' />
           <label htmlFor="password">Password</label>
           <input type='password' value={formData.password} onChange={handleChange} name='password' />
-          <button type="submit" className="button-spcl mx-auto w-full">REGISTER</button>
+          <button type="submit" disabled={isLoading} className="button-spcl mx-auto w-full">{isLoading ? "PLEASE WAIT..." : "REGISTER"}</button>
         </form>
       </div>
     </>

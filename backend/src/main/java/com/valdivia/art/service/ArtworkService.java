@@ -18,7 +18,6 @@ import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentIntentAmountDetailsLineItem;
 import com.stripe.model.Price;
 import com.stripe.model.Product;
-import com.stripe.model.StripeCollection;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.PaymentIntentAmountDetailsLineItemListParams;
 import com.stripe.param.PaymentIntentListParams;
@@ -26,7 +25,6 @@ import com.stripe.param.PriceCreateParams;
 import com.stripe.param.ProductCreateParams;
 import com.stripe.param.ProductUpdateParams;
 import com.stripe.param.checkout.SessionCreateParams;
-import com.stripe.param.checkout.SessionListParams;
 import com.stripe.param.checkout.SessionCreateParams.BillingAddressCollection;
 import com.valdivia.art.dto.request.ArtworkUploadRequest;
 import com.valdivia.art.dto.request.PurchaseRequest;
@@ -47,6 +45,7 @@ public class ArtworkService {
   private final ArtworkRepository artworkRepository;
   private final StripeClient stripeClient;
   private final UserRepository userRepository;
+  private final ImageUploadConversionService imageUploadConversionService;
 
   @Value("${stripe.success-url}")
   private String successURL;
@@ -59,10 +58,12 @@ public class ArtworkService {
 
   public ResponseEntity<String> uploadArtwork(MultipartFile artworkImage, ArtworkUploadRequest request) {
     try {
+      byte[] imageBytes = imageUploadConversionService.convertAndCompress(artworkImage);
+
       String artworkObjectID = request.title().replaceAll(" ", "-") + "-" + UUID.randomUUID().toString();
       s3Client.putObject(
           PutObjectRequest.builder().bucket(bucket).key(artworkObjectID).contentType("image/jpeg").build(),
-          RequestBody.fromBytes(artworkImage.getBytes()));
+          RequestBody.fromBytes(imageBytes));
 
       ProductCreateParams productParams = ProductCreateParams.builder()
           .addImage(publicURLBase + artworkObjectID)

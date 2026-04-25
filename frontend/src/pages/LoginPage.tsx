@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
   const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     "email": '',
     "password": ''
@@ -18,6 +19,7 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
+      setIsLoading(true);
       const response = await api.post('/api/auth/login', {
         email: formData.email,
         password: formData.password,
@@ -37,10 +39,12 @@ export default function LoginPage() {
         transition: Bounce,
       });
 
+      setIsLoading(false);
+
       setTimeout(() => navigate("/"), 3000);
 
     } catch (err) {
-
+      setIsLoading(false)
       toast.error(<p className="font-extrabold text-center text-lg px-4">{err.response.data.message}</p>, {
         position: "bottom-center",
         autoClose: 2000,
@@ -72,7 +76,7 @@ export default function LoginPage() {
           <input type='email' value={formData.email} onChange={handleChange} name='email' />
           <label htmlFor='password'>Password</label>
           <input type='password' value={formData.password} onChange={handleChange} name='password' />
-          <button type='submit' className='button-spcl mx-auto w-full'>LOGIN</button>
+          <button type='submit' disabled={isLoading} className='button-spcl mx-auto w-full'>{isLoading ? "PLEASE WAIT..." : "LOGIN"}</button>
         </form >
       </div >
     </>

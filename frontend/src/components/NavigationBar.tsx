@@ -13,7 +13,7 @@ export default function NavigationBar() {
       <nav className="relative flex items-center justify-center px-4 py-4">
 
         {/* Desktop nav links — absolute left */}
-        <div className="hidden lg:flex items-center gap-8 absolute left-8">
+        <div className="hidden xl:flex items-center gap-8 absolute left-8">
           <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/about">ABOUT ME</Link>
           <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/for-sale">FOR SALE</Link>
           <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/archive">ART ARCHIVE</Link>
@@ -29,7 +29,7 @@ export default function NavigationBar() {
         </Link>
 
         {/* Desktop auth links — absolute right */}
-        <div className="hidden lg:flex items-center gap-8 absolute right-8">
+        <div className="hidden xl:flex items-center gap-8 absolute right-8">
           {user ? (
             <>
               {user.roles?.includes('ROLE_ADMIN') && (
@@ -48,7 +48,7 @@ export default function NavigationBar() {
 
         {/* Hamburger — absolute right, mobile only */}
         <button
-          className="lg:hidden absolute right-8 flex flex-col justify-center items-center gap-1.5 w-8 h-8"
+          className="xl:hidden absolute right-8 flex flex-col justify-center items-center gap-1.5 w-8 h-8"
           onClick={() => setMenuOpen(prev => !prev)}
           aria-label="Toggle menu"
         >
@@ -60,7 +60,7 @@ export default function NavigationBar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="lg:hidden flex flex-col items-center gap-4 py-6 border-b-2 border-black/10 shadow-md mb-4">
+        <div className="xl:hidden flex flex-col items-center gap-4 py-6 border-b-2 border-black/10 shadow-md mb-4">
           <Link className="transition-all hover:tracking-widest duration-300" to="/about" onClick={close}>ABOUT ME</Link>
           <Link className="transition-all hover:tracking-widest duration-300" to="/for-sale" onClick={close}>FOR SALE</Link>
           <Link className="transition-all hover:tracking-widest duration-300" to="/archive" onClick={close}>ART ARCHIVE</Link>
