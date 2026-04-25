@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentIntentAmountDetailsLineItem;
+import com.valdivia.art.dto.OrderLineItemDTO;
 import com.valdivia.art.dto.request.ArtworkUploadRequest;
 import com.valdivia.art.dto.request.PurchaseRequest;
 import com.valdivia.art.entity.Artwork;
@@ -67,7 +68,7 @@ public class ArtworkController {
   }
 
   @GetMapping("/orders")
-  public ResponseEntity<List<PaymentIntentAmountDetailsLineItem>> getOrders(
+  public ResponseEntity<List<OrderLineItemDTO>> getOrders(
       @AuthenticationPrincipal UserDetails userDetails)
       throws StripeException {
     User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
