@@ -31,7 +31,7 @@ export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
   return (
     <div className="flex flex-col mx-auto px-8 items-center my-32">
       <img
-        className="shadow-artwork shadow-black/45 hover:scale-105 duration-1000"
+        className="shadow-artwork shadow-black/45  duration-1000"
         src={artwork.imageURL}
         height={460}
         width={460}
