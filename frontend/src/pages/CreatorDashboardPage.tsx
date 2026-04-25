@@ -32,7 +32,7 @@ export default function CreatorDashboardPage() {
     const formData = new FormData();
     formData.append('artworkImage', form.artworkImageField.files[0]);
     formData.append('request', new Blob([JSON.stringify({
-      title: form.title.valueOf(),
+      title: (form.elements.namedItem('title') as HTMLInputElement).value,
       price: form.price.value,
       yearCompleted: form.yearCompleted.value,
       forSale: form.forSale.checked,
