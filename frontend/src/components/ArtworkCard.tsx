@@ -2,6 +2,7 @@ import "../index.css"
 import { useAuth } from '../context/AuthContext.js';
 import api from '../api/AxiosInstance.js';
 import type { Artwork } from "../types/definitions.js";
+import { Link } from "react-router-dom";
 
 export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
   const { user } = useAuth();
@@ -37,7 +38,7 @@ export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
         width={460}
         alt={artwork.title + " by Daniel Valdivia"}
       />
-      <p className="text-3xl mt-8 font-extrabold tracking-wide">{artwork.title}</p>
+      <p className="text-3xl mt-8 font-extrabold tracking-wide underline underline-offset-8"><Link to={`/artwork/detail/${artwork.id}`}>{artwork.title}</Link></p>
       {artwork.forSale && artwork.availableQuantity > 0 ?
         <p className="mt-2 font-light text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>
         :

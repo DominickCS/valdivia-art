@@ -2,6 +2,7 @@ export interface Artwork {
   id: number;
   title: string;
   artworkObjectKey: string;
+  images: [];
   imageURL: string;
   price: number;
   yearCompleted: string;
@@ -34,8 +35,14 @@ export interface StripeLineItem {
   unitOfMeasure: string | null;
 }
 
-export interface User {
+// export interface User {
+//   id: string;
+//   username: string;
+//   roles: [string]
+// }
+
+export interface ArtworkImage {
   id: string;
-  username: string;
-  roles: [string]
+  imageURL: string;
+  artworkObjectKey: string;
 }

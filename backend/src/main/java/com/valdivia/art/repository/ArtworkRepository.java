@@ -14,4 +14,5 @@ public interface ArtworkRepository extends JpaRepository<Artwork, Long> {
   List<Artwork> findAllByOrderByYearCompletedDesc();
 
   Optional<Artwork> findByTitle(String artworkTitle);
+
 }

@@ -23,7 +23,6 @@ import com.stripe.param.PaymentIntentAmountDetailsLineItemListParams;
 import com.stripe.param.PaymentIntentListParams;
 import com.stripe.param.PriceCreateParams;
 import com.stripe.param.ProductCreateParams;
-import com.stripe.param.ProductRetrieveParams;
 import com.stripe.param.ProductUpdateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.stripe.param.checkout.SessionCreateParams.BillingAddressCollection;
@@ -31,6 +30,7 @@ import com.valdivia.art.dto.OrderLineItemDTO;
 import com.valdivia.art.dto.request.ArtworkUploadRequest;
 import com.valdivia.art.dto.request.PurchaseRequest;
 import com.valdivia.art.entity.Artwork;
+import com.valdivia.art.entity.ArtworkImage;
 import com.valdivia.art.entity.User;
 import com.valdivia.art.repository.ArtworkRepository;
 import com.valdivia.art.repository.UserRepository;
@@ -58,39 +58,58 @@ public class ArtworkService {
   @Value("${garage.public-url}")
   private String publicURLBase;
 
-  public ResponseEntity<String> uploadArtwork(MultipartFile artworkImage, ArtworkUploadRequest request) {
+  public ResponseEntity<String> uploadArtwork(List<MultipartFile> artworkImages, ArtworkUploadRequest request) {
     try {
-      byte[] imageBytes = imageUploadConversionService.convertAndCompress(artworkImage);
-
-      String artworkObjectID = request.title().replaceAll(" ", "-") + "-" + UUID.randomUUID().toString();
-      s3Client.putObject(
-          PutObjectRequest.builder().bucket(bucket).key(artworkObjectID).contentType("image/jpeg").build(),
-          RequestBody.fromBytes(imageBytes));
-
-      ProductCreateParams productParams = ProductCreateParams.builder()
-          .addImage(publicURLBase + artworkObjectID)
-          .setName(request.title())
-          .setActive(true)
-          .build();
-      Product product = stripeClient.products().create(productParams);
-
-      PriceCreateParams priceParams = PriceCreateParams.builder().setProduct(product.getId()).setCurrency("usd")
-          .setUnitAmount(request.price().multiply(BigDecimal.valueOf(100)).longValue()).build();
-
-      Price price = stripeClient.prices().create(priceParams);
-
       Artwork artwork = new Artwork();
       artwork.setTitle(request.title());
-      artwork.setArtworkObjectKey(artworkObjectID);
-      artwork.setImageURL(publicURLBase + artworkObjectID);
       artwork.setPrice(request.price());
       artwork.setYearCompleted(request.yearCompleted());
       artwork.setForSale(request.forSale());
       artwork.setActive(true);
       artwork.setAvailableQuantity(request.availableQuantity());
+
+      List<String> imageURLs = new ArrayList<>();
+
+      for (int i = 0; i < artworkImages.size(); i++) {
+        byte[] imageBytes = imageUploadConversionService.convertAndCompress(artworkImages.get(i));
+        String artworkObjectID = request.title().replaceAll(" ", "-") + "-" + i + "-" + UUID.randomUUID();
+
+        s3Client.putObject(
+            PutObjectRequest.builder().bucket(bucket).key(artworkObjectID).contentType("image/jpeg").build(),
+            RequestBody.fromBytes(imageBytes));
+
+        String imageURL = publicURLBase + artworkObjectID;
+        imageURLs.add(imageURL);
+
+        ArtworkImage artworkImage = new ArtworkImage();
+        artworkImage.setImageURL(imageURL);
+        artworkImage.setArtworkObjectKey(artworkObjectID);
+        artworkImage.setArtwork(artwork);
+        artwork.getImages().add(artworkImage);
+
+        // Use the first image as the primary
+        if (i == 0) {
+          artwork.setImageURL(imageURL);
+          artwork.setArtworkObjectKey(artworkObjectID);
+        }
+      }
+
+      ProductCreateParams productParams = ProductCreateParams.builder()
+          .setName(request.title())
+          .setActive(true)
+          .addAllImage(imageURLs) // all images go to Stripe too
+          .build();
+      Product product = stripeClient.products().create(productParams);
+
+      PriceCreateParams priceParams = PriceCreateParams.builder()
+          .setProduct(product.getId())
+          .setCurrency("usd")
+          .setUnitAmount(request.price().multiply(BigDecimal.valueOf(100)).longValue())
+          .build();
+      Price price = stripeClient.prices().create(priceParams);
+
       artwork.setStripeProductID(product.getId());
       artwork.setStripePriceID(price.getId());
-
       artworkRepository.save(artwork);
 
       return ResponseEntity.ok("Your artwork has uploaded successfully!");
@@ -219,6 +238,10 @@ public class ArtworkService {
   public List<Artwork> getSellableArtwork() {
     return artworkRepository.findAllByActiveTrueAndAvailableQuantityGreaterThan(0);
 
+  }
+
+  public Artwork getArtworkDetails(Long id) {
+    return artworkRepository.findById(id).orElseThrow(NoSuchElementException::new);
   }
 
 }

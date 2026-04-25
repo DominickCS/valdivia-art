@@ -10,14 +10,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.stripe.exception.StripeException;
-import com.stripe.model.PaymentIntent;
-import com.stripe.model.PaymentIntentAmountDetailsLineItem;
 import com.valdivia.art.dto.OrderLineItemDTO;
 import com.valdivia.art.dto.request.ArtworkUploadRequest;
 import com.valdivia.art.dto.request.PurchaseRequest;
@@ -37,9 +34,10 @@ public class ArtworkController {
   private final UserRepository userRepository;
 
   @PostMapping("/admin/upload")
-  public ResponseEntity<String> uploadArtwork(@RequestParam MultipartFile artworkImage,
-      @RequestPart ArtworkUploadRequest request) {
-    return artworkService.uploadArtwork(artworkImage, request);
+  public ResponseEntity<String> uploadArtwork(
+      @RequestPart("artworkImages") List<MultipartFile> artworkImages,
+      @RequestPart("request") ArtworkUploadRequest request) {
+    return artworkService.uploadArtwork(artworkImages, request);
   }
 
   @PostMapping("/admin/archive/{id}")
@@ -80,6 +78,11 @@ public class ArtworkController {
       @Valid @RequestBody PurchaseRequest request)
       throws StripeException {
     return artworkService.createCheckoutSession(artworkID, request);
+  }
+
+  @GetMapping("/listing/{id}")
+  public Artwork getArtworkDetails(@PathVariable(name = "id") Long artworkID) {
+    return artworkService.getArtworkDetails(artworkID);
   }
 
 }

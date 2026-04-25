@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import Logo from "../assets/logo.png"
+import Cart from "../assets/cart.svg"
 import { useAuth } from '../context/AuthContext'
 
 export default function NavigationBar() {
@@ -35,6 +36,7 @@ export default function NavigationBar() {
               {user.roles?.includes('ROLE_ADMIN') && (
                 <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/admin">DASHBOARD</Link>
               )}
+              <Link to="/cart" onClick={close}><img className="transition-all hover:scale-120 duration-300" src={Cart} height={20} width={20} /></Link>
               <Link className="transition-all hover:scale-110 hover:tracking-widest duration-300" to="/profile">PROFILE</Link>
               <button className="hover:cursor-pointer transition-all hover:scale-110 hover:tracking-widest duration-300" onClick={logout}>LOGOUT</button>
             </>
@@ -70,6 +72,7 @@ export default function NavigationBar() {
               {user.roles?.includes('ROLE_ADMIN') && (
                 <Link className="transition-all hover:tracking-widest duration-300" to="/admin" onClick={close}>DASHBOARD</Link>
               )}
+              <Link to="/cart" onClick={close}><img className="transition-all hover:scale-120 duration-300" src={Cart} height={20} width={20} /></Link>
               <Link className="transition-all hover:tracking-widest duration-300" to="/profile" onClick={close}>PROFILE</Link>
               <button className="hover:cursor-pointer transition-all hover:tracking-widest duration-300" onClick={() => { logout(); close(); }}>LOGOUT</button>
             </>

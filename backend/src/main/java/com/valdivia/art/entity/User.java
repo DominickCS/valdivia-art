@@ -1,6 +1,7 @@
 package com.valdivia.art.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,7 +41,7 @@ public class User {
 
   private String stripeCustomerID;
 
-  // TODO - ADD CART LIST TO USER ENTITY
+  private List<String> productCart;
 
   @CreationTimestamp
   private LocalDateTime creationDate;

@@ -9,9 +9,5 @@ export default defineConfig({
     allowedHosts: ["art.dominickcs.com"],
     port: 5173,
   },
-  plugins: [
-    react(),
-    tailwindcss(),
-    babel({ presets: [reactCompilerPreset()] })
-  ],
+  plugins: [react(), tailwindcss(), babel({ presets: [reactCompilerPreset()] })],
 })

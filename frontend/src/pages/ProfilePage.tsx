@@ -23,10 +23,10 @@ export default function ProfilePage() {
       <div className="pt-8">
         <h1 className="text-center font-extrabold text-4xl underline underline-offset-8">ORDERS</h1>
 
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid grid-cols-3 gap-24 px-8">
           {orders.map((order: Order) => (
-            <div key={order.artwork.id} className="text-center flex flex-col max-w-lg mx-auto my-8">
-              <img src={order.artwork.imageURL} height={200} width={200} className="mx-auto overflow-hidden" />
+            <div key={order.artwork.id} className="text-center flex flex-col max-w-xl mx-auto my-8 w-full h-full">
+              <img src={order.artwork.imageURL} className="mx-auto overflow-hidden max-h-60 max-w-60 object-contain" />
               <div className="my-2">
                 <h2 className="italic font-extrabold text-3xl underline underline-offset-4">{order.lineItem.productName}</h2>
               </div>

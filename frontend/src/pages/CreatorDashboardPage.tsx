@@ -27,10 +27,18 @@ export default function CreatorDashboardPage() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const form = e.target as HTMLFormElement;
+    const form = e.target as HTMLFormElement & {
+      artworkImageField: HTMLInputElement;
+      price: HTMLInputElement;
+      yearCompleted: HTMLInputElement;
+      forSale: HTMLInputElement;
+      availableQuantity: HTMLInputElement;
+    };
 
     const formData = new FormData();
-    formData.append('artworkImage', form.artworkImageField.files[0]);
+    Array.from(form.artworkImageField.files ?? []).forEach(file => {
+      formData.append('artworkImages', file);
+    });
     formData.append('request', new Blob([JSON.stringify({
       title: (form.elements.namedItem('title') as HTMLInputElement).value,
       price: form.price.value,
@@ -189,7 +197,7 @@ export default function CreatorDashboardPage() {
           <h1 className='text-center font-extrabold text-2xl underline'>NEW LISTING</h1>
           <form className='flex flex-col *:py-3 [&>input]:border [&>input]:text-center [&>input]:px-4 [&>label]:text-center' onSubmit={handleSubmit}>
             <label htmlFor='artworkImageField'>Artwork Image</label>
-            <input type='file' name='artworkImageField' />
+            <input type="file" name="artworkImageField" multiple accept=".jpg,.jpeg,.png,.tiff" />
             <label htmlFor='title'>Title</label>
             <input type='text' name='title' />
             <div className='flex justify-evenly mt-4 [&>input]:text-center'>

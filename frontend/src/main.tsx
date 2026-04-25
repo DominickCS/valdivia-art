@@ -14,6 +14,10 @@ import NavigationBar from './components/NavigationBar'
 import Footer from './components/Footer'
 import ForSalePage from './pages/ForSalePage'
 import ProfilePage from './pages/ProfilePage'
+import CartPage from './pages/CartPage'
+import ContactMePage from './pages/ContactMePage'
+import AboutMePage from './pages/AboutMePage'
+import ArtworkDetailPage from './pages/ArtworkDetailPage'
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -38,6 +42,9 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/register" element={<RegisterPage />} />
             <Route path='/for-sale' element={<ForSalePage />} />
             <Route path='/archive' element={<ArchivePage />} />
+            <Route path='/about' element={<AboutMePage />} />
+            <Route path='/contact' element={<ContactMePage />} />
+            <Route path='/artwork/detail/:id' element={<ArtworkDetailPage />} />
             <Route path="/profile" element={
               <ProtectedRoute requiredRole="ROLE_CUSTOMER">
                 <ProfilePage />
@@ -51,6 +58,11 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/success" element={
               <ProtectedRoute requiredRole="ROLE_CUSTOMER">
                 <SuccessPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/cart" element={
+              <ProtectedRoute requiredRole="ROLE_CUSTOMER">
+                <CartPage />
               </ProtectedRoute>
             } />
           </Routes>
