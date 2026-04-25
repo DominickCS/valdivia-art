@@ -45,7 +45,7 @@ export default function ArtworkCard({ artwork }) {
       {artwork.availableQuantity > 0 ?
         <div className="flex justify-between mt-4">
           <button
-            onClick={() => handlePurchase(artwork.id)} className="button-spcl mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed" disabled={!user ? true : false}>
+            onClick={() => handlePurchase(artwork.id)} className="button-spcl mx-2 font-normal tracking-widest disabled:opacity-30 cursor-not-allowed" disabled={!user ? true : false}>
             {user ? "BUY NOW" : "LOGIN TO BUY"}
           </button>
           {user ?

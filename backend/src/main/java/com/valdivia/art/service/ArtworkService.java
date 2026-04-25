@@ -23,9 +23,11 @@ import com.stripe.param.PaymentIntentAmountDetailsLineItemListParams;
 import com.stripe.param.PaymentIntentListParams;
 import com.stripe.param.PriceCreateParams;
 import com.stripe.param.ProductCreateParams;
+import com.stripe.param.ProductRetrieveParams;
 import com.stripe.param.ProductUpdateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.stripe.param.checkout.SessionCreateParams.BillingAddressCollection;
+import com.valdivia.art.dto.OrderLineItemDTO;
 import com.valdivia.art.dto.request.ArtworkUploadRequest;
 import com.valdivia.art.dto.request.PurchaseRequest;
 import com.valdivia.art.entity.Artwork;
@@ -178,19 +180,22 @@ public class ArtworkService {
 
   }
 
-  public List<PaymentIntentAmountDetailsLineItem> getCustomerOrders(String stripeCustomerID) throws StripeException {
+  public List<OrderLineItemDTO> getCustomerOrders(String stripeCustomerID) throws StripeException {
     PaymentIntentListParams params = PaymentIntentListParams.builder()
         .setCustomer(stripeCustomerID)
         .build();
 
     List<PaymentIntent> paymentIntents = stripeClient.paymentIntents().list(params).getData();
-    List<PaymentIntentAmountDetailsLineItem> lineItems = new ArrayList<>();
+    List<OrderLineItemDTO> results = new ArrayList<>();
 
     for (PaymentIntent paymentIntent : paymentIntents) {
-      lineItems.addAll(getOrderLineItems(paymentIntent));
+      for (PaymentIntentAmountDetailsLineItem lineItem : getOrderLineItems(paymentIntent)) {
+        List<String> productImages = getProductImages(lineItem.getProductCode()).getImages();
+        results.add(new OrderLineItemDTO(lineItem, productImages));
+      }
     }
 
-    return lineItems;
+    return results;
   }
 
   private List<PaymentIntentAmountDetailsLineItem> getOrderLineItems(PaymentIntent paymentIntent)
@@ -200,6 +205,12 @@ public class ArtworkService {
     return stripeClient.paymentIntents().amountDetailsLineItems()
         .list(paymentIntent.getId(), params)
         .getData();
+  }
+
+  private Product getProductImages(String productID) throws StripeException {
+    ProductRetrieveParams params = ProductRetrieveParams.builder().build();
+
+    return stripeClient.products().retrieve(productID);
   }
 
   public List<Artwork> getAllArtwork() {

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function CreatorDashboardPage() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [allArtwork, setAllArtwork] = useState([]);
   const [activeArtwork, setActiveArtwork] = useState([]);
 
@@ -38,6 +39,7 @@ export default function CreatorDashboardPage() {
     })], { type: 'application/json' }));
 
     try {
+      setIsLoading(true);
       const response = await api.post('/api/artwork/admin/upload', formData, {
         headers: {
           'Content-Type': `multipart/form-data`,
@@ -59,8 +61,21 @@ export default function CreatorDashboardPage() {
       fetchAllArtwork()
       fetchActiveArtwork()
 
+      setIsLoading(false);
+
     } catch (err) {
+      setIsLoading(false);
       console.log(err)
+      toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>, {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        transition: Bounce,
+      });
     }
   }
 
@@ -174,7 +189,7 @@ export default function CreatorDashboardPage() {
               <label htmlFor='availableQuantity'>Available Quantity</label>
               <input type='number' name='availableQuantity' className='text-center' />
             </div>
-            <button className='mt-8 button-spcl' type='submit'>ADD ARTWORK</button>
+            <button className='mt-8 button-spcl' disabled={isLoading} type='submit'>{isLoading ? "PLEASE WAIT..." : "ADD ARTWORK"}</button>
           </form>
         </div>
       </div>
