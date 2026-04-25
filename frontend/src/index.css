@@ -4,15 +4,15 @@
 @import "@fontsource-variable/inter";
 
 @custom-variant dark (&:is(.dark *));
-@font-face{
-  font-family: "Arimo";
-  src:local("Arimo-VariableFont_wght"),
-  url('./assets/fonts/Arimo-VariableFont_wght.ttf')
-}
-
-* {
-  font-family: "Arimo"
-   }
+/* @font-face{ */
+/*   font-family: "Arimo"; */
+/*   src:local("Arimo-VariableFont_wght"), */
+/*   url('./assets/fonts/Arimo-VariableFont_wght.ttf') */
+/* } */
+/**/
+/* * { */
+/*   font-family: "Arimo" */
+/*    } */
 
 input {
   border: solid black 2px;
