@@ -59,6 +59,12 @@ public class Artwork {
   private String stripePriceID;
 
   @Column(nullable = false)
+  private Double heightInches;
+
+  @Column(nullable = false)
+  private Double widthInches;
+
+  @Column(nullable = false)
   private Integer availableQuantity;
 
   @CreationTimestamp

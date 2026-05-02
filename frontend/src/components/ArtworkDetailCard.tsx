@@ -30,11 +30,11 @@ export default function ArtworkDetailCard({ artwork }: { artwork: Artwork }) {
   }
 
   return (
-    <div className="flex flex-col mx-auto px-8 items-center my-32">
-      <div>
+    <div className="mx-auto px-8 items-center my-32 max-w-sm sm:max-w-xl">
+      <div className="mx-auto">
         <ArtworkCarousel images={artwork.images} />
       </div>
-      <div className="flex items-center *:mx-8 pt-8">
+      <div className="text-center items-center *:mx-8 min-h-full bottom-0">
         <p className="text-3xl font-extrabold tracking-wide">{artwork.title}</p>
         {artwork.forSale && artwork.availableQuantity > 0 ?
           <p className="font-light text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>

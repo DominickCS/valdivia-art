@@ -44,7 +44,8 @@ public class WebhookController {
       Artwork artwork = artworkRepository.findById(artworkId).orElseThrow();
       artwork.setAvailableQuantity(artwork.getAvailableQuantity() - 1);
       artworkRepository.save(artwork);
+
     }
-    return ResponseEntity.ok("");
+    return ResponseEntity.ok("POST-PURCHASE WEBHOOKS EXECUTED SUCCESSFULLY!");
   }
 }
