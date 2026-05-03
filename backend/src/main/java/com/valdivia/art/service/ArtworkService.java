@@ -2,7 +2,9 @@ package com.valdivia.art.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -179,17 +181,26 @@ public class ArtworkService {
       User user = userRepository.findById(request.userID()).orElseThrow(NoSuchElementException::new);
       Artwork artwork = artworkRepository.findById(artworkID).orElseThrow(NoSuchElementException::new);
 
-      SessionCreateParams params = SessionCreateParams.builder().setSuccessUrl(successURL)
+      Map<String, String> metadata = new HashMap<>();
+      metadata.put("artworkId", String.valueOf(artworkID));
+      metadata.put("userId", String.valueOf(user.getId()));
+
+      SessionCreateParams params = SessionCreateParams.builder()
+          .setSuccessUrl(successURL)
           .addLineItem(
-              SessionCreateParams.LineItem.builder().setPrice(artwork.getStripePriceID()).setQuantity(1L).build())
-          .putMetadata("artworkID", String.valueOf(artworkID))
-          .putMetadata("userId", String.valueOf(user.getId()))
+              SessionCreateParams.LineItem.builder()
+                  .setPrice(artwork.getStripePriceID())
+                  .setQuantity(1L)
+                  .build())
+          .putAllMetadata(metadata)
           .setBillingAddressCollection(BillingAddressCollection.REQUIRED)
           .setShippingAddressCollection(
               SessionCreateParams.ShippingAddressCollection.builder()
-                  .addAllowedCountry(SessionCreateParams.ShippingAddressCollection.AllowedCountry.US).build())
+                  .addAllowedCountry(SessionCreateParams.ShippingAddressCollection.AllowedCountry.US)
+                  .build())
           .setCustomer(user.getStripeCustomerID())
-          .setMode(SessionCreateParams.Mode.PAYMENT).build();
+          .setMode(SessionCreateParams.Mode.PAYMENT)
+          .build();
 
       Session session = stripeClient.checkout().sessions().create(params);
 
