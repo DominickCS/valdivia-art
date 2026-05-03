@@ -78,6 +78,7 @@ public class WebhookController {
         order.setShippingName(shipping.getName());
         order.setShippingLine1(address.getLine1());
         order.setShippingLine2(address.getLine2());
+        order.setShippingCity(address.getCity());
         order.setShippingState(address.getState());
         order.setShippingPostalCode(address.getPostalCode());
         order.setShippingCountry(address.getCountry());

@@ -42,3 +42,10 @@ export interface ArtworkImage {
   imageURL: string;
   artworkObjectKey: string;
 }
+
+export interface User {
+  username: any | null;
+  fullName: any | null;
+  roles: [any] | null;
+  id: any | null;
+}

@@ -17,7 +17,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const payload = parseJwt(token);
       if (payload.exp * 1000 > Date.now()) {
-        return { username: payload.sub, roles: payload.roles ?? [], id: payload.userID };
+        return { fullName: payload.fullName, username: payload.sub, roles: payload.roles ?? [], id: payload.userID };
       }
       localStorage.removeItem('token');
       return null;
@@ -30,7 +30,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = (token: string) => {
     localStorage.setItem('token', token);
     const payload = parseJwt(token);
-    setUser({ username: payload.sub, roles: payload.roles ?? [], id: payload.userID });
+    setUser({ fullName: payload.fullName, username: payload.sub, roles: payload.roles ?? [], id: payload.userID }); // TODO FIX DEFINITIONS AND RETURN FULL NAME FOR PROFILE PAGE
+    console.log(payload)
   };
 
   const logout = () => {

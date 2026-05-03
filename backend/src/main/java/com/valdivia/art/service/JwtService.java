@@ -40,6 +40,7 @@ public class JwtService {
         .subject(authentication.getName())
         .claim("roles", roles)
         .claim("userID", user.getId())
+        .claim("fullName", user.getFullName())
         .issuedAt(new Date())
         .expiration(new Date(System.currentTimeMillis() + expirationMs))
         .signWith(getSigningKey())
@@ -52,6 +53,10 @@ public class JwtService {
 
   public String extractUsername(String token) {
     return parseClaims(token).getSubject();
+  }
+
+  public String extractFullName(String token) {
+    return parseClaims(token).getOrDefault("fullName", null).toString();
   }
 
   public boolean isTokenValid(String token) {

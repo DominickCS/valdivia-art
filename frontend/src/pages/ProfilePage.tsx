@@ -20,7 +20,7 @@ export default function ProfilePage() {
   return (
     <>
       <div>
-        <p className="text-center font-bold text-xl">hello {user?.username}</p>
+        <p className="text-center font-bold text-xl">Hey there, {user?.fullName}! 👋</p>
       </div>
       <div className="pt-8">
         <h1 className="text-center font-extrabold text-4xl underline underline-offset-8">ORDERS</h1>
@@ -48,12 +48,8 @@ export default function ProfilePage() {
                   <div>
                     <p>To: {order.shippingName}</p>
                     <p>{order.shippingLine1} {order.shippingLine2}, {order.shippingCity} {order.shippingPostalCode}, {order.shippingState} {order.shippingCountry}</p>
-                    <p>City: {order.shippingCity}</p>
-                    <p>Country: {order.shippingCountry}</p>
-                    <p>Address: {order.shippingLine1} {order.shippingLine2}</p>
-                    <p></p>
                   </div>
-                  <p>Order Status: {order.status} | Last Updated: {order.updatedAt}</p>
+                  <p>Order Status: {order.status} | Last Updated: {new Date(order.updatedAt).toLocaleDateString()}</p>
                   <p className="font-thin italic">TRACKING # <Link to={order.trackingUrl ?? "/"}>{order.trackingNumber}</Link></p>
                 </div>
               </div>
