@@ -16,30 +16,26 @@ export interface Artwork {
 }
 
 export interface Order {
-  lineItem: StripeLineItem
-  artwork: Artwork
+  amountTotal: number;
+  artworkId: number;
+  artworkImageUrl: string;
+  artworkTitle: string;
+  createdAt: string;
+  updatedAt: string;
+  currency: string;
+  id: number;
+  shippingCity: string | null;
+  shippingCountry: string;
+  shippingLine1: string;
+  shippingLine2: string | null;
+  shippingName: string;
+  shippingPostalCode: string;
+  shippingState: string | null;
+  status: string;
+  stripeSessionId: string;
+  trackingNumber: string | null;
+  trackingUrl: string | null;
 }
-
-export interface StripeLineItem {
-  id: string;
-  object: string;
-  discountAmount: string | null;
-  paymentMethodOptions: string | null;
-  productCode: string | null;
-  productName: string | null;
-  quantity: number | null;
-  tax: {
-    total_tax_amount: number | null;
-  };
-  unitCost: number | 0;
-  unitOfMeasure: string | null;
-}
-
-// export interface User {
-//   id: string;
-//   username: string;
-//   roles: [string]
-// }
 
 export interface ArtworkImage {
   id: string;

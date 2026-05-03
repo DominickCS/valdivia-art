@@ -30,7 +30,8 @@ public record OrderResponse(
     String shippingPostalCode,
     String shippingCountry,
 
-    Instant createdAt) {
+    Instant createdAt,
+    Instant updatedAt) {
   public static OrderResponse from(Order order) {
     return new OrderResponse(
         order.getId(),
@@ -50,6 +51,7 @@ public record OrderResponse(
         order.getShippingState(),
         order.getShippingPostalCode(),
         order.getShippingCountry(),
-        order.getCreatedAt());
+        order.getCreatedAt(),
+        order.getUpdatedAt());
   }
 }
