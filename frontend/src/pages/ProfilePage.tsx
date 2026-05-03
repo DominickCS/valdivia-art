@@ -15,6 +15,7 @@ export default function ProfilePage() {
     fetchAllOrders()
   }, []);
 
+  console.log(orders)
   return (
     <>
       <div>

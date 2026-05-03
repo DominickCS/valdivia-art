@@ -30,6 +30,8 @@ export default function CreatorDashboardPage() {
     const form = e.target as HTMLFormElement & {
       artworkImageField: HTMLInputElement;
       price: HTMLInputElement;
+      heightInches: HTMLInputElement;
+      widthInches: HTMLInputElement;
       yearCompleted: HTMLInputElement;
       forSale: HTMLInputElement;
       availableQuantity: HTMLInputElement;
@@ -43,6 +45,8 @@ export default function CreatorDashboardPage() {
       title: (form.elements.namedItem('title') as HTMLInputElement).value,
       price: form.price.value,
       yearCompleted: form.yearCompleted.value,
+      heightInches: form.heightInches.value,
+      widthInches: form.widthInches.value,
       forSale: form.forSale.checked,
       availableQuantity: form.availableQuantity.value
     })], { type: 'application/json' }));
@@ -200,6 +204,12 @@ export default function CreatorDashboardPage() {
             <input type="file" name="artworkImageField" multiple accept=".jpg,.jpeg,.png,.tiff" />
             <label htmlFor='title'>Title</label>
             <input type='text' name='title' />
+            <div className='flex justify-evenly'>
+              <label htmlFor='heightInches'>Canvas Height (inches)</label>
+              <input type='text' name='heightInches' />
+              <label htmlFor='widthInches'>Canvas Width (inches)</label>
+              <input type='text' name='widthInches' />
+            </div>
             <div className='flex justify-evenly mt-4 [&>input]:text-center'>
               <label htmlFor='price'>Price</label>
               <input

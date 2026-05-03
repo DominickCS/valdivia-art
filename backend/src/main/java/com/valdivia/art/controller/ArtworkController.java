@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.stripe.exception.StripeException;
-import com.valdivia.art.dto.OrderLineItemDTO;
 import com.valdivia.art.dto.request.ArtworkUploadRequest;
 import com.valdivia.art.dto.request.PurchaseRequest;
+import com.valdivia.art.dto.response.OrderResponse;
 import com.valdivia.art.entity.Artwork;
 import com.valdivia.art.entity.User;
 import com.valdivia.art.repository.UserRepository;
@@ -66,11 +66,10 @@ public class ArtworkController {
   }
 
   @GetMapping("/orders")
-  public ResponseEntity<List<OrderLineItemDTO>> getOrders(
-      @AuthenticationPrincipal UserDetails userDetails)
-      throws StripeException {
+  public ResponseEntity<List<OrderResponse>> getOrders(
+      @AuthenticationPrincipal UserDetails userDetails) {
     User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
-    return ResponseEntity.ok(artworkService.getCustomerOrders(user.getStripeCustomerID()));
+    return artworkService.getCustomerOrders(user);
   }
 
   @PostMapping("/purchase/{id}")

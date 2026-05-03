@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,13 +27,15 @@ import com.stripe.param.ProductCreateParams;
 import com.stripe.param.ProductUpdateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.stripe.param.checkout.SessionCreateParams.BillingAddressCollection;
-import com.valdivia.art.dto.OrderLineItemDTO;
 import com.valdivia.art.dto.request.ArtworkUploadRequest;
 import com.valdivia.art.dto.request.PurchaseRequest;
+import com.valdivia.art.dto.response.OrderResponse;
 import com.valdivia.art.entity.Artwork;
 import com.valdivia.art.entity.ArtworkImage;
+import com.valdivia.art.entity.Order;
 import com.valdivia.art.entity.User;
 import com.valdivia.art.repository.ArtworkRepository;
+import com.valdivia.art.repository.OrderRepository;
 import com.valdivia.art.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -47,6 +50,7 @@ public class ArtworkService {
   private final ArtworkRepository artworkRepository;
   private final StripeClient stripeClient;
   private final UserRepository userRepository;
+  private final OrderRepository orderRepository;
   private final ImageUploadConversionService imageUploadConversionService;
 
   @Value("${stripe.success-url}")
@@ -64,6 +68,8 @@ public class ArtworkService {
       artwork.setTitle(request.title());
       artwork.setPrice(request.price());
       artwork.setYearCompleted(request.yearCompleted());
+      artwork.setHeightInches(request.heightInches());
+      artwork.setWidthInches(request.widthInches());
       artwork.setForSale(request.forSale());
       artwork.setActive(true);
       artwork.setAvailableQuantity(request.availableQuantity());
@@ -177,6 +183,7 @@ public class ArtworkService {
           .addLineItem(
               SessionCreateParams.LineItem.builder().setPrice(artwork.getStripePriceID()).setQuantity(1L).build())
           .putMetadata("artworkID", String.valueOf(artworkID))
+          .putMetadata("userId", String.valueOf(user.getId()))
           .setBillingAddressCollection(BillingAddressCollection.REQUIRED)
           .setShippingAddressCollection(
               SessionCreateParams.ShippingAddressCollection.builder()
@@ -199,32 +206,10 @@ public class ArtworkService {
 
   }
 
-  public List<OrderLineItemDTO> getCustomerOrders(String stripeCustomerID) throws StripeException {
-    PaymentIntentListParams params = PaymentIntentListParams.builder()
-        .setCustomer(stripeCustomerID)
-        .build();
+  public ResponseEntity<List<OrderResponse>> getCustomerOrders(User user) {
+    List<Order> orders = orderRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
+    return ResponseEntity.ok(orders.stream().map(OrderResponse::from).toList());
 
-    List<PaymentIntent> paymentIntents = stripeClient.paymentIntents().list(params).getData();
-    List<OrderLineItemDTO> results = new ArrayList<>();
-
-    for (PaymentIntent paymentIntent : paymentIntents) {
-      for (PaymentIntentAmountDetailsLineItem lineItem : getOrderLineItems(paymentIntent)) {
-        System.out.println(lineItem.getProductName());
-        artworkRepository.findByTitle(lineItem.getProductName())
-            .ifPresent(artwork -> results.add(new OrderLineItemDTO(lineItem, artwork)));
-      }
-    }
-
-    return results;
-  }
-
-  private List<PaymentIntentAmountDetailsLineItem> getOrderLineItems(PaymentIntent paymentIntent)
-      throws StripeException {
-    PaymentIntentAmountDetailsLineItemListParams params = PaymentIntentAmountDetailsLineItemListParams.builder()
-        .build();
-    return stripeClient.paymentIntents().amountDetailsLineItems()
-        .list(paymentIntent.getId(), params)
-        .getData();
   }
 
   public List<Artwork> getAllArtwork() {
