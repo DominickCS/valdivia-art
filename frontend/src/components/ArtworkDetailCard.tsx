@@ -30,19 +30,19 @@ export default function ArtworkDetailCard({ artwork }: { artwork: Artwork }) {
   }
 
   return (
-    <div className="mx-auto px-8 items-center my-32 max-w-sm sm:max-w-xl">
-      <div className="mx-auto">
+    <div className="mx-auto max-w-xs sm:max-w-xl py-16">
+      <div>
         <ArtworkCarousel images={artwork.images} />
       </div>
       <div className="text-center items-center *:mx-8 min-h-full bottom-0">
-        <p className="text-3xl font-extrabold tracking-wide">{artwork.title}</p>
+        <p className="text-3xl font-extrabold tracking-wide mt-4">{artwork.title}</p>
         {artwork.forSale && artwork.availableQuantity > 0 ?
           <p className="font-light text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>
           :
           <p className="font-light text-sm tracking-widest italic">Not for sale</p>
         }
         {artwork.availableQuantity > 0 ?
-          <div className="flex justify-between">
+          <div className="flex justify-between mt-4">
             <button
               onClick={() => handlePurchase(artwork.id)} className="button-spcl mx-2 font-normal tracking-widest disabled:opacity-30 cursor-not-allowed" disabled={!user ? true : false}>
               {user ? "BUY NOW" : "LOGIN TO BUY"}

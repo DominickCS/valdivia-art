@@ -34,8 +34,8 @@ export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
       <img
         className="shadow-artwork shadow-black/45  duration-1000"
         src={artwork.imageURL}
-        height={460}
-        width={460}
+        height={450}
+        width={450}
         alt={artwork.title + " by Daniel Valdivia"}
       />
       <p className="text-3xl mt-8 font-extrabold tracking-wide underline underline-offset-8"><Link to={`/artwork/detail/${artwork.id}`}>{artwork.title}</Link></p>

@@ -3,11 +3,11 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 
 export function ArtworkCarousel({ images }: { images: ArtworkImage[] }) {
   return (
-    <Carousel className="w-full max-w-48 sm:max-w-xs">
+    <Carousel className="sm:min-w-xl mx-auto min-w-xs">
       <CarouselContent>
         {images.map((image, index) => (
           <CarouselItem key={image.id}>
-            <img src={image.imageURL} alt={`Artwork image ${index + 1}`} className="w-full h-full object-contain" />
+            <img src={image.imageURL} alt={`Artwork image ${index + 1}`} className="object-fill min-h-full" />
           </CarouselItem>
         ))}
       </CarouselContent>

@@ -12,7 +12,7 @@ export default function ArtworkDetailPage() {
     api.get(`/api/artwork/listing/${id}`).then(res => setArtwork(res.data));
   }, [id]);
 
-  if (!artwork) return <p>Loading...</p>;
+  if (!artwork) return <p className="text-center">Loading...</p>;
 
   console.log(artwork)
   return (
