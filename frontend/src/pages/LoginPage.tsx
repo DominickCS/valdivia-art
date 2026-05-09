@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import api from '../api/AxiosInstance';
@@ -80,6 +80,7 @@ export default function LoginPage() {
           <input type='password' value={formData.password} onChange={handleChange} name='password' />
           <button type='submit' disabled={isLoading} className='button-spcl mx-auto w-full'>{isLoading ? "PLEASE WAIT..." : "LOGIN"}</button>
         </form >
+        <p className='text-center'>Don't have an account? <Link to={"/register"}><span className='hover:font-extrabold duration-300 transition-all'>SIGN UP</span></Link></p>
       </div >
     </>
   )

@@ -2,7 +2,7 @@ export interface Artwork {
   id: number;
   title: string;
   artworkObjectKey: string;
-  images: [];
+  images: ArtworkImage[];
   imageURL: string;
   price: number;
   yearCompleted: string;
@@ -34,7 +34,7 @@ export interface Order {
   status: string;
   stripeSessionId: string;
   trackingNumber: string | null;
-  trackingUrl: string | null;
+  trackingURL: string | null;
 }
 
 export interface ArtworkImage {

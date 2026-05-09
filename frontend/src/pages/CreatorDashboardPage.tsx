@@ -1,7 +1,7 @@
 import api from '../api/AxiosInstance';
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import { useEffect, useState, useRef } from "react";
-import type { Artwork } from '../types/definitions';
+import type { Artwork, Order } from '../types/definitions';
 
 interface ImageFile {
   file: File;
@@ -10,27 +10,41 @@ interface ImageFile {
   isPrimary: boolean;
 }
 
+interface ShipForm {
+  orderId: number;
+  trackingNumber: string;
+  carrier: string;
+}
+
 export default function CreatorDashboardPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [allArtwork, setAllArtwork] = useState([]);
   const [activeArtwork, setActiveArtwork] = useState([]);
   const [images, setImages] = useState<ImageFile[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [shipForm, setShipForm] = useState<ShipForm | null>(null);
   const dragIndex = useRef<number | null>(null);
   const dragOverIndex = useRef<number | null>(null);
 
   const fetchActiveArtwork = async () => {
     const response = await api.get('/api/artwork/active');
-    setActiveArtwork(await response.data);
+    setActiveArtwork(response.data);
   };
 
   const fetchAllArtwork = async () => {
     const response = await api.get('/api/artwork');
-    setAllArtwork(await response.data);
+    setAllArtwork(response.data);
+  };
+
+  const fetchOrders = async () => {
+    const response = await api.get('/api/admin/orders/all');
+    setOrders(response.data);
   };
 
   useEffect(() => {
     fetchAllArtwork();
     fetchActiveArtwork();
+    fetchOrders();
   }, []);
 
   useEffect(() => {
@@ -104,7 +118,7 @@ export default function CreatorDashboardPage() {
     })], { type: 'application/json' }));
     try {
       setIsLoading(true);
-      const response = await api.post('/api/artwork/admin/upload', formData, {
+      const response = await api.post('/api/admin/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data}</p>, {
@@ -118,18 +132,17 @@ export default function CreatorDashboardPage() {
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
-      if (err instanceof Error) {
+      if (err instanceof Error)
         toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>, {
           position: "bottom-center", autoClose: 2000, hideProgressBar: false,
           closeOnClick: false, pauseOnHover: true, draggable: true, theme: "light", transition: Bounce,
         });
-      }
     }
   }
 
   async function archiveArtwork(id: string) {
     try {
-      const response = await api.post(`/api/artwork/admin/archive/${id}`, parseInt(id), {
+      const response = await api.post(`/api/admin/archive/${id}`, parseInt(id), {
         headers: { 'Content-Type': 'application/json' },
       });
       toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data}</p>, {
@@ -147,7 +160,7 @@ export default function CreatorDashboardPage() {
 
   async function unarchiveArtwork(id: string) {
     try {
-      const response = await api.post(`/api/artwork/admin/unarchive/${id}`, parseInt(id), {
+      const response = await api.post(`/api/admin/unarchive/${id}`, parseInt(id), {
         headers: { 'Content-Type': 'application/json' },
       });
       toast.success(<p className="font-extrabold text-center text-lg mx-4">{response.data}</p>, {
@@ -155,6 +168,27 @@ export default function CreatorDashboardPage() {
         closeOnClick: false, pauseOnHover: true, draggable: true, theme: "light", transition: Bounce,
       });
       fetchAllArtwork(); fetchActiveArtwork();
+    } catch (err) {
+      if (err instanceof Error)
+        toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>, {
+          position: "bottom-center", autoClose: 2000, theme: "light", transition: Bounce,
+        });
+    }
+  }
+
+  async function handleMarkShipped(e: React.FormEvent) {
+    e.preventDefault();
+    if (!shipForm) return;
+    try {
+      const response = await api.patch(`/api/admin/orders/${shipForm.orderId}/ship`, {
+        trackingNumber: shipForm.trackingNumber,
+        carrier: shipForm.carrier,
+      });
+      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data}</p>, {
+        position: "bottom-center", autoClose: 2000, theme: "light", transition: Bounce,
+      });
+      setShipForm(null);
+      fetchOrders();
     } catch (err) {
       if (err instanceof Error)
         toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>, {
@@ -228,6 +262,97 @@ export default function CreatorDashboardPage() {
             )}
           </section>
         </div>
+
+        {/* ── Orders ── */}
+        <section className="border border-black/10 rounded-lg p-5">
+          <h2 className="font-extrabold text-base underline text-center mb-4 tracking-wide">
+            ORDERS
+          </h2>
+          {orders.length === 0 ? (
+            <p className="text-center text-sm text-black/30 py-4">No orders yet.</p>
+          ) : (
+            <ul className="divide-y divide-black/5">
+              {orders.map(order => (
+                <li key={order.id} className="py-3 space-y-1">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 space-y-0.5">
+                      <p className="text-sm font-semibold truncate">{order.artworkTitle}</p>
+                      <p className="text-xs text-black/40">
+                        #{order.id} · {order.shippingName} · ${(order.amountTotal / 100).toFixed(2)}
+                      </p>
+                      <p className="text-xs text-black/40">
+                        {order.shippingLine1}
+                        {order.shippingLine2 ? `, ${order.shippingLine2}` : ''}, {order.shippingCity}, {order.shippingState} {order.shippingPostalCode}
+                      </p>
+                      {order.trackingNumber && (
+                        <a
+                          href={order.trackingURL ?? '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs underline text-black/60 hover:text-black transition-colors"
+                        >
+                          {order.trackingNumber}
+                        </a>
+                      )}
+                    </div>
+                    <div className="flex flex-col items-end gap-2 shrink-0">
+                      <span className={`text-[10px] tracking-widest font-semibold px-2 py-0.5 rounded ${order.status === 'SHIPPED' ? 'bg-black/10 text-black/60' :
+                        order.status === 'DELIVERED' ? 'bg-green-100 text-green-700' :
+                          order.status === 'REFUNDED' ? 'bg-red-100 text-red-600' :
+                            'bg-yellow-50 text-yellow-700'
+                        }`}>
+                        {order.status}
+                      </span>
+                      {order.status === 'PENDING' && (
+                        <button
+                          className="button-spcl text-xs py-1 px-3"
+                          onClick={() => setShipForm({ orderId: order.id, trackingNumber: '', carrier: 'UPS' })}
+                        >
+                          Mark Shipped
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Inline ship form */}
+                  {shipForm?.orderId === order.id && (
+                    <form onSubmit={handleMarkShipped} className="flex flex-col sm:flex-row gap-2 pt-2">
+                      <select
+                        value={shipForm.carrier}
+                        onChange={e => setShipForm(f => f ? { ...f, carrier: e.target.value } : f)}
+                        className="border border-black/20 rounded px-2 py-1.5 text-xs"
+                      >
+                        <option value="UPS">UPS</option>
+                        <option value="USPS">USPS</option>
+                        <option value="FEDEX">FedEx</option>
+                      </select>
+                      <input
+                        type="text"
+                        placeholder="Tracking number"
+                        value={shipForm.trackingNumber}
+                        onChange={e => setShipForm(f => f ? { ...f, trackingNumber: e.target.value } : f)}
+                        className="flex-1 border border-black/20 rounded px-2 py-1.5 text-xs"
+                        required
+                      />
+                      <div className="flex gap-2">
+                        <button type="submit" className="button-spcl text-xs py-1 px-3">
+                          Confirm
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShipForm(null)}
+                          className="button-spcl text-xs py-1 px-3 opacity-50"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
 
         {/* ── Upload form ── */}
         <section className="border border-black/10 rounded-lg p-5 sm:p-8">

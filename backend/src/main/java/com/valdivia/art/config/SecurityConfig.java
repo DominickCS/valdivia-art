@@ -54,7 +54,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers("/api/auth/**").permitAll()
             .requestMatchers("/api/webhook").permitAll()
-            .requestMatchers("/api/artwork/admin/**").hasRole("ADMIN")
+            .requestMatchers("/api/admin/**").hasRole("ADMIN")
             .requestMatchers("/api/artwork/orders").hasRole("CUSTOMER")
             .requestMatchers("/api/artwork/**").permitAll()
             .anyRequest().authenticated())

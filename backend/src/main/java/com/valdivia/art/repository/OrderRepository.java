@@ -13,4 +13,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
   List<Order> findByUserIdOrderByCreatedAtDesc(UUID userId);
 
   Optional<Order> findByStripeSessionId(String sessionId);
+
+  List<Order> findAllByOrderByCreatedAtDesc();
 }
