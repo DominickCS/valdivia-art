@@ -16,6 +16,8 @@ export default function ProfilePage() {
     fetchAllOrders();
   }, []);
 
+  console.log(orders)
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12 space-y-10">
 
@@ -78,9 +80,9 @@ export default function ProfilePage() {
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] uppercase tracking-widest text-black/40">Status</span>
                       <span className={`text-[10px] tracking-widest font-semibold px-2 py-0.5 rounded ${order.status === 'SHIPPED' ? 'bg-black/10 text-black/60' :
-                          order.status === 'DELIVERED' ? 'bg-green-100 text-green-700' :
-                            order.status === 'REFUNDED' ? 'bg-red-100 text-red-600' :
-                              'bg-yellow-50 text-yellow-700'
+                        order.status === 'DELIVERED' ? 'bg-green-100 text-green-700' :
+                          order.status === 'REFUNDED' ? 'bg-red-100 text-red-600' :
+                            'bg-yellow-50 text-yellow-700'
                         }`}>
                         {order.status}
                       </span>

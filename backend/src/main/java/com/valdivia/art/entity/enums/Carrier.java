@@ -5,13 +5,13 @@ public enum Carrier {
   USPS("https://tools.usps.com/go/TrackConfirmAction?tLabels="),
   FEDEX("https://www.fedex.com/fedextrack/?trknbr=");
 
-  private final String trackingBaseUrl;
+  private final String trackingBaseURL;
 
-  Carrier(String trackingBaseUrl) {
-    this.trackingBaseUrl = trackingBaseUrl;
+  Carrier(String trackingBaseURL) {
+    this.trackingBaseURL = trackingBaseURL;
   }
 
   public String buildTrackingUrl(String trackingNumber) {
-    return trackingBaseUrl + trackingNumber;
+    return trackingBaseURL + trackingNumber;
   }
 }
