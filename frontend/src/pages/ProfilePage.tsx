@@ -16,7 +16,6 @@ export default function ProfilePage() {
     fetchAllOrders()
   }, []);
 
-  console.log(orders)
   return (
     <>
       <div>
@@ -42,7 +41,7 @@ export default function ProfilePage() {
                   <p className="font-thin italic">${(order.amountTotal / 100).toFixed(2)}</p>
                 </div>
               </div>
-              <div className="border-b-2 border-r-2 rounded-br-full border-black/30">
+              <div>
                 <h3 className="font-extrabold">SHIPPING / TRACKING INFORMATION</h3>
                 <div className="my-2">
                   <div>
@@ -50,7 +49,7 @@ export default function ProfilePage() {
                     <p>{order.shippingLine1} {order.shippingLine2}, {order.shippingCity} {order.shippingPostalCode}, {order.shippingState} {order.shippingCountry}</p>
                   </div>
                   <p>Order Status: {order.status} | Last Updated: {new Date(order.updatedAt).toLocaleDateString()}</p>
-                  <p className="font-thin italic">TRACKING # <Link to={order.trackingUrl ?? "/"}>{order.trackingNumber}</Link></p>
+                  <p className="font-thin italic">TRACKING # <Link to={order.trackingURL ?? "/"}>{order.trackingNumber}</Link></p>
                 </div>
               </div>
             </div>

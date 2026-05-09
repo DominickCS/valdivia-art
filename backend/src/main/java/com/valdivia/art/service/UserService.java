@@ -35,6 +35,7 @@ public class UserService {
   private final AuthenticationManager authenticationManager;
   private final JwtService jwtService;
   private final StripeClient stripeClient;
+  private final EmailService emailService;
 
   @Autowired
   private JavaMailSender mailSender;
@@ -62,12 +63,7 @@ public class UserService {
       user.setStripeCustomerID(customer.getId());
       userRepository.save(user);
 
-      SimpleMailMessage emailMessage = new SimpleMailMessage();
-      emailMessage.setFrom("mail@dominickcs.com"); // UPDATE THIS VAR IN PRODUCTION
-      emailMessage.setTo(request.email());
-      emailMessage.setSubject("WELCOME TO VALDIVIA.CO!");
-      emailMessage.setText("Thank you for signing up, " + request.fullName() + "!");
-      mailSender.send(emailMessage);
+      emailService.sendWelcomeEmail(request.email(), request.fullName());
 
       return ResponseEntity.ok(new AuthResponse(null, "You have registered successfully! Redirecting you..."));
     } catch (RateLimitException e) {

@@ -25,6 +25,7 @@ import com.valdivia.art.entity.enums.OrderStatus;
 import com.valdivia.art.repository.ArtworkRepository;
 import com.valdivia.art.repository.OrderRepository;
 import com.valdivia.art.repository.UserRepository;
+import com.valdivia.art.service.EmailService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +36,7 @@ public class WebhookController {
   private final ArtworkRepository artworkRepository;
   private final UserRepository userRepository;
   private final OrderRepository orderRepository;
+  private final EmailService emailService;
 
   @Value("${stripe.webhook.secret}")
   private String webhookSecret;
@@ -87,6 +89,8 @@ public class WebhookController {
         order.setUpdatedAt(Instant.now());
 
         orderRepository.save(order);
+
+        emailService.sendOrderInvoice(user.getEmail(), order);
 
       }
 
