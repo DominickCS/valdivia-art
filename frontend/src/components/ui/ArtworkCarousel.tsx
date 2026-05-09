@@ -95,7 +95,7 @@ export function ArtworkCarousel({ images }: { images: ArtworkImage[] }) {
       <Carousel className="sm:min-w-xl mx-auto min-w-xs">
         <CarouselContent>
           {images.map((image, index) => (
-            <CarouselItem key={image.id} className="flex items-center justify-center p-0">
+            <CarouselItem key={image.id} className="flex items-center justify-center">
               <img
                 src={image.imageURL}
                 alt={`Artwork image ${index + 1}`}
