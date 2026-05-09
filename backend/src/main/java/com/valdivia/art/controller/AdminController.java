@@ -57,7 +57,7 @@ public class AdminController {
     return artworkService.unarchiveArtwork(artworkID);
   }
 
-  @GetMapping("/admin/orders/all")
+  @GetMapping("/orders/all")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ResponseEntity<List<OrderResponse>> getAllOrders() {
     return ResponseEntity.ok(
