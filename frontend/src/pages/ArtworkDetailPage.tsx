@@ -14,7 +14,6 @@ export default function ArtworkDetailPage() {
 
   if (!artwork) return <p className="text-center">Loading...</p>;
 
-  console.log(artwork)
   return (
     <ArtworkDetailCard key={artwork.id} artwork={artwork} />
   );

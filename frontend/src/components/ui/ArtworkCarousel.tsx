@@ -90,18 +90,17 @@ function ImageModal({ images, startIndex, onClose }: {
 
 export function ArtworkCarousel({ images }: { images: ArtworkImage[] }) {
   const [modalIndex, setModalIndex] = useState<number | null>(null);
-
   return (
     <>
       <Carousel className="sm:min-w-xl mx-auto min-w-xs">
         <CarouselContent>
           {images.map((image, index) => (
-            <CarouselItem key={image.id} className="content-center">
+            <CarouselItem key={image.id} className="flex items-center justify-center p-0">
               <img
                 src={image.imageURL}
                 alt={`Artwork image ${index + 1}`}
                 onClick={() => setModalIndex(index)}
-                className="object-contain min-h-fit cursor-zoom-in"
+                className="object-contain w-full h-auto cursor-zoom-in"
               />
             </CarouselItem>
           ))}
@@ -109,7 +108,6 @@ export function ArtworkCarousel({ images }: { images: ArtworkImage[] }) {
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
-
       {modalIndex !== null && (
         <ImageModal
           images={images}

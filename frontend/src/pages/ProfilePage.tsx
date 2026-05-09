@@ -10,52 +10,110 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const fetchAllOrders = async () => {
-      const response = await api.get('/api/artwork/orders')
-      setOrders(await response.data)
-    }
-    fetchAllOrders()
+      const response = await api.get('/api/artwork/orders');
+      setOrders(response.data);
+    };
+    fetchAllOrders();
   }, []);
 
   return (
-    <>
-      <div>
-        <p className="text-center font-bold text-xl">Hey there, {user?.fullName}! 👋</p>
-      </div>
-      <div className="pt-8">
-        <h1 className="text-center font-extrabold text-4xl underline underline-offset-8">ORDERS</h1>
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12 space-y-10">
 
-        <div className="grid grid-cols-3 gap-24 px-8">
-          {orders.map((order: Order) => (
-            <div key={order.id} className="text-center flex flex-col max-w-xl mx-auto my-8 w-full h-full">
-              <img src={order.artworkImageUrl} className="mx-auto overflow-hidden max-h-60 max-w-60 object-contain" />
-              <div className="my-2">
-                <h2 className="italic font-extrabold text-3xl underline underline-offset-4">{order.artworkTitle}</h2>
-              </div>
-              <div className="flex [&>div]:mx-8 content-center text-center justify-evenly py-4">
-                {/* <div> */}
-                {/*   <p className="font-extrabold">QTY</p> */}
-                {/*   <p className="font-thin italic">{order.lineItem.quantity}</p> */}
-                {/* </div> */}
-                <div>
-                  <p className="font-extrabold">AMOUNT PAID </p>
-                  <p className="font-thin italic">${(order.amountTotal / 100).toFixed(2)}</p>
+      {/* Greeting */}
+      <p className="text-center text-lg font-semibold tracking-wide">
+        Hey, {user?.fullName}
+      </p>
+
+      {/* Orders */}
+      <section>
+        <h1 className="font-extrabold text-base underline text-center tracking-wide mb-6">
+          ORDERS
+        </h1>
+
+        {orders.length === 0 ? (
+          <p className="text-center text-sm text-black/30 py-8">No orders yet.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {orders.map((order: Order) => (
+              <div key={order.id} className="border border-black/10 rounded-lg overflow-hidden flex flex-col">
+
+                {/* Artwork image */}
+                <div className="aspect-square overflow-hidden bg-black/5">
+                  <img
+                    src={order.artworkImageUrl}
+                    alt={order.artworkTitle}
+                    className="w-full h-full object-contain"
+                  />
                 </div>
-              </div>
-              <div>
-                <h3 className="font-extrabold">SHIPPING / TRACKING INFORMATION</h3>
-                <div className="my-2">
-                  <div>
-                    <p>To: {order.shippingName}</p>
-                    <p>{order.shippingLine1} {order.shippingLine2}, {order.shippingCity} {order.shippingPostalCode}, {order.shippingState} {order.shippingCountry}</p>
+
+                {/* Details */}
+                <div className="p-4 space-y-3 flex-1 flex flex-col">
+
+                  {/* Title + amount */}
+                  <div className="flex items-start justify-between gap-2">
+                    <h2 className="font-extrabold text-sm italic truncate">{order.artworkTitle}</h2>
+                    <span className="text-sm font-semibold shrink-0">
+                      ${(order.amountTotal / 100).toFixed(2)}
+                    </span>
                   </div>
-                  <p>Order Status: {order.status} | Last Updated: {new Date(order.updatedAt).toLocaleDateString()}</p>
-                  <p className="font-thin italic">TRACKING # <Link to={order.trackingURL ?? "/"}>{order.trackingNumber}</Link></p>
+
+                  <hr className="border-black/5" />
+
+                  {/* Shipping */}
+                  <div className="space-y-0.5 text-xs text-black/50">
+                    <p className="font-semibold text-black/70 uppercase tracking-wider text-[10px]">
+                      Ship to
+                    </p>
+                    <p>{order.shippingName}</p>
+                    <p>
+                      {order.shippingLine1}{order.shippingLine2 ? `, ${order.shippingLine2}` : ''},{' '}
+                      {order.shippingCity} {order.shippingPostalCode}, {order.shippingState} {order.shippingCountry}
+                    </p>
+                  </div>
+
+                  <hr className="border-black/5" />
+
+                  {/* Status + tracking */}
+                  <div className="space-y-1.5 mt-auto">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase tracking-widest text-black/40">Status</span>
+                      <span className={`text-[10px] tracking-widest font-semibold px-2 py-0.5 rounded ${order.status === 'SHIPPED' ? 'bg-black/10 text-black/60' :
+                          order.status === 'DELIVERED' ? 'bg-green-100 text-green-700' :
+                            order.status === 'REFUNDED' ? 'bg-red-100 text-red-600' :
+                              'bg-yellow-50 text-yellow-700'
+                        }`}>
+                        {order.status}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase tracking-widest text-black/40">Updated</span>
+                      <span className="text-xs text-black/50">
+                        {new Date(order.updatedAt).toLocaleDateString()}
+                      </span>
+                    </div>
+
+                    {order.trackingNumber && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] uppercase tracking-widest text-black/40">Tracking</span>
+                        <Link
+                          to={order.trackingURL ?? "/"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs underline text-black/60 hover:text-black transition-colors"
+                        >
+                          {order.trackingNumber}
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </>
-  )
+            ))}
+          </div>
+        )}
+      </section>
+    </div>
+  );
 }

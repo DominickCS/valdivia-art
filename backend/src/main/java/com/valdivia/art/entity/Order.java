@@ -2,6 +2,7 @@ package com.valdivia.art.entity;
 
 import java.time.Instant;
 
+import com.valdivia.art.entity.enums.Carrier;
 import com.valdivia.art.entity.enums.OrderStatus;
 
 import jakarta.persistence.Entity;
@@ -47,6 +48,9 @@ public class Order {
 
   private String trackingNumber;
   private String trackingURL;
+
+  @Enumerated(EnumType.STRING)
+  private Carrier carrier;
 
   // SHIPPING INFORMATION CAPTURED FROM STRIPE SESSION
 

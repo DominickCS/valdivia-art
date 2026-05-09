@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderService {
   private final OrderRepository orderRepository;
+  private final EmailService emailService;
 
   public ResponseEntity<String> markShipped(Long orderId, ShipmentUpdateRequest request) {
     try {
@@ -26,7 +27,9 @@ public class OrderService {
       order.setTrackingURL(request.carrier().buildTrackingUrl(request.trackingNumber()));
       order.setStatus(OrderStatus.SHIPPED);
       order.setUpdatedAt(Instant.now());
+      order.setCarrier(request.carrier());
       orderRepository.save(order);
+      emailService.sendShippingNotification(order);
       return ResponseEntity.ok("Order #" + orderId + " marked as shipped.");
     } catch (NoSuchElementException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found.");

@@ -423,4 +423,154 @@ public class EmailService {
         request.name(),
         java.time.LocalDate.now().getYear());
   }
+
+  public void sendShippingNotification(Order order) {
+    try {
+      MimeMessage message = mailSender.createMimeMessage();
+      MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+      helper.setFrom("mail@dominickcs.com");
+      helper.setTo(order.getUser().getEmail());
+      helper.setSubject("Your order has shipped – " + order.getArtwork().getTitle());
+      helper.setText(buildShippingEmailHtml(order), true);
+
+      mailSender.send(message);
+    } catch (MessagingException e) {
+      System.out.println("Failed to send shipping notification for order {}" + order.getId() + " " + e.getMessage());
+    }
+  }
+
+  private String buildShippingEmailHtml(Order order) {
+    return """
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8"/>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        </head>
+        <body style="margin:0;padding:0;background:#f5f5f0;font-family:Georgia,serif;">
+
+          <table width="100%%" cellpadding="0" cellspacing="0" style="background:#f5f5f0;padding:40px 0;">
+            <tr>
+              <td align="center">
+                <table width="560" cellpadding="0" cellspacing="0"
+                       style="background:#ffffff;border:1px solid #e0ddd6;max-width:560px;width:100%%;">
+
+                  <!-- Header -->
+                  <tr>
+                    <td style="padding:40px 48px 32px;border-bottom:1px solid #e0ddd6;text-align:center;">
+                      <p style="margin:0 0 8px;font-size:11px;letter-spacing:4px;color:#999;text-transform:uppercase;">
+                        Valdivia Art
+                      </p>
+                      <h1 style="margin:0;font-size:26px;font-weight:normal;color:#1a1a1a;letter-spacing:1px;">
+                        Your order is on its way
+                      </h1>
+                    </td>
+                  </tr>
+
+                  <!-- Greeting -->
+                  <tr>
+                    <td style="padding:32px 48px 0;">
+                      <p style="margin:0;font-size:15px;color:#444;line-height:1.7;">
+                        Good news, %s — your piece has been packed and handed off to %s.
+                        Use the tracking link below to follow its journey.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- Tracking + order details -->
+                  <tr>
+                    <td style="padding:28px 48px;">
+                      <table width="100%%" cellpadding="0" cellspacing="0"
+                             style="border:1px solid #e0ddd6;">
+
+                        <!-- Artwork image -->
+                        <tr>
+                          <td style="padding:0;">
+                            <img src="%s" alt="%s"
+                                 width="100%%" style="display:block;max-height:260px;object-fit:cover;"/>
+                          </td>
+                        </tr>
+
+                        <!-- Details -->
+                        <tr>
+                          <td style="padding:20px 24px;">
+                            <table width="100%%" cellpadding="0" cellspacing="0"
+                                   style="font-size:13px;color:#666;line-height:2;">
+                              <tr>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
+                                  Artwork
+                                </td>
+                                <td align="right" style="font-style:italic;color:#1a1a1a;">%s</td>
+                              </tr>
+                              <tr>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
+                                  Order
+                                </td>
+                                <td align="right">#%d</td>
+                              </tr>
+                              <tr>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
+                                  Carrier
+                                </td>
+                                <td align="right">%s</td>
+                              </tr>
+                              <tr>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
+                                  Tracking
+                                </td>
+                                <td align="right">
+                                  <a href="%s" style="color:#1a1a1a;text-decoration:underline;">
+                                    %s
+                                  </a>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
+                                  Ship to
+                                </td>
+                                <td align="right">
+                                  %s, %s %s
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- Footer -->
+                  <tr>
+                    <td style="padding:0 48px 40px;text-align:center;">
+                      <p style="margin:0;font-size:12px;color:#aaa;line-height:1.8;">
+                        Questions about your shipment? Reply to this email.<br/>
+                        &copy; %d Valdivia Art. All rights reserved.
+                      </p>
+                    </td>
+                  </tr>
+
+                </table>
+              </td>
+            </tr>
+          </table>
+
+        </body>
+        </html>
+        """.formatted(
+        order.getShippingName(),
+        order.getTrackingNumber() != null ? order.getCarrier().name() : "the carrier",
+        order.getArtwork().getImageURL(),
+        order.getArtwork().getTitle(),
+        order.getArtwork().getTitle(),
+        order.getId(),
+        order.getCarrier().name(),
+        order.getTrackingURL(),
+        order.getTrackingNumber(),
+        order.getShippingCity(),
+        order.getShippingState(),
+        order.getShippingPostalCode(),
+        java.time.LocalDate.now().getYear());
+  }
 }
