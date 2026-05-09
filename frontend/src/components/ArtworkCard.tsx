@@ -19,7 +19,6 @@ export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
         }
       );
 
-
       if (response.status == 200) {
         window.location.replace(response.data.url)
       }
@@ -38,7 +37,7 @@ export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
         width={450}
         alt={artwork.title + " by Daniel Valdivia"}
       />
-      <p className="text-3xl mt-8 font-extrabold tracking-wide underline underline-offset-8"><Link to={`/artwork/detail/${artwork.id}`}>{artwork.title}</Link></p>
+      <p className="hover:scale-110 hover:opacity-40 transition-all duration-300 text-3xl mt-8 font-extrabold tracking-wide"><Link to={`/artwork/detail/${artwork.id}`}>{artwork.title}</Link></p>
       {artwork.forSale && artwork.availableQuantity > 0 ?
         <p className="mt-2 font-light text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>
         :

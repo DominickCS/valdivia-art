@@ -4,5 +4,5 @@ import java.math.BigDecimal;
 
 public record ArtworkUploadRequest(String title, Double heightInches, Double widthInches, BigDecimal price,
     String yearCompleted, Boolean forSale,
-    Integer availableQuantity) {
+    Integer availableQuantity, Integer primaryImageIndex) {
 };

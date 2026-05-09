@@ -2,6 +2,7 @@ package com.valdivia.art.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,6 +21,9 @@ public class ArtworkImage {
   private Long id;
 
   private String imageURL;
+
+  @Column(nullable = false)
+  private Integer displayOrder;
 
   @JsonIgnore
   private String artworkObjectKey;

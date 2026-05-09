@@ -15,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,6 +34,7 @@ public class Artwork {
   private String artworkObjectKey;
 
   @OneToMany(mappedBy = "artwork", cascade = CascadeType.ALL)
+  @OrderBy("displayOrder ASC")
   private List<ArtworkImage> images = new ArrayList<>();
 
   private String imageURL;

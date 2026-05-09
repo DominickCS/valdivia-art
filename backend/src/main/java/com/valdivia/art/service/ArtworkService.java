@@ -11,19 +11,14 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.stripe.StripeClient;
 import com.stripe.exception.StripeException;
-import com.stripe.model.PaymentIntent;
-import com.stripe.model.PaymentIntentAmountDetailsLineItem;
 import com.stripe.model.Price;
 import com.stripe.model.Product;
 import com.stripe.model.checkout.Session;
-import com.stripe.param.PaymentIntentAmountDetailsLineItemListParams;
-import com.stripe.param.PaymentIntentListParams;
 import com.stripe.param.PriceCreateParams;
 import com.stripe.param.ProductCreateParams;
 import com.stripe.param.ProductUpdateParams;
@@ -83,7 +78,11 @@ public class ArtworkService {
         String artworkObjectID = request.title().replaceAll(" ", "-") + "-" + i + "-" + UUID.randomUUID();
 
         s3Client.putObject(
-            PutObjectRequest.builder().bucket(bucket).key(artworkObjectID).contentType("image/jpeg").build(),
+            PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(artworkObjectID)
+                .contentType("image/jpeg")
+                .build(),
             RequestBody.fromBytes(imageBytes));
 
         String imageURL = publicURLBase + artworkObjectID;
@@ -93,10 +92,10 @@ public class ArtworkService {
         artworkImage.setImageURL(imageURL);
         artworkImage.setArtworkObjectKey(artworkObjectID);
         artworkImage.setArtwork(artwork);
+        artworkImage.setDisplayOrder(i);
         artwork.getImages().add(artworkImage);
 
-        // Use the first image as the primary
-        if (i == 0) {
+        if (i == request.primaryImageIndex()) {
           artwork.setImageURL(imageURL);
           artwork.setArtworkObjectKey(artworkObjectID);
         }
@@ -105,7 +104,7 @@ public class ArtworkService {
       ProductCreateParams productParams = ProductCreateParams.builder()
           .setName(request.title())
           .setActive(true)
-          .addAllImage(imageURLs) // all images go to Stripe too
+          .addAllImage(imageURLs)
           .build();
       Product product = stripeClient.products().create(productParams);
 
@@ -121,6 +120,7 @@ public class ArtworkService {
       artworkRepository.save(artwork);
 
       return ResponseEntity.ok("Your artwork has uploaded successfully!");
+
     } catch (Exception e) {
       System.out.println(e);
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

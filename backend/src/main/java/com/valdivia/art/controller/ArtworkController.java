@@ -35,7 +35,7 @@ public class ArtworkController {
 
   @PostMapping("/admin/upload")
   public ResponseEntity<String> uploadArtwork(
-      @RequestPart("artworkImages") List<MultipartFile> artworkImages,
+      @RequestPart("images") List<MultipartFile> artworkImages,
       @RequestPart("request") ArtworkUploadRequest request) {
     return artworkService.uploadArtwork(artworkImages, request);
   }
