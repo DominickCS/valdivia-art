@@ -1,6 +1,6 @@
 import api from '../api/AxiosInstance';
 import { toast, ToastContainer, Bounce } from "react-toastify";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import type { Artwork, Order } from '../types/definitions';
 
 interface ImageFile {
@@ -16,6 +16,27 @@ interface ShipForm {
   carrier: string;
 }
 
+interface ArtworkImage {
+  id: number;
+  imageURL: string;
+  displayOrder: number;
+  isPrimary: boolean;
+}
+
+interface EditForm {
+  artworkId: number;
+  title: string;
+  price: string;
+  heightInches: string;
+  widthInches: string;
+  yearCompleted: string;
+  forSale: boolean;
+  availableQuantity: string;
+  existingImages: ArtworkImage[];
+  newImages: ImageFile[];
+  removedImageIds: number[];
+}
+
 export default function CreatorDashboardPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [allArtwork, setAllArtwork] = useState([]);
@@ -23,8 +44,10 @@ export default function CreatorDashboardPage() {
   const [images, setImages] = useState<ImageFile[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [shipForm, setShipForm] = useState<ShipForm | null>(null);
-  const dragIndex = useRef<number | null>(null);
-  const dragOverIndex = useRef<number | null>(null);
+  const [editForm, setEditForm] = useState<EditForm | null>(null);
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   const fetchActiveArtwork = async () => {
     const response = await api.get('/api/artwork/active');
@@ -47,9 +70,17 @@ export default function CreatorDashboardPage() {
     fetchOrders();
   }, []);
 
+  // Cleanup upload-form previews
   useEffect(() => {
     return () => images.forEach(img => URL.revokeObjectURL(img.preview));
   }, [images]);
+
+  // Cleanup edit-form new-image previews on unmount/close
+  useEffect(() => {
+    return () => editForm?.newImages.forEach(img => URL.revokeObjectURL(img.preview));
+  }, [editForm]);
+
+  // ── Upload form handlers ──────────────────────────────────────────────────
 
   function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files || []);
@@ -62,20 +93,21 @@ export default function CreatorDashboardPage() {
     setImages(prev => [...prev, ...newImages]);
   }
 
-  function handleDragStart(index: number) { dragIndex.current = index; }
-  function handleDragEnter(index: number) { dragOverIndex.current = index; }
+  function handleDragStart(index: number) { setDragIndex(index); }
+  function handleDragEnter(index: number) { setDragOverIndex(index); }
 
   function handleDragEnd() {
-    if (dragIndex.current === null || dragOverIndex.current === null) return;
-    if (dragIndex.current === dragOverIndex.current) return;
-    setImages(prev => {
-      const updated = [...prev];
-      const [moved] = updated.splice(dragIndex.current!, 1);
-      updated.splice(dragOverIndex.current!, 0, moved);
-      return updated.map((img, i) => ({ ...img, position: i, isPrimary: i === 0 }));
-    });
-    dragIndex.current = null;
-    dragOverIndex.current = null;
+    if (dragIndex === null || dragOverIndex === null) return;
+    if (dragIndex !== dragOverIndex) {
+      setImages(prev => {
+        const updated = [...prev];
+        const [moved] = updated.splice(dragIndex, 1);
+        updated.splice(dragOverIndex, 0, moved);
+        return updated.map((img, i) => ({ ...img, position: i, isPrimary: i === 0 }));
+      });
+    }
+    setDragIndex(null);
+    setDragOverIndex(null);
   }
 
   function removeImage(index: number) {
@@ -140,6 +172,8 @@ export default function CreatorDashboardPage() {
     }
   }
 
+  // ── Archive / Unarchive ───────────────────────────────────────────────────
+
   async function archiveArtwork(id: string) {
     try {
       const response = await api.post(`/api/admin/archive/${id}`, parseInt(id), {
@@ -176,6 +210,156 @@ export default function CreatorDashboardPage() {
     }
   }
 
+  // ── Edit listing ─────────────────────────────────────────────────────────
+
+  async function openEditForm(artwork: Artwork) {
+    // Close any open ship form
+    setShipForm(null);
+
+    // If clicking the same item, toggle closed
+    if (editForm?.artworkId === artwork.id) {
+      editForm.newImages.forEach(img => URL.revokeObjectURL(img.preview));
+      setEditForm(null);
+      return;
+    }
+
+    // Fetch full artwork detail (includes images array) from existing endpoint
+    try {
+      const response = await api.get(`/api/artwork/listing/${artwork.id}`);
+      const detail = response.data;
+      setEditForm({
+        artworkId: artwork.id,
+        title: detail.title ?? artwork.title ?? '',
+        price: String(detail.price ?? artwork.price ?? ''),
+        heightInches: String(detail.heightInches ?? ''),
+        widthInches: String(detail.widthInches ?? ''),
+        yearCompleted: String(detail.yearCompleted ?? ''),
+        forSale: detail.forSale ?? false,
+        availableQuantity: String(detail.availableQuantity ?? ''),
+        existingImages: detail.images ?? [],
+        newImages: [],
+        removedImageIds: [],
+      });
+    } catch {
+      // Fallback: open with data we already have, no images shown
+      setEditForm({
+        artworkId: artwork.id,
+        title: artwork.title ?? '',
+        price: String(artwork.price ?? ''),
+        heightInches: '',
+        widthInches: '',
+        yearCompleted: '',
+        forSale: false,
+        availableQuantity: '',
+        existingImages: [],
+        newImages: [],
+        removedImageIds: [],
+      });
+    }
+  }
+
+  function closeEditForm() {
+    editForm?.newImages.forEach(img => URL.revokeObjectURL(img.preview));
+    setEditForm(null);
+  }
+
+  function editRemoveExistingImage(imageId: number) {
+    setEditForm(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        existingImages: prev.existingImages.filter(img => img.id !== imageId),
+        removedImageIds: [...prev.removedImageIds, imageId],
+      };
+    });
+  }
+
+  function editHandleNewImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files || []);
+    setEditForm(prev => {
+      if (!prev) return prev;
+      const offset = prev.existingImages.length + prev.newImages.length;
+      const added: ImageFile[] = files.map((file, i) => ({
+        file,
+        preview: URL.createObjectURL(file),
+        position: offset + i,
+        isPrimary: false,
+      }));
+      return { ...prev, newImages: [...prev.newImages, ...added] };
+    });
+  }
+
+  function editRemoveNewImage(index: number) {
+    setEditForm(prev => {
+      if (!prev) return prev;
+      URL.revokeObjectURL(prev.newImages[index].preview);
+      const updated = prev.newImages.filter((_, i) => i !== index);
+      return { ...prev, newImages: updated };
+    });
+  }
+
+  async function handleSaveEdit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editForm) return;
+
+    const remainingImages = editForm.existingImages.length + editForm.newImages.length;
+    if (remainingImages === 0) {
+      toast.error(
+        <p className="font-extrabold text-center text-lg px-4">A listing must have at least one image.</p>,
+        { position: "bottom-center", autoClose: 2500, theme: "light", transition: Bounce }
+      );
+      return;
+    }
+
+    try {
+      setIsSavingEdit(true);
+
+      const formData = new FormData();
+
+      // Append new image files in pool order (backend appends them after existing images)
+      editForm.newImages.forEach(img => formData.append("newImages", img.file));
+
+      // Send existing image IDs in their current pool order so the backend
+      // can reassign displayOrder correctly after removes/adds.
+      const imageOrder = editForm.existingImages.map(img => img.id);
+
+      formData.append('request', new Blob([JSON.stringify({
+        title: editForm.title,
+        price: editForm.price,
+        heightInches: editForm.heightInches,
+        widthInches: editForm.widthInches,
+        yearCompleted: editForm.yearCompleted,
+        forSale: editForm.forSale,
+        availableQuantity: editForm.availableQuantity,
+        removeImageIds: editForm.removedImageIds,
+        imageOrder,
+      })], { type: 'application/json' }));
+
+      const response = await api.patch(`/api/admin/artwork/${editForm.artworkId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      toast.success(
+        <p className="font-extrabold text-center text-lg px-4">{response.data}</p>,
+        { position: "bottom-center", autoClose: 2000, theme: "light", transition: Bounce }
+      );
+
+      closeEditForm();
+      fetchAllArtwork();
+      fetchActiveArtwork();
+    } catch (err) {
+      if (err instanceof Error)
+        toast.error(
+          <p className="font-extrabold text-center text-lg px-4">{err.message}</p>,
+          { position: "bottom-center", autoClose: 2000, theme: "light", transition: Bounce }
+        );
+    } finally {
+      setIsSavingEdit(false);
+    }
+  }
+
+  // ── Ship order ────────────────────────────────────────────────────────────
+
   async function handleMarkShipped(e: React.FormEvent) {
     e.preventDefault();
     if (!shipForm) return;
@@ -197,6 +381,8 @@ export default function CreatorDashboardPage() {
     }
   }
 
+  // ── Render ────────────────────────────────────────────────────────────────
+
   return (
     <>
       <ToastContainer />
@@ -216,18 +402,44 @@ export default function CreatorDashboardPage() {
             ) : (
               <ul className="divide-y divide-black/5">
                 {activeArtwork.map((active: Artwork) => (
-                  <li key={active.id} className="flex items-center justify-between gap-3 py-2">
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold truncate">{active.title}</p>
-                      <p className="text-xs text-black/40">#{active.id} · ${active.price}</p>
-                    </div>
-                    <button
-                      className="button-spcl shrink-0 text-xs py-1 px-3"
-                      onClick={() => archiveArtwork(Number(active.id).toString())}
-                    >
-                      Archive
-                    </button>
-                  </li>
+                  <>
+                    <li key={active.id} className="flex items-center justify-between gap-3 py-2">
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold truncate">{active.title}</p>
+                        <p className="text-xs text-black/40">#{active.id} · ${active.price}</p>
+                      </div>
+                      <div className="flex gap-2 shrink-0">
+                        <button
+                          className="button-spcl text-xs py-1 px-3"
+                          onClick={() => openEditForm(active)}
+                        >
+                          {editForm?.artworkId === active.id ? 'Close' : 'Edit'}
+                        </button>
+                        <button
+                          className="button-spcl text-xs py-1 px-3"
+                          onClick={() => archiveArtwork(Number(active.id).toString())}
+                        >
+                          Archive
+                        </button>
+                      </div>
+                    </li>
+
+                    {/* Inline edit panel */}
+                    {editForm?.artworkId === active.id && (
+                      <li key={`edit-${active.id}`} className="py-3">
+                        <EditPanel
+                          editForm={editForm}
+                          setEditForm={setEditForm}
+                          isSavingEdit={isSavingEdit}
+                          onSave={handleSaveEdit}
+                          onClose={closeEditForm}
+                          onRemoveExistingImage={editRemoveExistingImage}
+                          onAddNewImages={editHandleNewImageSelect}
+                          onRemoveNewImage={editRemoveNewImage}
+                        />
+                      </li>
+                    )}
+                  </>
                 ))}
               </ul>
             )}
@@ -244,18 +456,44 @@ export default function CreatorDashboardPage() {
               <ul className="divide-y divide-black/5">
                 {allArtwork.map((artwork: Artwork) =>
                   !artwork.active ? (
-                    <li key={artwork.id} className="flex items-center justify-between gap-3 py-2">
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold truncate">{artwork.title}</p>
-                        <p className="text-xs text-black/40">#{artwork.id} · ${artwork.price}</p>
-                      </div>
-                      <button
-                        className="button-spcl shrink-0 text-xs py-1 px-3"
-                        onClick={() => unarchiveArtwork(Number(artwork.id).toString())}
-                      >
-                        Unarchive
-                      </button>
-                    </li>
+                    <>
+                      <li key={artwork.id} className="flex items-center justify-between gap-3 py-2">
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold truncate">{artwork.title}</p>
+                          <p className="text-xs text-black/40">#{artwork.id} · ${artwork.price}</p>
+                        </div>
+                        <div className="flex gap-2 shrink-0">
+                          <button
+                            className="button-spcl text-xs py-1 px-3"
+                            onClick={() => openEditForm(artwork)}
+                          >
+                            {editForm?.artworkId === artwork.id ? 'Close' : 'Edit'}
+                          </button>
+                          <button
+                            className="button-spcl text-xs py-1 px-3"
+                            onClick={() => unarchiveArtwork(Number(artwork.id).toString())}
+                          >
+                            Unarchive
+                          </button>
+                        </div>
+                      </li>
+
+                      {/* Inline edit panel */}
+                      {editForm?.artworkId === artwork.id && (
+                        <li key={`edit-${artwork.id}`} className="py-3">
+                          <EditPanel
+                            editForm={editForm}
+                            setEditForm={setEditForm}
+                            isSavingEdit={isSavingEdit}
+                            onSave={handleSaveEdit}
+                            onClose={closeEditForm}
+                            onRemoveExistingImage={editRemoveExistingImage}
+                            onAddNewImages={editHandleNewImageSelect}
+                            onRemoveNewImage={editRemoveNewImage}
+                          />
+                        </li>
+                      )}
+                    </>
                   ) : null
                 )}
               </ul>
@@ -388,8 +626,15 @@ export default function CreatorDashboardPage() {
                         onDragEnter={() => handleDragEnter(index)}
                         onDragEnd={handleDragEnd}
                         onDragOver={e => e.preventDefault()}
-                        className="relative w-20 h-20 cursor-grab active:cursor-grabbing border-2 rounded overflow-hidden select-none"
-                        style={{ borderColor: img.isPrimary ? '#000' : '#d1d5db' }}
+                        className="relative w-20 h-20 cursor-grab active:cursor-grabbing border-2 rounded overflow-hidden select-none transition-all duration-150"
+                        style={{
+                          borderColor: dragOverIndex === index && dragIndex !== index
+                            ? '#000'
+                            : img.isPrimary ? '#000' : '#d1d5db',
+                          opacity: dragIndex === index ? 0.35 : 1,
+                          transform: dragOverIndex === index && dragIndex !== index
+                            ? 'scale(1.08)' : 'scale(1)',
+                        }}
                       >
                         <img src={img.preview} alt={`preview-${index}`} className="w-full h-full object-cover" />
                         <span className="absolute top-0 left-0 bg-black/60 text-white text-[10px] px-1 leading-5">
@@ -508,5 +753,270 @@ export default function CreatorDashboardPage() {
 
       </div>
     </>
+  );
+}
+
+// ── EditPanel sub-component ───────────────────────────────────────────────────
+
+interface EditPanelProps {
+  editForm: EditForm;
+  setEditForm: React.Dispatch<React.SetStateAction<EditForm | null>>;
+  isSavingEdit: boolean;
+  onSave: (e: React.FormEvent) => void;
+  onClose: () => void;
+  onRemoveExistingImage: (id: number) => void;
+  onAddNewImages: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onRemoveNewImage: (index: number) => void;
+}
+
+// Flat item in the unified drag pool
+type PoolItem =
+  | { kind: 'existing'; img: ArtworkImage }
+  | { kind: 'new'; img: ImageFile; newIndex: number };
+
+function EditPanel({
+  editForm,
+  setEditForm,
+  isSavingEdit,
+  onSave,
+  onClose,
+  onRemoveExistingImage,
+  onAddNewImages,
+  onRemoveNewImage,
+}: EditPanelProps) {
+  const set = (field: keyof EditForm, value: unknown) =>
+    setEditForm(prev => prev ? { ...prev, [field]: value } : prev);
+
+  const [editDragIndex, setEditDragIndex] = useState<number | null>(null);
+  const [editDragOverIndex, setEditDragOverIndex] = useState<number | null>(null);
+
+  // Build a single flat pool from both lists so drag can cross the boundary
+  const pool: PoolItem[] = [
+    ...editForm.existingImages.map(img => ({ kind: 'existing' as const, img })),
+    ...editForm.newImages.map((img, newIndex) => ({ kind: 'new' as const, img, newIndex })),
+  ];
+
+  function handleEditDragEnd() {
+    if (editDragIndex === null || editDragOverIndex === null || editDragIndex === editDragOverIndex) {
+      setEditDragIndex(null);
+      setEditDragOverIndex(null);
+      return;
+    }
+
+    // Reorder the flat pool then split back into existing/new
+    const reordered = [...pool];
+    const [moved] = reordered.splice(editDragIndex, 1);
+    reordered.splice(editDragOverIndex, 0, moved);
+
+    const newExisting: ArtworkImage[] = reordered
+      .filter((item): item is { kind: 'existing'; img: ArtworkImage } => item.kind === 'existing')
+      .map((item, i) => ({ ...item.img, displayOrder: i }));
+
+    const newNewImages: ImageFile[] = reordered
+      .filter((item): item is { kind: 'new'; img: ImageFile; newIndex: number } => item.kind === 'new')
+      .map((item, i) => ({ ...item.img, position: i }));
+
+    setEditForm(prev => prev ? { ...prev, existingImages: newExisting, newImages: newNewImages } : prev);
+    setEditDragIndex(null);
+    setEditDragOverIndex(null);
+  }
+
+  return (
+    <form
+      onSubmit={onSave}
+      className="bg-black/2 border border-black/10 rounded-lg p-4 space-y-4 mt-1"
+    >
+      <p className="text-[10px] font-bold tracking-widest text-black/40 text-center uppercase">
+        Edit Listing #{editForm.artworkId}
+      </p>
+
+      {/* ── Image management ── */}
+      <div className="space-y-2">
+        <p className="text-xs font-semibold text-center">Images</p>
+
+        {pool.length === 0 ? (
+          <p className="text-xs text-center text-black/30">No images — add at least one below.</p>
+        ) : (
+          <>
+            <p className="text-xs text-center text-black/40">
+              Drag to reorder · First is primary
+            </p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              {pool.map((item, poolIndex) => {
+                const isExisting = item.kind === 'existing';
+                const src = isExisting ? item.img.imageURL : item.img.preview;
+                const key = isExisting ? `existing-${item.img.id}` : `new-${item.img.preview}`;
+                const isPrimary = poolIndex === 0;
+                const isDragging = editDragIndex === poolIndex;
+                const isTarget = editDragOverIndex === poolIndex && editDragIndex !== poolIndex;
+
+                return (
+                  <div
+                    key={key}
+                    draggable
+                    onDragStart={() => setEditDragIndex(poolIndex)}
+                    onDragEnter={() => setEditDragOverIndex(poolIndex)}
+                    onDragEnd={handleEditDragEnd}
+                    onDragOver={e => e.preventDefault()}
+                    className="relative w-16 h-16 cursor-grab active:cursor-grabbing rounded overflow-hidden border-2 select-none transition-all duration-150"
+                    style={{
+                      borderColor: isTarget ? '#000' : isPrimary ? '#000' : isExisting ? '#d1d5db' : '#9ca3af',
+                      borderStyle: isExisting ? 'solid' : 'dashed',
+                      opacity: isDragging ? 0.35 : 1,
+                      transform: isTarget ? 'scale(1.08)' : 'scale(1)',
+                    }}
+                  >
+                    <img src={src} alt={`pool-${poolIndex}`} className="w-full h-full object-cover" />
+
+                    {/* Position badge */}
+                    <span className="absolute top-0 left-0 bg-black/60 text-white text-[8px] px-0.5 leading-4">
+                      {poolIndex + 1}
+                    </span>
+
+                    {/* NEW badge for uploaded-but-not-saved images */}
+                    {!isExisting && (
+                      <span className="absolute bottom-0 left-0 bg-black/60 text-white text-[8px] px-0.5 leading-4">
+                        NEW
+                      </span>
+                    )}
+
+                    {/* Primary badge */}
+                    {isPrimary && (
+                      <span className="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-[8px] text-center leading-4">
+                        PRIMARY
+                      </span>
+                    )}
+
+                    {/* Remove button */}
+                    <button
+                      type="button"
+                      onClick={() => isExisting
+                        ? onRemoveExistingImage(item.img.id)
+                        : onRemoveNewImage(item.newIndex)
+                      }
+                      className="absolute top-0 right-0 bg-black/60 text-white text-[10px] w-4 h-4 flex items-center justify-center hover:bg-red-600 transition-colors"
+                      title="Remove"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+
+        <label className="flex flex-col items-center gap-1 cursor-pointer group">
+          <span className="text-[10px] text-black/40 group-hover:text-black/60 transition-colors">
+            + Add more images
+          </span>
+          <input
+            type="file"
+            multiple
+            accept=".jpg,.jpeg,.png,.tiff"
+            onChange={onAddNewImages}
+            onClick={e => { (e.target as HTMLInputElement).value = ''; }}
+            className="hidden"
+          />
+        </label>
+      </div>
+
+      {/* ── Fields ── */}
+      <div className="space-y-1">
+        <label className="block text-xs font-semibold text-center">Title</label>
+        <input
+          type="text"
+          value={editForm.title}
+          onChange={e => set('title', e.target.value)}
+          className="block w-full border border-black/20 rounded px-3 py-1.5 text-xs text-center"
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        <div className="space-y-1">
+          <label className="block text-xs font-semibold text-center">Height (in)</label>
+          <input
+            type="text"
+            value={editForm.heightInches}
+            onChange={e => set('heightInches', e.target.value)}
+            className="block w-full border border-black/20 rounded px-2 py-1.5 text-xs text-center"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="block text-xs font-semibold text-center">Width (in)</label>
+          <input
+            type="text"
+            value={editForm.widthInches}
+            onChange={e => set('widthInches', e.target.value)}
+            className="block w-full border border-black/20 rounded px-2 py-1.5 text-xs text-center"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        <div className="space-y-1">
+          <label className="block text-xs font-semibold text-center">Price ($)</label>
+          <input
+            type="text"
+            value={editForm.price}
+            onChange={e => set('price', e.target.value)}
+            onKeyDown={e => {
+              const allowed = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'];
+              if (allowed.includes(e.key)) return;
+              if (!/[\d.]/.test(e.key)) { e.preventDefault(); return; }
+              if (e.key === '.' && editForm.price.includes('.')) e.preventDefault();
+            }}
+            className="block w-full border border-black/20 rounded px-2 py-1.5 text-xs text-center"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="block text-xs font-semibold text-center">Year</label>
+          <input
+            type="text"
+            value={editForm.yearCompleted}
+            onChange={e => set('yearCompleted', e.target.value)}
+            className="block w-full border border-black/20 rounded px-2 py-1.5 text-xs text-center"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 items-end">
+        <div className="flex flex-col items-center gap-1.5">
+          <label className="text-xs font-semibold">For Sale?</label>
+          <input
+            type="checkbox"
+            checked={editForm.forSale}
+            onChange={e => set('forSale', e.target.checked)}
+            className="w-4 h-4"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="block text-xs font-semibold text-center">Available Qty</label>
+          <input
+            type="number"
+            value={editForm.availableQuantity}
+            onChange={e => set('availableQuantity', e.target.value)}
+            className="block w-full border border-black/20 rounded px-2 py-1.5 text-xs text-center"
+          />
+        </div>
+      </div>
+
+      <div className="flex gap-2 pt-1">
+        <button
+          type="submit"
+          disabled={isSavingEdit}
+          className="button-spcl flex-1 text-xs py-2"
+        >
+          {isSavingEdit ? 'SAVING...' : 'SAVE CHANGES'}
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          className="button-spcl text-xs py-2 px-4 opacity-50"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
   );
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.stripe.exception.StripeException;
+import com.valdivia.art.dto.request.ArtworkEditRequest;
 import com.valdivia.art.dto.request.ArtworkUploadRequest;
 import com.valdivia.art.dto.request.ShipmentUpdateRequest;
 import com.valdivia.art.dto.response.OrderResponse;
@@ -63,6 +64,15 @@ public class AdminController {
     return ResponseEntity.ok(
         orderRepository.findAllByOrderByCreatedAtDesc()
             .stream().map(OrderResponse::from).toList());
+  }
+
+  @PatchMapping("/artwork/{id}")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ResponseEntity<String> editArtwork(
+      @PathVariable Long id,
+      @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages,
+      @RequestPart("request") ArtworkEditRequest request) {
+    return artworkService.editArtwork(id, newImages, request);
   }
 
 }
