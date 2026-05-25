@@ -9,6 +9,10 @@ input {
   border: solid black 2px;
 }
 
+textarea {
+  border: solid black 2px;
+}
+
 @theme {
   --shadow-artwork: 0px 0px 8px -2px rgba(0, 0, 0, 0.1),
                 16px 0px 12px -4px rgba(0, 0, 0, 0.1);

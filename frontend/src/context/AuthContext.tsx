@@ -30,8 +30,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = (token: string) => {
     localStorage.setItem('token', token);
     const payload = parseJwt(token);
-    setUser({ fullName: payload.fullName, username: payload.sub, roles: payload.roles ?? [], id: payload.userID }); // TODO FIX DEFINITIONS AND RETURN FULL NAME FOR PROFILE PAGE
-    console.log(payload)
+    setUser({ fullName: payload.fullName, username: payload.sub, roles: payload.roles ?? [], id: payload.userID });
   };
 
   const logout = () => {
