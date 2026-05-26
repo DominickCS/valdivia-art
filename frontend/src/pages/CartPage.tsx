@@ -112,7 +112,7 @@ export default function CartPage() {
       <div className="max-w-lg mx-auto px-4 py-24 text-center space-y-4">
         <p className="text-2xl font-extrabold tracking-wide">YOUR CART</p>
         <p className="text-sm text-black/40">Your cart is empty.</p>
-        <Link to="/" className="button-spcl inline-block mt-4 px-6 py-2 text-sm tracking-widest">
+        <Link to="/for-sale" className="button-spcl inline-block mt-4 px-6 py-2 text-sm tracking-widest">
           BROWSE ARTWORK
         </Link>
       </div>

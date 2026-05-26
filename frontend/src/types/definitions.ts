@@ -15,26 +15,31 @@ export interface Artwork {
   updatedAt: string;
 }
 
-export interface Order {
-  amountTotal: number;
-  artworkId: number;
-  artworkImageUrl: string;
-  artworkTitle: string;
-  createdAt: string;
-  updatedAt: string;
-  currency: string;
+// Lean per-artwork summary nested inside OrderResponse
+export interface ArtworkSummary {
   id: number;
-  shippingCity: string | null;
-  shippingCountry: string;
+  title: string;
+  imageUrl: string; // lowercase 'l' — matches Java record serialization
+}
+
+export interface Order {
+  id: number;
+  stripeSessionId: string;
+  artworks: ArtworkSummary[];
+  amountTotal: number;
+  currency: string;
+  status: string;
+  trackingNumber: string | null;
+  trackingUrl: string | null;
+  shippingName: string;
   shippingLine1: string;
   shippingLine2: string | null;
-  shippingName: string;
-  shippingPostalCode: string;
+  shippingCity: string | null;
   shippingState: string | null;
-  status: string;
-  stripeSessionId: string;
-  trackingNumber: string | null;
-  trackingURL: string | null;
+  shippingPostalCode: string;
+  shippingCountry: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ArtworkImage {
