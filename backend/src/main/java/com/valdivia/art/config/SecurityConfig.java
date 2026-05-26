@@ -80,7 +80,8 @@ public class SecurityConfig {
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration config = new CorsConfiguration();
-    config.setAllowedOrigins(List.of("http://art.dominickcs.com:5173", "http://localhost:5173"));
+    config.setAllowedOrigins(
+        List.of("https://www.valdivia.co", "http://art.dominickcs.com:5173", "http://localhost:5173"));
     config.setAllowedMethods(List.of("GET", "PATCH", "POST", "PUT", "DELETE", "OPTIONS"));
     config.setAllowedHeaders(List.of("*"));
     config.setAllowCredentials(true);

@@ -1,10 +1,14 @@
 package com.valdivia.art.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.valdivia.art.dto.request.ContactRequest;
+import com.valdivia.art.entity.Artwork;
 import com.valdivia.art.entity.Order;
 
 import jakarta.mail.MessagingException;
@@ -14,7 +18,53 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class EmailService {
+
   private final JavaMailSender mailSender;
+
+  // ── Helpers
+  // ───────────────────────────────────────────────────────────────────
+
+  // "Title A" for single-artwork orders, "Title A, Title B & Title C" for multi
+  private String artworkSubjectLabel(Order order) {
+    List<Artwork> artworks = order.getArtworks();
+    if (artworks.isEmpty())
+      return "Your order";
+    if (artworks.size() == 1)
+      return artworks.get(0).getTitle();
+    String allButLast = artworks.subList(0, artworks.size() - 1).stream()
+        .map(Artwork::getTitle)
+        .collect(Collectors.joining(", "));
+    return allButLast + " & " + artworks.get(artworks.size() - 1).getTitle();
+  }
+
+  // Builds a stacked table row per artwork for use in order/shipping emails
+  private String buildArtworkRows(List<Artwork> artworks) {
+    StringBuilder sb = new StringBuilder();
+    for (Artwork a : artworks) {
+      sb.append("""
+          <tr>
+            <td style="padding:12px 0;border-bottom:1px solid #f0ede8;">
+              <table width="100%%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="width:56px;vertical-align:top;">
+                    <img src="%s" alt="%s"
+                         width="56" height="56"
+                         style="display:block;object-fit:cover;border:1px solid #e0ddd6;"/>
+                  </td>
+                  <td style="padding-left:12px;vertical-align:middle;font-size:13px;color:#1a1a1a;font-style:italic;">
+                    %s
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          """.formatted(a.getImageURL(), a.getTitle(), a.getTitle()));
+    }
+    return sb.toString();
+  }
+
+  // ── Welcome
+  // ───────────────────────────────────────────────────────────────────
 
   public void sendWelcomeEmail(String mailRecipient, String fullName) {
     try {
@@ -77,7 +127,6 @@ public class EmailService {
                     <td style="padding:28px 48px;">
                       <table width="100%%" cellpadding="0" cellspacing="0"
                              style="border:1px solid #e0ddd6;">
-
                         <tr>
                           <td style="padding:24px;border-bottom:1px solid #e0ddd6;">
                             <p style="margin:0 0 4px;font-size:11px;letter-spacing:3px;color:#999;text-transform:uppercase;">
@@ -85,39 +134,31 @@ public class EmailService {
                             </p>
                           </td>
                         </tr>
-
                         <tr>
                           <td style="padding:20px 24px;">
                             <table width="100%%" cellpadding="0" cellspacing="0"
                                    style="font-size:13px;color:#444;line-height:2;">
                               <tr>
                                 <td style="padding:6px 0;border-bottom:1px solid #f0ede8;">
-                                  <span style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
-                                    01 &nbsp;
-                                  </span>
+                                  <span style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">01 &nbsp;</span>
                                   Browse the collection and explore available works
                                 </td>
                               </tr>
                               <tr>
                                 <td style="padding:6px 0;border-bottom:1px solid #f0ede8;">
-                                  <span style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
-                                    02 &nbsp;
-                                  </span>
+                                  <span style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">02 &nbsp;</span>
                                   Purchase directly — no intermediaries, straight from the artist
                                 </td>
                               </tr>
                               <tr>
                                 <td style="padding:6px 0;">
-                                  <span style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
-                                    03 &nbsp;
-                                  </span>
+                                  <span style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">03 &nbsp;</span>
                                   Track your orders from your site profile
                                 </td>
                               </tr>
                             </table>
                           </td>
                         </tr>
-
                       </table>
                     </td>
                   </tr>
@@ -140,10 +181,11 @@ public class EmailService {
         </body>
         </html>
         """
-        .formatted(
-            fullName,
-            java.time.LocalDate.now().getYear());
+        .formatted(fullName, java.time.LocalDate.now().getYear());
   }
+
+  // ── Order invoice
+  // ─────────────────────────────────────────────────────────────
 
   public void sendOrderInvoice(String mailRecipient, Order order) {
     try {
@@ -152,12 +194,12 @@ public class EmailService {
 
       helper.setFrom("mail@dominickcs.com");
       helper.setTo(mailRecipient);
-      helper.setSubject("Order Confirmed – " + order.getArtwork().getTitle());
-      helper.setText(buildOrderEmailHtml(order), true); // true = isHtml
+      helper.setSubject("Order Confirmed – " + artworkSubjectLabel(order));
+      helper.setText(buildOrderEmailHtml(order), true);
 
       mailSender.send(message);
     } catch (MessagingException e) {
-      System.out.println("Failed to send order invoice to {}" + mailRecipient + " " + e.getMessage());
+      System.out.println("Failed to send order invoice to " + mailRecipient + " " + e.getMessage());
     }
   }
 
@@ -170,6 +212,10 @@ public class EmailService {
         order.getShippingState(),
         order.getShippingPostalCode(),
         order.getShippingCountry()).replace(", ,", ",").trim();
+
+    String artworkRows = buildArtworkRows(order.getArtworks());
+    int itemCount = order.getArtworks().size();
+    String itemLabel = itemCount == 1 ? "1 item" : itemCount + " items";
 
     return """
         <!DOCTYPE html>
@@ -210,70 +256,57 @@ public class EmailService {
                     </td>
                   </tr>
 
-                  <!-- Order details -->
+                  <!-- Artwork list -->
                   <tr>
-                    <td style="padding:28px 48px;">
+                    <td style="padding:28px 48px 0;">
                       <table width="100%%" cellpadding="0" cellspacing="0"
                              style="border:1px solid #e0ddd6;">
-
-                        <!-- Artwork image -->
                         <tr>
-                          <td style="padding:0;">
-                            <img src="%s" alt="%s"
-                                 width="100%%" style="display:block;max-height:300px;object-fit:cover;" />
+                          <td style="padding:16px 24px;border-bottom:1px solid #e0ddd6;">
+                            <p style="margin:0;font-size:11px;letter-spacing:3px;color:#999;text-transform:uppercase;">
+                              %s ordered
+                            </p>
                           </td>
                         </tr>
-
-                        <!-- Artwork info -->
                         <tr>
-                          <td style="padding:24px;">
+                          <td style="padding:8px 24px;">
                             <table width="100%%" cellpadding="0" cellspacing="0">
-                              <tr>
-                                <td style="font-size:18px;color:#1a1a1a;font-style:italic;">
-                                  %s
-                                </td>
-                                <td align="right" style="font-size:18px;color:#1a1a1a;font-weight:bold;">
-                                  %s
-                                </td>
-                              </tr>
+                              %s
                             </table>
                           </td>
                         </tr>
+                      </table>
+                    </td>
+                  </tr>
 
-                        <!-- Divider -->
-                        <tr>
-                          <td style="padding:0 24px;">
-                            <hr style="border:none;border-top:1px solid #e0ddd6;margin:0;" />
-                          </td>
-                        </tr>
-
-                        <!-- Order meta -->
+                  <!-- Order meta -->
+                  <tr>
+                    <td style="padding:16px 48px 28px;">
+                      <table width="100%%" cellpadding="0" cellspacing="0"
+                             style="border:1px solid #e0ddd6;">
                         <tr>
                           <td style="padding:20px 24px;">
                             <table width="100%%" cellpadding="0" cellspacing="0"
                                    style="font-size:13px;color:#666;line-height:2;">
                               <tr>
-                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
-                                  Order
-                                </td>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">Order</td>
                                 <td align="right">#%d</td>
                               </tr>
                               <tr>
-                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
-                                  Ship to
-                                </td>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">Total</td>
+                                <td align="right" style="font-weight:bold;color:#1a1a1a;">%s</td>
+                              </tr>
+                              <tr>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">Ship to</td>
                                 <td align="right">%s</td>
                               </tr>
                               <tr>
-                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
-                                  Address
-                                </td>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">Address</td>
                                 <td align="right" style="color:#444;">%s</td>
                               </tr>
                             </table>
                           </td>
                         </tr>
-
                       </table>
                     </td>
                   </tr>
@@ -295,17 +328,20 @@ public class EmailService {
 
         </body>
         </html>
-        """.formatted(
-        order.getShippingName(),
-        order.getArtwork().getImageURL(),
-        order.getArtwork().getTitle(),
-        order.getArtwork().getTitle(),
-        formattedAmount,
-        order.getId(),
-        order.getShippingName(),
-        shippingAddress,
-        java.time.LocalDate.now().getYear());
+        """
+        .formatted(
+            order.getShippingName(),
+            itemLabel,
+            artworkRows,
+            order.getId(),
+            formattedAmount,
+            order.getShippingName(),
+            shippingAddress,
+            java.time.LocalDate.now().getYear());
   }
+
+  // ── Contact
+  // ───────────────────────────────────────────────────────────────────
 
   public void sendContactEmail(ContactRequest request) {
     try {
@@ -313,14 +349,14 @@ public class EmailService {
       MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
       helper.setFrom("inquiries@valdivia.co");
-      helper.setTo("contact@valdivia.co"); // Daniel's address
+      helper.setTo("contact@valdivia.co");
       helper.setReplyTo(request.email());
       helper.setSubject("New message: " + request.subject());
       helper.setText(buildContactEmailHtml(request), true);
 
       mailSender.send(message);
     } catch (MessagingException e) {
-      System.out.println("Failed to send contact email from" + " " + request.email() + " " + e.getMessage());
+      System.out.println("Failed to send contact email from " + request.email() + " " + e.getMessage());
     }
   }
 
@@ -355,9 +391,7 @@ public class EmailService {
                   <!-- Message body -->
                   <tr>
                     <td style="padding:32px 48px 0;">
-                      <p style="margin:0;font-size:15px;color:#444;line-height:1.7;">
-                        %s
-                      </p>
+                      <p style="margin:0;font-size:15px;color:#444;line-height:1.7;">%s</p>
                     </td>
                   </tr>
 
@@ -371,23 +405,17 @@ public class EmailService {
                             <table width="100%%" cellpadding="0" cellspacing="0"
                                    style="font-size:13px;color:#666;line-height:2;">
                               <tr>
-                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
-                                  From
-                                </td>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">From</td>
                                 <td align="right">%s</td>
                               </tr>
                               <tr>
-                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
-                                  Email
-                                </td>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">Email</td>
                                 <td align="right">
                                   <a href="mailto:%s" style="color:#1a1a1a;">%s</a>
                                 </td>
                               </tr>
                               <tr>
-                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
-                                  Subject
-                                </td>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">Subject</td>
                                 <td align="right">%s</td>
                               </tr>
                             </table>
@@ -414,15 +442,19 @@ public class EmailService {
 
         </body>
         </html>
-        """.formatted(
-        request.message(),
-        request.name(),
-        request.email(),
-        request.email(),
-        request.subject(),
-        request.name(),
-        java.time.LocalDate.now().getYear());
+        """
+        .formatted(
+            request.message(),
+            request.name(),
+            request.email(),
+            request.email(),
+            request.subject(),
+            request.name(),
+            java.time.LocalDate.now().getYear());
   }
+
+  // ── Shipping notification
+  // ─────────────────────────────────────────────────────
 
   public void sendShippingNotification(Order order) {
     try {
@@ -431,16 +463,21 @@ public class EmailService {
 
       helper.setFrom("mail@dominickcs.com");
       helper.setTo(order.getUser().getEmail());
-      helper.setSubject("Your order has shipped – " + order.getArtwork().getTitle());
+      helper.setSubject("Your order has shipped – " + artworkSubjectLabel(order));
       helper.setText(buildShippingEmailHtml(order), true);
 
       mailSender.send(message);
     } catch (MessagingException e) {
-      System.out.println("Failed to send shipping notification for order {}" + order.getId() + " " + e.getMessage());
+      System.out.println("Failed to send shipping notification for order " + order.getId() + " " + e.getMessage());
     }
   }
 
   private String buildShippingEmailHtml(Order order) {
+    String artworkRows = buildArtworkRows(order.getArtworks());
+    int itemCount = order.getArtworks().size();
+    String itemLabel = itemCount == 1 ? "1 item" : itemCount + " items";
+    String carrierName = order.getCarrier() != null ? order.getCarrier().name() : "the carrier";
+
     return """
         <!DOCTYPE html>
         <html lang="en">
@@ -472,71 +509,65 @@ public class EmailService {
                   <tr>
                     <td style="padding:32px 48px 0;">
                       <p style="margin:0;font-size:15px;color:#444;line-height:1.7;">
-                        Good news, %s — your piece has been packed and handed off to %s.
-                        Use the tracking link below to follow its journey.
+                        Good news, %s — your %s been packed and handed off to %s.
+                        Use the tracking link below to follow the journey.
                       </p>
                     </td>
                   </tr>
 
-                  <!-- Tracking + order details -->
+                  <!-- Artwork list -->
                   <tr>
-                    <td style="padding:28px 48px;">
+                    <td style="padding:28px 48px 0;">
                       <table width="100%%" cellpadding="0" cellspacing="0"
                              style="border:1px solid #e0ddd6;">
-
-                        <!-- Artwork image -->
                         <tr>
-                          <td style="padding:0;">
-                            <img src="%s" alt="%s"
-                                 width="100%%" style="display:block;max-height:260px;object-fit:cover;"/>
+                          <td style="padding:16px 24px;border-bottom:1px solid #e0ddd6;">
+                            <p style="margin:0;font-size:11px;letter-spacing:3px;color:#999;text-transform:uppercase;">
+                              %s shipped
+                            </p>
                           </td>
                         </tr>
+                        <tr>
+                          <td style="padding:8px 24px;">
+                            <table width="100%%" cellpadding="0" cellspacing="0">
+                              %s
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
 
-                        <!-- Details -->
+                  <!-- Tracking + order meta -->
+                  <tr>
+                    <td style="padding:16px 48px 28px;">
+                      <table width="100%%" cellpadding="0" cellspacing="0"
+                             style="border:1px solid #e0ddd6;">
                         <tr>
                           <td style="padding:20px 24px;">
                             <table width="100%%" cellpadding="0" cellspacing="0"
                                    style="font-size:13px;color:#666;line-height:2;">
                               <tr>
-                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
-                                  Artwork
-                                </td>
-                                <td align="right" style="font-style:italic;color:#1a1a1a;">%s</td>
-                              </tr>
-                              <tr>
-                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
-                                  Order
-                                </td>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">Order</td>
                                 <td align="right">#%d</td>
                               </tr>
                               <tr>
-                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
-                                  Carrier
-                                </td>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">Carrier</td>
                                 <td align="right">%s</td>
                               </tr>
                               <tr>
-                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
-                                  Tracking
-                                </td>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">Tracking</td>
                                 <td align="right">
-                                  <a href="%s" style="color:#1a1a1a;text-decoration:underline;">
-                                    %s
-                                  </a>
+                                  <a href="%s" style="color:#1a1a1a;text-decoration:underline;">%s</a>
                                 </td>
                               </tr>
                               <tr>
-                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">
-                                  Ship to
-                                </td>
-                                <td align="right">
-                                  %s, %s %s
-                                </td>
+                                <td style="color:#999;letter-spacing:1px;text-transform:uppercase;font-size:11px;">Ship to</td>
+                                <td align="right">%s, %s %s</td>
                               </tr>
                             </table>
                           </td>
                         </tr>
-
                       </table>
                     </td>
                   </tr>
@@ -558,19 +589,20 @@ public class EmailService {
 
         </body>
         </html>
-        """.formatted(
-        order.getShippingName(),
-        order.getTrackingNumber() != null ? order.getCarrier().name() : "the carrier",
-        order.getArtwork().getImageURL(),
-        order.getArtwork().getTitle(),
-        order.getArtwork().getTitle(),
-        order.getId(),
-        order.getCarrier().name(),
-        order.getTrackingURL(),
-        order.getTrackingNumber(),
-        order.getShippingCity(),
-        order.getShippingState(),
-        order.getShippingPostalCode(),
-        java.time.LocalDate.now().getYear());
+        """
+        .formatted(
+            order.getShippingName(),
+            itemCount == 1 ? "piece has" : "pieces have",
+            carrierName,
+            itemLabel,
+            artworkRows,
+            order.getId(),
+            carrierName,
+            order.getTrackingURL(),
+            order.getTrackingNumber(),
+            order.getShippingCity(),
+            order.getShippingState(),
+            order.getShippingPostalCode(),
+            java.time.LocalDate.now().getYear());
   }
 }

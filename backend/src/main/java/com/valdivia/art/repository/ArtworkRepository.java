@@ -1,18 +1,20 @@
 package com.valdivia.art.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.valdivia.art.entity.Artwork;
 import java.util.List;
 import java.util.Optional;
 
-public interface ArtworkRepository extends JpaRepository<Artwork, Long> {
-  List<Artwork> findAllByActive(Boolean active);
+import org.springframework.data.jpa.repository.JpaRepository;
 
-  List<Artwork> findAllByActiveTrueAndAvailableQuantityGreaterThan(Integer availableQuantity);
+import com.valdivia.art.entity.Artwork;
+
+public interface ArtworkRepository extends JpaRepository<Artwork, Long> {
 
   List<Artwork> findAllByOrderByYearCompletedDesc();
 
-  Optional<Artwork> findByTitle(String artworkTitle);
+  List<Artwork> findAllByActive(boolean active);
 
+  List<Artwork> findAllByActiveTrueAndAvailableQuantityGreaterThan(int quantity);
+
+  // Used by CartService to resolve cart items → Artwork entities
+  Optional<Artwork> findByStripeProductID(String stripeProductID);
 }

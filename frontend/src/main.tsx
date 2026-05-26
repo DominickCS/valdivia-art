@@ -1,7 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { ToastContainer, Bounce } from 'react-toastify'
 import './index.css'
+import 'react-toastify/dist/ReactToastify.css';
 import Home from './Home'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
@@ -22,6 +24,13 @@ import ArtworkDetailPage from './pages/ArtworkDetailPage'
 function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Single app-wide toast portal — all components fire toasts here */}
+      <ToastContainer
+        position="bottom-center"
+        autoClose={2000}
+        theme="light"
+        transition={Bounce}
+      />
       <NavigationBar />
       <main className="flex-1">
         {children}

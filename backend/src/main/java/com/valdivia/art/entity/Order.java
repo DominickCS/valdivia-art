@@ -1,6 +1,8 @@
 package com.valdivia.art.entity;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.valdivia.art.entity.enums.Carrier;
 import com.valdivia.art.entity.enums.OrderStatus;
@@ -13,6 +15,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -25,6 +29,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Order {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -36,11 +41,12 @@ public class Order {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "artwork_id", nullable = false)
-  private Artwork artwork;
+  // One order (one Stripe session) can contain multiple artworks
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(name = "order_artworks", joinColumns = @JoinColumn(name = "order_id"), inverseJoinColumns = @JoinColumn(name = "artwork_id"))
+  private List<Artwork> artworks = new ArrayList<>();
 
-  private Long amountTotal; // <- In cents to mirror Stripe
+  private Long amountTotal; // in cents, mirrors Stripe
   private String currency;
 
   @Enumerated(EnumType.STRING)
@@ -52,8 +58,7 @@ public class Order {
   @Enumerated(EnumType.STRING)
   private Carrier carrier;
 
-  // SHIPPING INFORMATION CAPTURED FROM STRIPE SESSION
-
+  // Shipping information captured from Stripe session
   private String shippingName;
   private String shippingLine1;
   private String shippingLine2;
@@ -64,5 +69,4 @@ public class Order {
 
   private Instant createdAt;
   private Instant updatedAt;
-
 }
