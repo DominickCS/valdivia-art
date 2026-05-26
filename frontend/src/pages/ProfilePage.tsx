@@ -54,7 +54,7 @@ export default function ProfilePage() {
                 <div key={order.id} className="border border-black/10 rounded-lg overflow-hidden flex flex-col">
 
                   {/* Artwork carousel */}
-                  <div className="bg-black/5 px-4 pt-4">
+                  <div className="bg-black/5 px-4 pt-4 h-64 [&_img]:h-64 [&_img]:object-contain">
                     {carouselImages.length > 0 ? (
                       <ArtworkCarousel images={carouselImages} />
                     ) : (
