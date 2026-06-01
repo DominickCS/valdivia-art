@@ -41,7 +41,7 @@ jobs:
       - name: Write .env file
         run: |
           cat > .env <<EOF
-          VITE_API_URL=http://art.dominickcs.com:8081
+          VITE_API_URL=http://art.dominickcs.com
           POSTGRES_DB=${{ secrets.POSTGRES_DB }}
           POSTGRES_USER=${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
