@@ -66,7 +66,7 @@ export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
         <div className="flex justify-between mt-4">
           <button
             onClick={() => handlePurchase(artwork.id)}
-            className="button-spcl mx-2 font-normal tracking-widest disabled:opacity-30 disabled:cursor-not-allowed"
+            className="button-spcl font-normal tracking-widest disabled:opacity-30 disabled:cursor-not-allowed"
             disabled={!user}
           >
             {user ? "BUY NOW" : "LOGIN TO BUY"}

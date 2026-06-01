@@ -30,7 +30,7 @@ export interface Order {
   currency: string;
   status: string;
   trackingNumber: string | null;
-  trackingUrl: string | null;
+  trackingURL: string | null;
   shippingName: string;
   shippingLine1: string;
   shippingLine2: string | null;

@@ -29,6 +29,8 @@ interface EditForm {
   price: string;
   heightInches: string;
   widthInches: string;
+  lengthInches: string;
+  weight: string;
   yearCompleted: string;
   forSale: boolean;
   availableQuantity: string;
@@ -144,6 +146,8 @@ export default function CreatorDashboardPage() {
       yearCompleted: form.yearCompleted.value,
       heightInches: form.heightInches.value,
       widthInches: form.widthInches.value,
+      lengthInches: form.lengthInches.value,
+      weight: form.weight.value,
       forSale: form.forSale.checked,
       availableQuantity: form.availableQuantity.value,
       primaryImageIndex: primaryIndex,
@@ -233,6 +237,8 @@ export default function CreatorDashboardPage() {
         price: String(detail.price ?? artwork.price ?? ''),
         heightInches: String(detail.heightInches ?? ''),
         widthInches: String(detail.widthInches ?? ''),
+        lengthInches: String(detail.lengthInches ?? ''),
+        weight: String(detail.weight ?? ''),
         yearCompleted: String(detail.yearCompleted ?? ''),
         forSale: detail.forSale ?? false,
         availableQuantity: String(detail.availableQuantity ?? ''),
@@ -248,6 +254,8 @@ export default function CreatorDashboardPage() {
         price: String(artwork.price ?? ''),
         heightInches: '',
         widthInches: '',
+        lengthInches: '',
+        weight: '',
         yearCompleted: '',
         forSale: false,
         availableQuantity: '',
@@ -328,6 +336,7 @@ export default function CreatorDashboardPage() {
         price: editForm.price,
         heightInches: editForm.heightInches,
         widthInches: editForm.widthInches,
+        lengthInches: editForm.lengthInches,
         yearCompleted: editForm.yearCompleted,
         forSale: editForm.forSale,
         availableQuantity: editForm.availableQuantity,
@@ -680,7 +689,7 @@ export default function CreatorDashboardPage() {
             </div>
 
             {/* Dimensions */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               <div className="space-y-1">
                 <label className="block text-sm font-semibold text-center">Height (in)</label>
                 <input
@@ -697,10 +706,18 @@ export default function CreatorDashboardPage() {
                   className="block w-full border border-black/20 rounded px-3 py-2 text-sm text-center"
                 />
               </div>
+              <div className="space-y-1">
+                <label className="block text-sm font-semibold text-center">Length (in)</label>
+                <input
+                  type="text"
+                  name="lengthInches"
+                  className="block w-full border border-black/20 rounded px-3 py-2 text-sm text-center"
+                />
+              </div>
             </div>
 
-            {/* Price + Year */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* Price + Year + Weight*/}
+            <div className="grid grid-cols-3 gap-3">
               <div className="space-y-1">
                 <label className="block text-sm font-semibold text-center">Price ($)</label>
                 <input
@@ -720,6 +737,14 @@ export default function CreatorDashboardPage() {
                 <input
                   type="text"
                   name="yearCompleted"
+                  className="block w-full border border-black/20 rounded px-3 py-2 text-sm text-center"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="block text-sm font-semibold text-center">Weight (lbs)</label>
+                <input
+                  type="text"
+                  name="weight"
                   className="block w-full border border-black/20 rounded px-3 py-2 text-sm text-center"
                 />
               </div>
@@ -932,7 +957,7 @@ function EditPanel({
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-3 gap-2">
         <div className="space-y-1">
           <label className="block text-xs font-semibold text-center">Height (in)</label>
           <input
@@ -948,6 +973,15 @@ function EditPanel({
             type="text"
             value={editForm.widthInches}
             onChange={e => set('widthInches', e.target.value)}
+            className="block w-full border border-black/20 rounded px-2 py-1.5 text-xs text-center"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="block text-xs font-semibold text-center">Length (in)</label>
+          <input
+            type="text"
+            value={editForm.lengthInches}
+            onChange={e => set('lengthInches', e.target.value)}
             className="block w-full border border-black/20 rounded px-2 py-1.5 text-xs text-center"
           />
         </div>
@@ -975,6 +1009,15 @@ function EditPanel({
             type="text"
             value={editForm.yearCompleted}
             onChange={e => set('yearCompleted', e.target.value)}
+            className="block w-full border border-black/20 rounded px-2 py-1.5 text-xs text-center"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="block text-xs font-semibold text-center">Weight</label>
+          <input
+            type="text"
+            value={editForm.weight}
+            onChange={e => set('weight', e.target.value)}
             className="block w-full border border-black/20 rounded px-2 py-1.5 text-xs text-center"
           />
         </div>

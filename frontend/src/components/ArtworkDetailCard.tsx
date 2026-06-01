@@ -48,7 +48,7 @@ export default function ArtworkDetailCard({ artwork }: { artwork: Artwork }) {
   }
 
   return (
-    <div className="mx-auto max-w-xs sm:max-w-xl py-16">
+    <div className="mx-auto max-w-xs sm:max-w-xl py-16 sm:px-0">
       <div>
         <ArtworkCarousel images={artwork.images} />
       </div>
@@ -58,7 +58,7 @@ export default function ArtworkDetailCard({ artwork }: { artwork: Artwork }) {
           <div className="flex justify-center [&>p]:mx-2">
             <p className="font-light text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>
             <p className="font-light text-lg tracking-widest italic">·</p>
-            <p className="font-light text-lg tracking-widest italic">Available Qty: {artwork.availableQuantity}</p>
+            <p className="font-light text-lg tracking-widest italic">In Stock: {artwork.availableQuantity}</p>
           </div>
         ) : (
           <p className="font-light text-sm tracking-widest italic">Not for sale</p>
@@ -67,7 +67,7 @@ export default function ArtworkDetailCard({ artwork }: { artwork: Artwork }) {
           <div className="flex justify-between mt-4">
             <button
               onClick={() => handlePurchase(artwork.id)}
-              className="button-spcl mx-2 font-normal tracking-widest disabled:opacity-30 disabled:cursor-not-allowed"
+              className="button-spcl w-full mx-2 font-normal tracking-widest disabled:opacity-30 disabled:cursor-not-allowed"
               disabled={!user}
             >
               {user ? "BUY NOW" : "LOGIN TO BUY"}
@@ -75,7 +75,7 @@ export default function ArtworkDetailCard({ artwork }: { artwork: Artwork }) {
             {user && (
               <button
                 onClick={() => handleAddToCart(artwork.id)}
-                className="button-spcl mx-2 font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
+                className="button-spcl mx-2 w-full font-normal tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={cartLoading}
               >
                 {cartLoading ? "ADDING..." : "ADD TO CART"}

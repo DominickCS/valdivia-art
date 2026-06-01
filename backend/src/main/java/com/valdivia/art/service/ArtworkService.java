@@ -72,6 +72,8 @@ public class ArtworkService {
       artwork.setYearCompleted(request.yearCompleted());
       artwork.setHeightInches(request.heightInches());
       artwork.setWidthInches(request.widthInches());
+      artwork.setLengthInches(request.lengthInches());
+      artwork.setWeight(request.weight());
       artwork.setForSale(request.forSale());
       artwork.setActive(true);
       artwork.setAvailableQuantity(request.availableQuantity());
@@ -361,6 +363,8 @@ public class ArtworkService {
       artwork.setTitle(request.title());
       artwork.setHeightInches(request.heightInches());
       artwork.setWidthInches(request.widthInches());
+      artwork.setLengthInches(request.lengthInches());
+      artwork.setWeight(request.weight());
       artwork.setYearCompleted(request.yearCompleted());
       artwork.setForSale(request.forSale());
       artwork.setAvailableQuantity(request.availableQuantity());

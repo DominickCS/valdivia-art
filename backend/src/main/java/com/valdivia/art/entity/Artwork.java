@@ -49,6 +49,9 @@ public class Artwork {
   private String yearCompleted;
 
   @Column(nullable = false)
+  private Double weight;
+
+  @Column(nullable = false)
   private Boolean forSale;
 
   @Column(nullable = false)
@@ -62,6 +65,9 @@ public class Artwork {
 
   @Column(nullable = false)
   private Double heightInches;
+
+  @Column(nullable = false)
+  private Double lengthInches;
 
   @Column(nullable = false)
   private Double widthInches;
