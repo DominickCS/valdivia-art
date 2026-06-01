@@ -62,11 +62,11 @@ jobs:
           EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}
           EOF
 
-      - name: Tear down existing stack and volumes
-        run: docker compose -f compose.yml down -v --remove-orphans
-
-      - name: Start stack and configure Garage
-        run: bash backend/initGarageCICD.sh
+      # - name: Tear down existing stack and volumes
+      #   run: docker compose -f compose.yml down -v --remove-orphans
+      #
+      # - name: Start stack and configure Garage
+      #   run: bash backend/initGarageCICD.sh
 
       - name: Verify Garage env vars
         run: |
