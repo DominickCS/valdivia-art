@@ -62,17 +62,17 @@ jobs:
           EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}
           EOF
 
-      # - name: Tear down existing stack and volumes
-      #   run: docker compose -f compose.yml down -v --remove-orphans
-      #
+      - name: Tear down existing stack and volumes
+        run: docker compose -f compose.yml down -v --remove-orphans
+
       # - name: Start stack and configure Garage
       #   run: bash backend/initGarageCICD.sh
       #
-      # - name: Verify Garage env vars
-      #   run: |
-      #     echo "GARAGE_ACCESS_KEY is set: ${{ env.GARAGE_ACCESS_KEY != '' }}"
-      #     echo "GARAGE_SECRET_KEY is set: ${{ env.GARAGE_SECRET_KEY != '' }}"
-      #
+      - name: Verify Garage env vars
+        run: |
+          echo "GARAGE_ACCESS_KEY is set: ${{ env.GARAGE_ACCESS_KEY != '' }}"
+          echo "GARAGE_SECRET_KEY is set: ${{ env.GARAGE_SECRET_KEY != '' }}"
+
       - name: Pull latest images
         run: docker compose -f compose.yml pull
 
