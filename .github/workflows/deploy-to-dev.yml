@@ -21,6 +21,8 @@ env:
   GARAGE_ENDPOINT: ${{ secrets.GARAGE_ENDPOINT }}
   GARAGE_PUBLIC_URL: ${{ secrets.GARAGE_PUBLIC_URL }}
   GARAGE_REGION: ${{ secrets.GARAGE_REGION }}
+  GARAGE_ACCESS_KEY: ${{ secrets.GARAGE_ACCESS_KEY }}
+  GARAGE_SECRET_KEY: ${{ secrets.GARAGE_SECRET_KEY }}
   # Postgres
   POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
   POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
