@@ -65,7 +65,7 @@ jobs:
           EOF
 
       - name: Tear down existing stack and volumes
-        run: docker compose -f compose.yml down --remove-orphans
+        run: docker compose -f compose.yml down -v --remove-orphans
 
       - name: Start stack and configure Garage
         run: bash backend/initGarageCICD.sh
