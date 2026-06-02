@@ -40,7 +40,7 @@ export default function ProfilePage() {
               // imageUrl (summary) → imageURL (carousel) — note the casing difference.
               const carouselImages = order.artworks.map(a => ({
                 id: String(a.id),
-                imageURL: a.imageUrl,
+                imageURL: a.imageURL,
                 artworkObjectKey: '',
               }));
 

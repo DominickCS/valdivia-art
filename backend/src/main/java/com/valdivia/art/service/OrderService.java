@@ -24,7 +24,7 @@ public class OrderService {
     try {
       Order order = orderRepository.findById(orderId).orElseThrow(NoSuchElementException::new);
       order.setTrackingNumber(request.trackingNumber());
-      order.setTrackingURL(request.carrier().buildTrackingUrl(request.trackingNumber()));
+      order.setTrackingURL(request.carrier().buildTrackingURL(request.trackingNumber()));
       order.setStatus(OrderStatus.SHIPPED);
       order.setUpdatedAt(Instant.now());
       order.setCarrier(request.carrier());

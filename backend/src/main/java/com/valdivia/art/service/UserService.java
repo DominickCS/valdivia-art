@@ -2,11 +2,8 @@ package com.valdivia.art.service;
 
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,9 +33,6 @@ public class UserService {
   private final JwtService jwtService;
   private final StripeClient stripeClient;
   private final EmailService emailService;
-
-  @Autowired
-  private JavaMailSender mailSender;
 
   public ResponseEntity<AuthResponse> registerUser(AuthRequest request) throws RateLimitException, StripeException {
     try {

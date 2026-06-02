@@ -11,7 +11,7 @@ public enum Carrier {
     this.trackingBaseURL = trackingBaseURL;
   }
 
-  public String buildTrackingUrl(String trackingNumber) {
+  public String buildTrackingURL(String trackingNumber) {
     return trackingBaseURL + trackingNumber;
   }
 }

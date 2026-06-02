@@ -19,7 +19,7 @@ export interface Artwork {
 export interface ArtworkSummary {
   id: number;
   title: string;
-  imageUrl: string; // lowercase 'l' — matches Java record serialization
+  imageURL: string; // lowercase 'l' — matches Java record serialization
 }
 
 export interface Order {

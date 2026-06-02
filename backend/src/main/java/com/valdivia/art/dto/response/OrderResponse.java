@@ -15,7 +15,7 @@ public record OrderResponse(
     String currency,
     OrderStatus status,
     String trackingNumber,
-    String trackingUrl,
+    String trackingURL,
     // Shipping address
     String shippingName,
     String shippingLine1,
@@ -28,7 +28,7 @@ public record OrderResponse(
     Instant updatedAt) {
 
   // Lean per-artwork summary nested inside the order response
-  public record ArtworkSummary(Long id, String title, String imageUrl) {
+  public record ArtworkSummary(Long id, String title, String imageURL) {
   }
 
   public static OrderResponse from(Order order) {
