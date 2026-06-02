@@ -96,9 +96,9 @@ export default function ProfilePage() {
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] uppercase tracking-widest text-black/40">Status</span>
                         <span className={`text-[10px] tracking-widest font-semibold px-2 py-0.5 rounded ${order.status === 'SHIPPED' ? 'bg-black/10 text-black/60' :
-                            order.status === 'DELIVERED' ? 'bg-green-100 text-green-700' :
-                              order.status === 'REFUNDED' ? 'bg-red-100 text-red-600' :
-                                'bg-yellow-50 text-yellow-700'
+                          order.status === 'DELIVERED' ? 'bg-green-100 text-green-700' :
+                            order.status === 'REFUNDED' ? 'bg-red-100 text-red-600' :
+                              'bg-yellow-50 text-yellow-700'
                           }`}>
                           {order.status}
                         </span>
@@ -115,7 +115,7 @@ export default function ProfilePage() {
                         <div className="flex items-center justify-between">
                           <span className="text-[10px] uppercase tracking-widest text-black/40">Tracking</span>
                           <Link
-                            to={order.trackingUrl ?? "/"}
+                            to={order.trackingURL ?? "/"}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-xs underline text-black/60 hover:text-black transition-colors"

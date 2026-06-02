@@ -525,7 +525,16 @@ export default function CreatorDashboardPage() {
                 <li key={order.id} className="py-3 space-y-1">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 space-y-0.5">
-                      <p className="text-sm font-semibold truncate">{order.artworkTitle}</p>
+                      <div className="flex gap-1 mt-1">
+                        {order.artworks.map(a => (
+                          <img
+                            key={a.id}
+                            src={a.imageUrl}
+                            alt={a.title}
+                            className="w-10 h-10 object-cover rounded"
+                          />
+                        ))}
+                      </div>
                       <p className="text-xs text-black/40">
                         #{order.id} · {order.shippingName} · ${(order.amountTotal / 100).toFixed(2)}
                       </p>
