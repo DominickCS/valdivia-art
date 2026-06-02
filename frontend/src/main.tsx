@@ -24,12 +24,16 @@ import ArtworkDetailPage from './pages/ArtworkDetailPage'
 function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Single app-wide toast portal — all components fire toasts here */}
       <ToastContainer
+        className={"px-8 py-4"}
         position="bottom-center"
         autoClose={2000}
         theme="light"
         transition={Bounce}
+        hideProgressBar={false}
+        closeOnClick={false}
+        pauseOnHover={true}
+        draggable={true}
       />
       <NavigationBar />
       <main className="flex-1">

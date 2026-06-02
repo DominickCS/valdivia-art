@@ -1,6 +1,6 @@
 import { useState } from "react";
 import api from "../api/AxiosInstance";
-import { toast, ToastContainer, Bounce } from "react-toastify";
+import { toast, Bounce } from "react-toastify";
 
 export default function ContactMePage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +39,6 @@ export default function ContactMePage() {
 
   return (
     <>
-      <ToastContainer />
       <div className="max-w-lg mx-auto px-4 py-16">
         <h1 className="font-extrabold text-2xl underline text-center tracking-wide mb-2">
           CONTACT

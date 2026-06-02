@@ -1,6 +1,6 @@
 import "../index.css";
 import { useEffect, useState } from "react";
-import { toast, ToastContainer, Bounce } from "react-toastify";
+import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import api from "../api/AxiosInstance.js";
 import { useAuth } from "../context/AuthContext.js";
@@ -51,12 +51,10 @@ export default function CartPage() {
       await fetchCart();
       toast.success(
         <p className="font-extrabold text-center text-lg px-4">Item removed.</p>,
-        { position: "bottom-center", autoClose: 1500, theme: "light", transition: Bounce }
       );
     } catch (err) {
       toast.error(
         <p className="font-extrabold text-center text-lg px-4">Could not remove item.</p>,
-        { position: "bottom-center", autoClose: 2000, theme: "light", transition: Bounce }
       );
     } finally {
       setRemovingId(null);
@@ -78,7 +76,6 @@ export default function CartPage() {
         <p className="font-extrabold text-center text-lg px-4">
           {err?.response?.data ?? "Checkout failed. Please try again."}
         </p>,
-        { position: "bottom-center", autoClose: 3000, theme: "light", transition: Bounce }
       );
       setCheckingOut(false);
     }
@@ -122,7 +119,6 @@ export default function CartPage() {
   // ── Cart with items ─────────────────────────────────────────────────────────
   return (
     <>
-      <ToastContainer />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12 space-y-6">
 
         <h1 className="font-extrabold text-base underline text-center tracking-wide">

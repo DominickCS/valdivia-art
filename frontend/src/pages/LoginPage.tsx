@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ToastContainer, toast, Bounce } from 'react-toastify'
+import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import api from '../api/AxiosInstance';
 import { useAuth } from '../context/AuthContext';
@@ -29,16 +29,7 @@ export default function LoginPage() {
       const token = response.data.token;
       login(token)
 
-      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data.message}</p>, {
-        position: "bottom-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Bounce,
-      });
+      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data.message}</p>);
 
       setIsLoading(false);
 
@@ -47,16 +38,7 @@ export default function LoginPage() {
     } catch (err) {
       setIsLoading(false)
       const error = err as AxiosError<{ message: string }>;
-      toast.error(<p className="font-extrabold text-center text-lg px-4">{error.response?.data.message}</p>, {
-        position: "bottom-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Bounce,
-      });
+      toast.error(<p className="font-extrabold text-center text-lg px-4">{error.response?.data.message}</p>);
     }
   }
 
@@ -71,7 +53,6 @@ export default function LoginPage() {
 
   return (
     <>
-      <ToastContainer className="px-8 py-4" />
       <div className='mx-auto max-w-sm h-200 content-center px-8'>
         <form onSubmit={handleSubmit} className='[&>input]:bg-white [&>input]:text-black [&>input]:px-2 font-semibold *:my-4 flex flex-col'>
           <label htmlFor='email'>Email Address</label>

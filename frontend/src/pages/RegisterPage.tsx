@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast, Bounce, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import api from '../api/AxiosInstance';
 
 export default function RegisterPage() {
@@ -24,32 +24,14 @@ export default function RegisterPage() {
       });
 
 
-      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data.message}</p>, {
-        position: "bottom-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Bounce,
-      });
+      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data.message}</p>);
 
       setIsLoading(false);
       setTimeout(() => navigate("/"), 3000);
 
     } catch (err) {
       setIsLoading(false);
-      toast.error(<p className="font-extrabold text-center text-lg px-4">{"An error has occurred during registration"}</p>, {
-        position: "bottom-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
-        transition: Bounce,
-      });
+      toast.error(<p className="font-extrabold text-center text-lg px-4">{"An error has occurred during registration"}</p>);
     }
   }
 
@@ -64,7 +46,6 @@ export default function RegisterPage() {
 
   return (
     <>
-      <ToastContainer className="px-8 py-4" />
       <div className='mx-auto max-w-sm h-200 content-center px-8'>
         <form onSubmit={handleSubmit} className='[&>input]:bg-white [&>input]:text-black [&>input]:px-2 font-semibold *:my-4 flex flex-col'>
           <label htmlFor="fullName">Full Name</label>

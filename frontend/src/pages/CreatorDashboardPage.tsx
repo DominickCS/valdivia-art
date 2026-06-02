@@ -1,6 +1,6 @@
 // Creator Dashboard Page
 import api from '../api/AxiosInstance';
-import { toast, ToastContainer, Bounce } from "react-toastify";
+import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import type { Artwork, Order } from '../types/definitions';
 
@@ -128,9 +128,7 @@ export default function CreatorDashboardPage() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (images.length === 0) {
-      toast.error(<p className="font-extrabold text-center text-lg px-4">Please add at least one image.</p>, {
-        position: "bottom-center", autoClose: 2000, theme: "light", transition: Bounce,
-      });
+      toast.error(<p className="font-extrabold text-center text-lg px-4">Please add at least one image.</p>);
       return;
     }
     const form = e.target as HTMLFormElement & {
@@ -158,10 +156,7 @@ export default function CreatorDashboardPage() {
       const response = await api.post('/api/admin/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data}</p>, {
-        position: "bottom-center", autoClose: 2000, hideProgressBar: false,
-        closeOnClick: false, pauseOnHover: true, draggable: true, theme: "light", transition: Bounce,
-      });
+      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data}</p>);
       form.reset();
       setImages([]);
       fetchAllArtwork();
@@ -170,10 +165,7 @@ export default function CreatorDashboardPage() {
     } catch (err) {
       setIsLoading(false);
       if (err instanceof Error)
-        toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>, {
-          position: "bottom-center", autoClose: 2000, hideProgressBar: false,
-          closeOnClick: false, pauseOnHover: true, draggable: true, theme: "light", transition: Bounce,
-        });
+        toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>);
     }
   }
 
@@ -184,16 +176,11 @@ export default function CreatorDashboardPage() {
       const response = await api.post(`/api/admin/archive/${id}`, parseInt(id), {
         headers: { 'Content-Type': 'application/json' },
       });
-      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data}</p>, {
-        position: "bottom-center", autoClose: 2000, hideProgressBar: false,
-        closeOnClick: false, pauseOnHover: true, draggable: true, theme: "light", transition: Bounce,
-      });
+      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data}</p>);
       fetchAllArtwork(); fetchActiveArtwork();
     } catch (err) {
       if (err instanceof Error)
-        toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>, {
-          position: "bottom-center", autoClose: 2000, theme: "light", transition: Bounce,
-        });
+        toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>);
     }
   }
 
@@ -202,16 +189,11 @@ export default function CreatorDashboardPage() {
       const response = await api.post(`/api/admin/unarchive/${id}`, parseInt(id), {
         headers: { 'Content-Type': 'application/json' },
       });
-      toast.success(<p className="font-extrabold text-center text-lg mx-4">{response.data}</p>, {
-        position: "bottom-center", autoClose: 2000, hideProgressBar: false,
-        closeOnClick: false, pauseOnHover: true, draggable: true, theme: "light", transition: Bounce,
-      });
+      toast.success(<p className="font-extrabold text-center text-lg mx-4">{response.data}</p>);
       fetchAllArtwork(); fetchActiveArtwork();
     } catch (err) {
       if (err instanceof Error)
-        toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>, {
-          position: "bottom-center", autoClose: 2000, theme: "light", transition: Bounce,
-        });
+        toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>);
     }
   }
 
@@ -315,7 +297,6 @@ export default function CreatorDashboardPage() {
     if (remainingImages === 0) {
       toast.error(
         <p className="font-extrabold text-center text-lg px-4">A listing must have at least one image.</p>,
-        { position: "bottom-center", autoClose: 2500, theme: "light", transition: Bounce }
       );
       return;
     }
@@ -352,7 +333,6 @@ export default function CreatorDashboardPage() {
 
       toast.success(
         <p className="font-extrabold text-center text-lg px-4">{response.data}</p>,
-        { position: "bottom-center", autoClose: 2000, theme: "light", transition: Bounce }
       );
 
       closeEditForm();
@@ -362,7 +342,6 @@ export default function CreatorDashboardPage() {
       if (err instanceof Error)
         toast.error(
           <p className="font-extrabold text-center text-lg px-4">{err.message}</p>,
-          { position: "bottom-center", autoClose: 2000, theme: "light", transition: Bounce }
         );
     } finally {
       setIsSavingEdit(false);
@@ -379,16 +358,12 @@ export default function CreatorDashboardPage() {
         trackingNumber: shipForm.trackingNumber,
         carrier: shipForm.carrier,
       });
-      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data}</p>, {
-        position: "bottom-center", autoClose: 2000, theme: "light", transition: Bounce,
-      });
+      toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data}</p>);
       setShipForm(null);
       fetchOrders();
     } catch (err) {
       if (err instanceof Error)
-        toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>, {
-          position: "bottom-center", autoClose: 2000, theme: "light", transition: Bounce,
-        });
+        toast.error(<p className="font-extrabold text-center text-lg px-4">{err.message}</p>);
     }
   }
 
@@ -396,8 +371,6 @@ export default function CreatorDashboardPage() {
 
   return (
     <>
-      <ToastContainer />
-
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-6">
 
         {/* ── Listings ── */}
@@ -529,7 +502,7 @@ export default function CreatorDashboardPage() {
                         {order.artworks.map(a => (
                           <img
                             key={a.id}
-                            src={a.imageUrl}
+                            src={a.imageURL}
                             alt={a.title}
                             className="w-10 h-10 object-cover rounded"
                           />
