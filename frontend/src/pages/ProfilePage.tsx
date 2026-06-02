@@ -12,6 +12,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchAllOrders = async () => {
       const response = await api.get('/api/artwork/orders');
+      console.log(JSON.stringify(response.data, null, 2));
       setOrders(response.data);
     };
     fetchAllOrders();

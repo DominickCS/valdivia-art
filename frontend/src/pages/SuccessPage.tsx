@@ -11,7 +11,7 @@ export default function SuccessPage() {
   })
   return (
     <>
-      <div className="mt-24 px-12 [&>p]:leading-10 tracking-tight">
+      <div className="mt-24 px-12 [&>p]:leading-10 tracking-tight min-h-svh">
         <img className="mx-auto" src={Checkmark} width={200} />
         <h1 className="text-center font-extrabold text-4xl mb-8">PAYMENT SUCCESSFUL!</h1>
         <p className="text-center font-extrabold text-xl">An invoice for your purchase will be sent to your email! <br />Please reach out to support if you have any issues.</p>
