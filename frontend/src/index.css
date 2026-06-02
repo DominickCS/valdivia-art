@@ -5,6 +5,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+* {
+  @apply overflow-y-hidden;
+ }
+
 input {
   border: solid black 2px;
 }
