@@ -39,8 +39,8 @@ export default function ProfilePage() {
             {orders.map((order: Order) => {
               // Map ArtworkSummary[] → ArtworkImage[] shape that ArtworkCarousel expects.
               // imageUrl (summary) → imageURL (carousel) — note the casing difference.
-              const carouselImages = order.artworks.map(a => ({
-                id: String(a.id),
+              const carouselImages = order.artworks.map((a, i) => ({
+                id: `${order.id}-${a.id}-${i}`,  // scoped to the order
                 imageURL: a.imageURL,
                 artworkObjectKey: '',
               }));
