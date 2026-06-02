@@ -34,6 +34,7 @@ export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
         { position: "bottom-center", autoClose: 2000, theme: "light", transition: Bounce }
       );
     } catch (err: any) {
+      console.log(err?.response?.status, err?.response?.data)
       toast.error(
         <p className="font-extrabold text-center text-lg px-4">
           {err?.response?.data ?? "Could not add to cart."}
