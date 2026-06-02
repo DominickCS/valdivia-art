@@ -338,6 +338,7 @@ export default function CreatorDashboardPage() {
         heightInches: editForm.heightInches,
         widthInches: editForm.widthInches,
         lengthInches: editForm.lengthInches,
+        weight: editForm.weight,
         yearCompleted: editForm.yearCompleted,
         forSale: editForm.forSale,
         availableQuantity: editForm.availableQuantity,
