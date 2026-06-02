@@ -28,13 +28,12 @@ export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
   async function handleAddToCart(artworkId: number) {
     try {
       setCartLoading(true);
-      await api.post(`/api/cart/add/${artworkId}?quantity=1`);
+      const response = await api.post(`/api/cart/add/${artworkId}?quantity=1`);
       toast.success(
-        <p className="font-extrabold text-center text-lg px-4">Added to cart!</p>,
+        <p className="font-extrabold text-center text-lg px-4">{response.data ?? "Added to cart."}</p>,
         { position: "bottom-center", autoClose: 2000, theme: "light", transition: Bounce }
       );
     } catch (err: any) {
-      console.log(err?.response?.status, err?.response?.data)
       toast.error(
         <p className="font-extrabold text-center text-lg px-4">
           {err?.response?.data ?? "Could not add to cart."}

@@ -10,8 +10,6 @@ export default function ArtworkDetailCard({ artwork }: { artwork: Artwork }) {
   const { user } = useAuth();
   const [cartLoading, setCartLoading] = useState(false);
 
-  console.log(artwork)
-
   async function handlePurchase(id: number) {
     try {
       const response = await api.post(
