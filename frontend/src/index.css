@@ -5,9 +5,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
-* {
-  @apply overflow-y-hidden;
- }
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
 
 input {
   border: solid black 2px;
