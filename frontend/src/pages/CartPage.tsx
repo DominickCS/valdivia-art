@@ -33,7 +33,7 @@ export default function CartPage() {
       const response = await api.get("/api/cart");
       setCart(response.data);
     } catch (err) {
-      console.error(err);
+      console.error(err); // TODO : Properly log this error
     } finally {
       setIsLoading(false);
     }
@@ -97,7 +97,7 @@ export default function CartPage() {
   // ── Loading ─────────────────────────────────────────────────────────────────
   if (isLoading) {
     return (
-      <div className="max-w-lg mx-auto px-4 py-24 text-center">
+      <div className="max-w-lg min-h-svh content-center mx-auto px-4 py-24 text-center">
         <p className="text-sm text-black/30 tracking-widest">Loading cart...</p>
       </div>
     );
@@ -106,7 +106,7 @@ export default function CartPage() {
   // ── Empty cart ──────────────────────────────────────────────────────────────
   if (!cart || cart.items.length === 0) {
     return (
-      <div className="max-w-lg mx-auto px-4 py-24 text-center space-y-4">
+      <div className="max-w-lg min-h-svh content-center mx-auto px-4 py-8 text-center space-y-4">
         <p className="text-2xl font-extrabold tracking-wide">YOUR CART</p>
         <p className="text-sm text-black/40">Your cart is empty.</p>
         <Link to="/for-sale" className="button-spcl inline-block mt-4 px-6 py-2 text-sm tracking-widest">
@@ -119,7 +119,7 @@ export default function CartPage() {
   // ── Cart with items ─────────────────────────────────────────────────────────
   return (
     <>
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-12 space-y-6">
+      <div className="max-w-2xl min-h-svh content-center mx-auto px-4 sm:px-6 py-12 space-y-6">
 
         <h1 className="font-extrabold text-base underline text-center tracking-wide">
           YOUR CART

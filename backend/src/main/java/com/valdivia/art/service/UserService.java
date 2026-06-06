@@ -1,6 +1,7 @@
 package com.valdivia.art.service;
 
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.stripe.StripeClient;
 import com.stripe.exception.RateLimitException;
@@ -17,11 +19,14 @@ import com.stripe.model.Customer;
 import com.stripe.param.CustomerCreateParams;
 import com.valdivia.art.dto.request.AuthRequest;
 import com.valdivia.art.dto.response.AuthResponse;
+import com.valdivia.art.entity.PasswordResetToken;
 import com.valdivia.art.entity.User;
+import com.valdivia.art.repository.PasswordResetTokenRepository;
 import com.valdivia.art.repository.UserRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -33,6 +38,7 @@ public class UserService {
   private final JwtService jwtService;
   private final StripeClient stripeClient;
   private final EmailService emailService;
+  private final PasswordResetTokenRepository resetTokenRepository;
 
   public ResponseEntity<AuthResponse> registerUser(AuthRequest request) throws RateLimitException, StripeException {
     try {
@@ -84,5 +90,37 @@ public class UserService {
       return ResponseEntity.status(HttpStatus.FORBIDDEN)
           .body(new AuthResponse(null, "Invalid email or password provided!"));
     }
+  }
+
+  public void initiatePasswordReset(String email) {
+    // Fail silently if email not found — don't leak account existence
+    userRepository.findByEmail(email).ifPresent(user -> {
+      // Delete any existing token for this user before issuing a new one
+      resetTokenRepository.deleteByUser(user);
+
+      String token = UUID.randomUUID().toString();
+      resetTokenRepository.save(new PasswordResetToken(token, user));
+
+      emailService.sendPasswordResetEmail(user.getEmail(), user.getFullName(), token);
+    });
+  }
+
+  // Step 2 — user lands on /reset-password?token=..., submits new password
+  @Transactional
+  public void resetPassword(String token, String newPassword) {
+    PasswordResetToken resetToken = resetTokenRepository.findByToken(token)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid or expired reset link"));
+
+    if (resetToken.isExpired()) {
+      resetTokenRepository.delete(resetToken);
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Reset link has expired — please request a new one");
+    }
+
+    User user = resetToken.getUser();
+    user.setPassword(passwordEncoder.encode(newPassword));
+    userRepository.save(user);
+
+    // Consume the token — one-time use
+    resetTokenRepository.delete(resetToken);
   }
 }

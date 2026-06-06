@@ -1,18 +1,15 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import api from '../api/AxiosInstance';
-import { useAuth } from '../context/AuthContext';
 import type { AxiosError } from 'axios';
 
 
 export default function LoginPage() {
-  const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     "email": '',
-    "password": ''
   })
   const navigate = useNavigate()
 
@@ -21,19 +18,15 @@ export default function LoginPage() {
 
     try {
       setIsLoading(true);
-      const response = await api.post('/api/auth/login', {
+      const response = await api.post('/api/auth/forgot-password', {
         email: formData.email,
-        password: formData.password,
       });
-
-      const token = response.data.token;
-      login(token)
 
       toast.success(<p className="font-extrabold text-center text-lg px-4">{response.data.message}</p>);
 
       setIsLoading(false);
 
-      setTimeout(() => navigate("/"), 3000);
+      setTimeout(() => navigate("/login"), 3000);
 
     } catch (err) {
       setIsLoading(false)
@@ -57,14 +50,9 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className='[&>input]:bg-white [&>input]:text-black [&>input]:px-2 font-semibold *:my-4 flex flex-col'>
           <label htmlFor='email'>Email Address</label>
           <input type='email' value={formData.email} onChange={handleChange} name='email' />
-          <label htmlFor='password'>Password</label>
-          <input type='password' value={formData.password} onChange={handleChange} name='password' />
-          <button type='submit' disabled={isLoading} className='button-spcl mx-auto w-full'>{isLoading ? "PLEASE WAIT..." : "LOGIN"}</button>
+          <button type='submit' disabled={isLoading} className='button-spcl mx-auto w-full'>{isLoading ? "PLEASE WAIT..." : "RESET PASSWORD"}</button>
         </form >
-        <div className='flex justify-between text-nowrap [&>p]:text-sm [&>p]:hover:font-extrabold [&>p]:transition-all [&>p]:duration-300'>
-          <p><Link to={"/register"}>I don't have an account</Link></p>
-          <p><Link to={"/forgot-password"}>I forgot my password</Link></p>
-        </div>
+        <p className='font-light text-sm px-4 text-center'>A password reset link will be sent to your email if your account is found in our records.</p>
       </div >
     </>
   )

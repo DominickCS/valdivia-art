@@ -1,5 +1,7 @@
 package com.valdivia.art.controller;
 
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,5 +33,18 @@ public class AuthController {
   public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request, HttpServletRequest httpRequest,
       HttpServletResponse httpResponse) {
     return userService.login(request, httpRequest, httpResponse);
+  }
+
+  @PostMapping("/forgot-password")
+  public ResponseEntity<Void> forgotPassword(@RequestBody Map<String, String> body) {
+    userService.initiatePasswordReset(body.get("email"));
+    // Always 200 — never reveal whether the email exists
+    return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("/reset-password")
+  public ResponseEntity<Void> resetPassword(@RequestBody Map<String, String> body) {
+    userService.resetPassword(body.get("token"), body.get("newPassword"));
+    return ResponseEntity.ok().build();
   }
 }

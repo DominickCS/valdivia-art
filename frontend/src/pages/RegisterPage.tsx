@@ -56,7 +56,7 @@ export default function RegisterPage() {
           <input type='password' value={formData.password} onChange={handleChange} name='password' />
           <button type="submit" disabled={isLoading} className="button-spcl mx-auto w-full">{isLoading ? "PLEASE WAIT..." : "REGISTER"}</button>
         </form>
-        <p className='text-center'>Already have an account? <Link to={"/login"}><span className='hover:font-extrabold duration-300 transition-all'>LOGIN</span></Link></p>
+        <p className='text-sm text-center hover:font-extrabold duration-300 transition-all'><Link to={"/login"}>I already have an account</Link></p>
       </div>
     </>
   )

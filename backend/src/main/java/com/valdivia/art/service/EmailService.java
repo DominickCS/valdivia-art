@@ -605,4 +605,137 @@ public class EmailService {
             order.getShippingPostalCode(),
             java.time.LocalDate.now().getYear());
   }
+
+  // ── Password Reset
+  // ────────────────────────────────────────────────────────────
+
+  public void sendPasswordResetEmail(String mailRecipient, String fullName, String resetToken) {
+    try {
+      MimeMessage message = mailSender.createMimeMessage();
+      MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+      helper.setFrom("mail@dominickcs.com");
+      helper.setTo(mailRecipient);
+      helper.setSubject("Reset your password – Valdivia Art");
+      helper.setText(buildPasswordResetEmailHtml(fullName, resetToken), true);
+
+      mailSender.send(message);
+    } catch (MessagingException e) {
+      System.out.println("Failed to send password reset email to " + mailRecipient + " " + e.getMessage());
+    }
+  }
+
+  private String buildPasswordResetEmailHtml(String fullName, String resetToken) {
+    String resetUrl = "http://art.dominickcs.com/reset-password?token=" + resetToken;
+
+    return """
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+          <title>Reset Password</title>
+        </head>
+        <body style="margin:0;padding:0;background:#f5f5f0;font-family:Georgia,serif;">
+
+          <table width="100%%" cellpadding="0" cellspacing="0" style="background:#f5f5f0;padding:40px 0;">
+            <tr>
+              <td align="center">
+                <table width="560" cellpadding="0" cellspacing="0"
+                       style="background:#ffffff;border:1px solid #e0ddd6;max-width:560px;width:100%%;">
+
+                  <!-- Header -->
+                  <tr>
+                    <td style="padding:40px 48px 32px;border-bottom:1px solid #e0ddd6;text-align:center;">
+                      <p style="margin:0 0 8px;font-size:11px;letter-spacing:4px;color:#999;text-transform:uppercase;">
+                        Valdivia Art
+                      </p>
+                      <h1 style="margin:0;font-size:26px;font-weight:normal;color:#1a1a1a;letter-spacing:1px;">
+                        Password Reset
+                      </h1>
+                    </td>
+                  </tr>
+
+                  <!-- Body -->
+                  <tr>
+                    <td style="padding:36px 48px 0;">
+                      <p style="margin:0;font-size:15px;color:#444;line-height:1.7;">
+                        Hi %s, we received a request to reset the password for your account.
+                        Click the button below to choose a new one. This link expires in
+                        <strong style="color:#1a1a1a;">30 minutes</strong>.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- CTA -->
+                  <tr>
+                    <td style="padding:32px 48px;">
+                      <table cellpadding="0" cellspacing="0" width="100%%">
+                        <tr>
+                          <td align="center">
+                            <a href="%s"
+                               style="display:inline-block;padding:14px 36px;background:#1a1a1a;color:#ffffff;
+                                      font-family:Georgia,serif;font-size:13px;letter-spacing:3px;
+                                      text-transform:uppercase;text-decoration:none;">
+                              Reset Password
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- Token fallback -->
+                  <tr>
+                    <td style="padding:0 48px 28px;">
+                      <table width="100%%" cellpadding="0" cellspacing="0"
+                             style="border:1px solid #e0ddd6;">
+                        <tr>
+                          <td style="padding:16px 24px;border-bottom:1px solid #e0ddd6;">
+                            <p style="margin:0;font-size:11px;letter-spacing:3px;color:#999;text-transform:uppercase;">
+                              Or paste this link manually
+                            </p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding:16px 24px;">
+                            <a href="%s"
+                               style="font-size:12px;color:#666;word-break:break-all;text-decoration:underline;">
+                              %s
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- Didn't request notice -->
+                  <tr>
+                    <td style="padding:0 48px 36px;">
+                      <p style="margin:0;font-size:13px;color:#aaa;line-height:1.7;text-align:center;">
+                        If you didn't request this, you can safely ignore this email.<br/>
+                        Your password will not change.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- Footer -->
+                  <tr>
+                    <td style="padding:0 48px 40px;text-align:center;border-top:1px solid #e0ddd6;">
+                      <p style="margin:16px 0 0;font-size:12px;color:#aaa;line-height:1.8;">
+                        &copy; %d Valdivia.co All rights reserved.
+                      </p>
+                    </td>
+                  </tr>
+
+                </table>
+              </td>
+            </tr>
+          </table>
+
+        </body>
+        </html>
+        """
+        .formatted(fullName, resetUrl, resetUrl, resetUrl, java.time.LocalDate.now().getYear());
+  }
 }

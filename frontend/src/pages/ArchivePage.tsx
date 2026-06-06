@@ -20,8 +20,8 @@ export default function ArchivePage() {
   if (!allArtwork && isLoading) {
     return (
       <>
-        <div className="px-4 text-center"></div>
-        <h1 className="font-extrabold text-3xl">LOADING...</h1>
+        <div className="px-8 min-h-svh content-center text-center"></div>
+        <h1 className="font-bold text-2xl">LOADING...</h1>
       </>
     )
   }
@@ -40,8 +40,8 @@ export default function ArchivePage() {
   else if (allArtwork.length == 0 && !isLoading) {
     return (
       <>
-        <div className="px-4 text-center">
-          <h1 className="font-extrabold text-3xl">There is no artwork to display.</h1>
+        <div className="px-8 min-h-svh content-center text-center">
+          <h1 className="font-bold text-2xl">There is no artwork to display.</h1>
         </div>
       </>
     )
@@ -49,8 +49,8 @@ export default function ArchivePage() {
   else {
     return (
       <>
-        <div className="px-4 text-center">
-          <h1 className="font-extrabold text-3xl">There was an error fetching the archive.</h1>
+        <div className="px-8 min-h-svh content-center text-center">
+          <h1 className="font-bold text-2xl">There was an error fetching the archive.</h1>
         </div>
       </>
     )
