@@ -7,7 +7,7 @@ public record ArtworkEditRequest(
     String title,
     Double heightInches,
     Double widthInches,
-    Double lengthInches,
+    Double depthInches,
     Double weight,
     BigDecimal price,
     String yearCompleted,

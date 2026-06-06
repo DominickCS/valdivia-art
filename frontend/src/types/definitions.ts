@@ -1,6 +1,8 @@
 export interface Artwork {
   id: number;
   title: string;
+  heightInches: number;
+  widthInches: number;
   artworkObjectKey: string;
   images: ArtworkImage[];
   imageURL: string;

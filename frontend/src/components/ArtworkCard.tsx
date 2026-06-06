@@ -54,9 +54,11 @@ export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
         width={450}
         alt={artwork.title + " by Daniel Valdivia"}
       />
-      <p className="hover:scale-110 hover:opacity-40 transition-all duration-300 text-3xl mt-8 font-extrabold tracking-wide">
+      <p className="hover:scale-110 hover:opacity-40 transition-all duration-300 text-3xl mt-8 mb-2 font-extrabold tracking-wide">
         <Link to={`/artwork/detail/${artwork.id}`}>{artwork.title}</Link>
       </p>
+      <p className="font-extralight text-sm italic mb-4">{artwork.heightInches}in x {artwork.widthInches}in</p>
+
       {artwork.forSale && artwork.availableQuantity > 0 ? (
         <p className="mt-2 font-light text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>
       ) : (

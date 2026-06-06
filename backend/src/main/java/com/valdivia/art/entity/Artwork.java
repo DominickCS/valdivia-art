@@ -67,10 +67,10 @@ public class Artwork {
   private Double heightInches;
 
   @Column(nullable = false)
-  private Double lengthInches;
+  private Double widthInches;
 
   @Column(nullable = false)
-  private Double widthInches;
+  private Double depthInches;
 
   @Column(nullable = false)
   private Integer availableQuantity;

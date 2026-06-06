@@ -30,7 +30,7 @@ interface EditForm {
   price: string;
   heightInches: string;
   widthInches: string;
-  lengthInches: string;
+  depthInches: string;
   weight: string;
   yearCompleted: string;
   forSale: boolean;
@@ -145,7 +145,7 @@ export default function CreatorDashboardPage() {
       yearCompleted: form.yearCompleted.value,
       heightInches: form.heightInches.value,
       widthInches: form.widthInches.value,
-      lengthInches: form.lengthInches.value,
+      depthInches: form.depthInches.value,
       weight: form.weight.value,
       forSale: form.forSale.checked,
       availableQuantity: form.availableQuantity.value,
@@ -220,7 +220,7 @@ export default function CreatorDashboardPage() {
         price: String(detail.price ?? artwork.price ?? ''),
         heightInches: String(detail.heightInches ?? ''),
         widthInches: String(detail.widthInches ?? ''),
-        lengthInches: String(detail.lengthInches ?? ''),
+        depthInches: String(detail.depthInches ?? ''),
         weight: String(detail.weight ?? ''),
         yearCompleted: String(detail.yearCompleted ?? ''),
         forSale: detail.forSale ?? false,
@@ -237,7 +237,7 @@ export default function CreatorDashboardPage() {
         price: String(artwork.price ?? ''),
         heightInches: '',
         widthInches: '',
-        lengthInches: '',
+        depthInches: '',
         weight: '',
         yearCompleted: '',
         forSale: false,
@@ -318,7 +318,7 @@ export default function CreatorDashboardPage() {
         price: editForm.price,
         heightInches: editForm.heightInches,
         widthInches: editForm.widthInches,
-        lengthInches: editForm.lengthInches,
+        depthInches: editForm.depthInches,
         weight: editForm.weight,
         yearCompleted: editForm.yearCompleted,
         forSale: editForm.forSale,
@@ -673,7 +673,7 @@ export default function CreatorDashboardPage() {
             </div>
 
             {/* Dimensions */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-4 gap-2">
               <div className="space-y-1">
                 <label className="block text-sm font-semibold text-center">Height (in)</label>
                 <input
@@ -691,17 +691,25 @@ export default function CreatorDashboardPage() {
                 />
               </div>
               <div className="space-y-1">
-                <label className="block text-sm font-semibold text-center">Length (in)</label>
+                <label className="block text-sm font-semibold text-center">Depth (in)</label>
                 <input
                   type="text"
-                  name="lengthInches"
+                  name="depthInches"
+                  className="block w-full border border-black/20 rounded px-3 py-2 text-sm text-center"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="block text-sm font-semibold text-center">Weight (lbs)</label>
+                <input
+                  type="text"
+                  name="weight"
                   className="block w-full border border-black/20 rounded px-3 py-2 text-sm text-center"
                 />
               </div>
             </div>
 
             {/* Price + Year + Weight*/}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label className="block text-sm font-semibold text-center">Price ($)</label>
                 <input
@@ -717,21 +725,14 @@ export default function CreatorDashboardPage() {
                 />
               </div>
               <div className="space-y-1">
-                <label className="block text-sm font-semibold text-center">Year</label>
+                <label className="block text-sm font-semibold text-center">Year Completed</label>
                 <input
                   type="text"
                   name="yearCompleted"
                   className="block w-full border border-black/20 rounded px-3 py-2 text-sm text-center"
                 />
               </div>
-              <div className="space-y-1">
-                <label className="block text-sm font-semibold text-center">Weight (lbs)</label>
-                <input
-                  type="text"
-                  name="weight"
-                  className="block w-full border border-black/20 rounded px-3 py-2 text-sm text-center"
-                />
-              </div>
+
             </div>
 
             {/* For Sale + Quantity */}
@@ -741,7 +742,7 @@ export default function CreatorDashboardPage() {
                 <input type="checkbox" name="forSale" className="w-5 h-5" />
               </div>
               <div className="space-y-1">
-                <label className="block text-sm font-semibold text-center">Available Qty</label>
+                <label className="block text-sm font-semibold text-center">Available Quantity</label>
                 <input
                   type="number"
                   name="availableQuantity"
@@ -961,11 +962,11 @@ function EditPanel({
           />
         </div>
         <div className="space-y-1">
-          <label className="block text-xs font-semibold text-center">Length (in)</label>
+          <label className="block text-xs font-semibold text-center">Depth (in)</label>
           <input
             type="text"
-            value={editForm.lengthInches}
-            onChange={e => set('lengthInches', e.target.value)}
+            value={editForm.depthInches}
+            onChange={e => set('depthInches', e.target.value)}
             className="block w-full border border-black/20 rounded px-2 py-1.5 text-xs text-center"
           />
         </div>

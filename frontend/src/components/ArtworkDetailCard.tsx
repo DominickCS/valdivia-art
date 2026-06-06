@@ -51,7 +51,8 @@ export default function ArtworkDetailCard({ artwork }: { artwork: Artwork }) {
         <ArtworkCarousel images={artwork.images} />
       </div>
       <div className="text-center items-center *:mx-8 min-h-full bottom-0">
-        <p className="text-3xl font-extrabold tracking-wide mt-4 mb-2">{artwork.title}</p>
+        <p className="text-3xl font-extrabold tracking-wide mt-4 my-2">{artwork.title}</p>
+        <p className="font-extralight text-sm italic mb-4">{artwork.heightInches}in x {artwork.widthInches}in</p>
         {artwork.forSale && artwork.availableQuantity > 0 ? (
           <div className="flex justify-center [&>p]:mx-2">
             <p className="font-light text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>
