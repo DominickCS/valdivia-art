@@ -1,8 +1,14 @@
-- Remove for sale from Archive view
-- IOS 17 and below video compatibility
-# v2.0
-- Live and historical IM via websockets
-- Virtual OpenGL space virtual gallery / home tour style navigation -> Three.js
+# VALDIVIA ART
+
+## Feature Roadmap
+
+### v1.0 (Launch day available)
+
+### v2.0
+- Live and historical messaging via websockets
 - Fully automated Shipping via Shippo
 - Nested For sale (Originals & Prints routes)
 - Press / Publications / Articles route
+
+## v3.0
+- Virtual art gallery using Three.js
