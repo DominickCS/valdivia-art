@@ -52,7 +52,18 @@ export default function ArtworkDetailCard({ artwork }: { artwork: Artwork }) {
       </div>
       <div className="text-center items-center *:mx-8 min-h-full bottom-0">
         <p className="text-3xl font-extrabold tracking-wide mt-4 my-2">{artwork.title}</p>
-        <p className="font-extralight text-sm italic mb-4">{artwork.heightInches}in x {artwork.widthInches}in</p>
+        <div className="flex justify-center [&>p]:mx-2">
+          <p className="font-extralight text-sm italic">{artwork.heightInches}in h x {artwork.widthInches}in w</p>
+          {artwork.medium && artwork.medium.length > 0 ?
+            <p className="font-extralight text-sm italic">{artwork.medium}</p>
+            :
+            null
+          }
+        </div>
+
+        {artwork.description && artwork.description.length > 0 ?
+          <p className="my-4 tracking-widest italic">{artwork.description}</p>
+          : null}
         {artwork.forSale && artwork.availableQuantity > 0 ? (
           <div className="flex justify-center [&>p]:mx-2">
             <p className="font-light text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>

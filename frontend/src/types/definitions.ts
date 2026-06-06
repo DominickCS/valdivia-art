@@ -3,6 +3,8 @@ export interface Artwork {
   title: string;
   heightInches: number;
   widthInches: number;
+  description: string;
+  medium: string;
   artworkObjectKey: string;
   images: ArtworkImage[];
   imageURL: string;

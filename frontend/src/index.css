@@ -50,6 +50,28 @@ input:focus, textarea:focus, select:focus {
     transform: translateY(0);
   }
 
+  /* // TODO : Background Image */
+  .button-spcl-login {
+    border-color: #000000;
+    padding: 0.6em 2.3em;
+    cursor: pointer;
+    font-size: 1em;
+    color: #000000;
+    background-image: linear-gradient(45deg, transparent 50%, #000000 50%);
+    background-position: 15%;
+    background-size: 400%;
+    -webkit-transition: background 400ms ease-in-out, color 400ms ease-in-out, transform 300ms ease-in-out;
+    transition: background 400ms ease-in-out, color 400ms ease-in-out, transform 300ms ease-in-out;
+  }
+  .button-spcl-login:hover {
+    color: #FFFFFF;
+    background-position: 100%;
+    transform: translateY(-2px);
+  }
+  .button-spcl-login:active {
+    transform: translateY(0);
+  }
+
   @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: 'Inter Variable', sans-serif;

@@ -73,6 +73,8 @@ public class ArtworkService {
       artwork.setHeightInches(request.heightInches());
       artwork.setWidthInches(request.widthInches());
       artwork.setDepthInches(request.depthInches());
+      artwork.setDescription(request.description());
+      artwork.setMedium(request.medium());
       artwork.setWeight(request.weight());
       artwork.setForSale(request.forSale());
       artwork.setActive(true);
@@ -245,6 +247,10 @@ public class ArtworkService {
 
   public Artwork getArtworkDetails(Long id) {
     return artworkRepository.findById(id).orElseThrow(NoSuchElementException::new);
+  }
+
+  public List<Artwork> getArtworkByYear(String yearCompleted) {
+    return artworkRepository.findAllByYearCompletedAndForSaleFalse(yearCompleted);
   }
 
   @Transactional

@@ -45,6 +45,11 @@ public class ArtworkController {
     return artworkService.getSellableArtwork();
   }
 
+  @GetMapping("/year/{year}")
+  public List<Artwork> getArtworkByYearCompleted(@PathVariable(name = "year") String yearCompleted) {
+    return artworkService.getArtworkByYear(yearCompleted);
+  }
+
   @GetMapping("/orders")
   public ResponseEntity<List<OrderResponse>> getOrders(
       @AuthenticationPrincipal UserDetails userDetails) {

@@ -31,6 +31,8 @@ interface EditForm {
   heightInches: string;
   widthInches: string;
   depthInches: string;
+  description: string;
+  medium: string;
   weight: string;
   yearCompleted: string;
   forSale: boolean;
@@ -135,17 +137,21 @@ export default function CreatorDashboardPage() {
       price: HTMLInputElement; heightInches: HTMLInputElement;
       widthInches: HTMLInputElement; yearCompleted: HTMLInputElement;
       forSale: HTMLInputElement; availableQuantity: HTMLInputElement;
+      depthInches: HTMLInputElement; description: HTMLInputElement;
+      medium: HTMLInputElement;
     };
     const primaryIndex = images.findIndex(img => img.isPrimary);
     const formData = new FormData();
     images.forEach(img => formData.append("images", img.file));
     formData.append('request', new Blob([JSON.stringify({
       title: (form.elements.namedItem('title') as HTMLInputElement).value,
+      description: form.description.value,
       price: form.price.value,
       yearCompleted: form.yearCompleted.value,
       heightInches: form.heightInches.value,
       widthInches: form.widthInches.value,
       depthInches: form.depthInches.value,
+      medium: form.medium.value,
       weight: form.weight.value,
       forSale: form.forSale.checked,
       availableQuantity: form.availableQuantity.value,
@@ -217,6 +223,8 @@ export default function CreatorDashboardPage() {
       setEditForm({
         artworkId: artwork.id,
         title: detail.title ?? artwork.title ?? '',
+        description: detail.description ?? artwork.description ?? '',
+        medium: detail.medium ?? artwork.medium ?? '',
         price: String(detail.price ?? artwork.price ?? ''),
         heightInches: String(detail.heightInches ?? ''),
         widthInches: String(detail.widthInches ?? ''),
@@ -234,6 +242,8 @@ export default function CreatorDashboardPage() {
       setEditForm({
         artworkId: artwork.id,
         title: artwork.title ?? '',
+        description: artwork.description,
+        medium: artwork.medium,
         price: String(artwork.price ?? ''),
         heightInches: '',
         widthInches: '',
@@ -315,6 +325,7 @@ export default function CreatorDashboardPage() {
 
       formData.append('request', new Blob([JSON.stringify({
         title: editForm.title,
+        description: editForm.description,
         price: editForm.price,
         heightInches: editForm.heightInches,
         widthInches: editForm.widthInches,
@@ -672,6 +683,26 @@ export default function CreatorDashboardPage() {
               />
             </div>
 
+            {/* Description */}
+            <div className="space-y-1">
+              <label className="block text-sm font-semibold text-center">Description</label>
+              <input
+                type="text"
+                name="description"
+                className="block w-full border border-black/20 rounded px-3 py-2 text-sm text-center"
+              />
+            </div>
+
+            {/* Medium */}
+            <div className="space-y-1">
+              <label className="block text-sm font-semibold text-center">Medium</label>
+              <input
+                type="text"
+                name="medium"
+                className="block w-full border border-black/20 rounded px-3 py-2 text-sm text-center"
+              />
+            </div>
+
             {/* Dimensions */}
             <div className="grid grid-cols-4 gap-2">
               <div className="space-y-1">
@@ -938,6 +969,26 @@ function EditPanel({
           type="text"
           value={editForm.title}
           onChange={e => set('title', e.target.value)}
+          className="block w-full border border-black/20 rounded px-3 py-1.5 text-xs text-center"
+        />
+      </div>
+
+      <div className="space-y-1">
+        <label className="block text-xs font-semibold text-center">Description</label>
+        <input
+          type="text"
+          value={editForm.description}
+          onChange={e => set('description', e.target.value)}
+          className="block w-full border border-black/20 rounded px-3 py-1.5 text-xs text-center"
+        />
+      </div>
+
+      <div className="space-y-1">
+        <label className="block text-xs font-semibold text-center">Medium</label>
+        <input
+          type="text"
+          value={editForm.medium}
+          onChange={e => set('medium', e.target.value)}
           className="block w-full border border-black/20 rounded px-3 py-1.5 text-xs text-center"
         />
       </div>

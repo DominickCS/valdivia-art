@@ -22,6 +22,7 @@ import AboutMePage from './pages/AboutMePage'
 import ArtworkDetailPage from './pages/ArtworkDetailPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/PasswordResetPage'
+import ArchiveYearPage from './pages/ArchiveYearPage'
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -57,6 +58,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/register" element={<RegisterPage />} />
             <Route path='/for-sale' element={<ForSalePage />} />
             <Route path='/archive' element={<ArchivePage />} />
+            <Route path='/archive/year/:year' element={<ArchiveYearPage />} />
             <Route path='/about' element={<AboutMePage />} />
             <Route path='/contact' element={<ContactMePage />} />
             <Route path='/artwork/detail/:id' element={<ArtworkDetailPage />} />

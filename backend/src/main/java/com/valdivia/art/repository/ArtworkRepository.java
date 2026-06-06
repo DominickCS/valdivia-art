@@ -15,6 +15,8 @@ public interface ArtworkRepository extends JpaRepository<Artwork, Long> {
 
   List<Artwork> findAllByActiveTrueAndAvailableQuantityGreaterThan(int quantity);
 
+  List<Artwork> findAllByYearCompletedAndForSaleFalse(String yearCompleted);
+
   // Used by CartService to resolve cart items → Artwork entities
   Optional<Artwork> findByStripeProductID(String stripeProductID);
 }

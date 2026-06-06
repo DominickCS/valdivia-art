@@ -59,7 +59,7 @@ export default function LoginPage() {
           <input type='email' value={formData.email} onChange={handleChange} name='email' />
           <label htmlFor='password'>Password</label>
           <input type='password' value={formData.password} onChange={handleChange} name='password' />
-          <button type='submit' disabled={isLoading} className='button-spcl mx-auto w-full'>{isLoading ? "PLEASE WAIT..." : "LOGIN"}</button>
+          <button type='submit' disabled={isLoading} className='button-spcl-login mx-auto w-full'>{isLoading ? "PLEASE WAIT..." : "LOGIN"}</button>
         </form >
         <div className='flex justify-between text-nowrap [&>p]:text-sm [&>p]:hover:font-extrabold [&>p]:transition-all [&>p]:duration-300'>
           <p><Link to={"/register"}>I don't have an account</Link></p>

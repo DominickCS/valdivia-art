@@ -47,17 +47,26 @@ export default function ArtworkCard({ artwork }: { artwork: Artwork }) {
 
   return (
     <div className="flex flex-col mx-auto px-8 items-center my-32">
-      <img
-        className="shadow-artwork shadow-black/45 duration-1000"
-        src={artwork.imageURL}
-        height={450}
-        width={450}
-        alt={artwork.title + " by Daniel Valdivia"}
-      />
+      <Link to={`/artwork/detail/${artwork.id}`}>
+        <img
+          className="shadow-artwork shadow-black/45 duration-1000"
+          src={artwork.imageURL}
+          height={450}
+          width={450}
+          alt={artwork.title + " by Daniel Valdivia"}
+        />
+      </Link>
       <p className="hover:scale-110 hover:opacity-40 transition-all duration-300 text-3xl mt-8 mb-2 font-extrabold tracking-wide">
         <Link to={`/artwork/detail/${artwork.id}`}>{artwork.title}</Link>
       </p>
-      <p className="font-extralight text-sm italic mb-4">{artwork.heightInches}in x {artwork.widthInches}in</p>
+      <div className="flex justify-center [&>p]:mx-2">
+        <p className="font-extralight text-sm italic">{artwork.heightInches}in h x {artwork.widthInches}in w</p>
+        {artwork.medium && artwork.medium.length > 0 ?
+          <p className="font-extralight text-sm italic">{artwork.medium}</p>
+          :
+          null
+        }
+      </div>
 
       {artwork.forSale && artwork.availableQuantity > 0 ? (
         <p className="mt-2 font-light text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>

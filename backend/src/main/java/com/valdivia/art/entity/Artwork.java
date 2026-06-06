@@ -57,6 +57,12 @@ public class Artwork {
   @Column(nullable = false)
   private Boolean active;
 
+  @Column(nullable = true, length = 255)
+  private String medium;
+
+  @Column(nullable = true, columnDefinition = "TEXT", length = 1024)
+  private String description;
+
   @Column(nullable = false)
   private String stripeProductID;
 
