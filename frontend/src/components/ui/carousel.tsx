@@ -215,7 +215,7 @@ function CarouselNext({
       className={cn(
         "absolute touch-manipulation rounded-full bg-black/20",
         orientation === "horizontal"
-          ? "top-1/2 -right-8.5 -translate-y-1/2"
+          ? "top-1/2 -right-9 -translate-y-1/2"
           : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
