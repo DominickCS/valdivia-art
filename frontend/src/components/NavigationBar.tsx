@@ -63,7 +63,7 @@ export default function NavigationBar() {
       {/* Mobile menu */}
       <div className={`xl:hidden overflow-hidden transition-all duration-1000 ease-in-out ${menuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
         }`}>
-        <div className="flex flex-col items-center gap-4 py-6 border-b-2 border-black/10 shadow-md mb-4">
+        <div className="flex flex-col items-center gap-4 py-6 border-b-2 border-black/10 shadow-md">
           <Link className="transition-all hover:tracking-widest duration-300" to="/about" onClick={close}>ABOUT ME</Link>
           <Link className="transition-all hover:tracking-widest duration-300" to="/for-sale" onClick={close}>FOR SALE</Link>
           <Link className="transition-all hover:tracking-widest duration-300" to="/archive" onClick={close}>ART ARCHIVE</Link>

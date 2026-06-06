@@ -66,9 +66,9 @@ export default function ArtworkDetailCard({ artwork }: { artwork: Artwork }) {
           : null}
         {artwork.forSale && artwork.availableQuantity > 0 ? (
           <div className="flex justify-center [&>p]:mx-2">
-            <p className="font-light text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>
-            <p className="font-light text-lg tracking-widest italic">·</p>
-            <p className="font-light text-lg tracking-widest italic">In Stock: {artwork.availableQuantity}</p>
+            <p className="font-light sm:text-lg tracking-widest italic">${artwork.price.toFixed(2)}</p>
+            <p className="font-light sm:text-lg tracking-widest italic">·</p>
+            <p className="font-light sm:text-lg tracking-widest italic">In Stock: {artwork.availableQuantity}</p>
           </div>
         ) : (
           <p className="font-light text-sm tracking-widest italic">Not for sale</p>
